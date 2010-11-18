@@ -1,0 +1,34 @@
+<!--
+  A background page that opens a websocket and then just displays the incoming messages.
+-->
+<script>
+    var host = "node.superfeedr.com",
+        port = 27261;
+        serverUri = "ws://"+host+":"+port;
+
+    var conn = new WebSocket( serverUri );
+    
+    if ( !conn.readyState || conn.readyState > 1 ) {
+        conn = new WebSocket( serverUri );
+        conn.onopen = function () {
+            var connection = {"feed_url": "http://hub.gowalla.com/track/gowalla", "hub_url": "http://hub.gowalla.com/"};
+            conn.send(JSON.stringify(connection));
+        };
+        conn.onmessage = function( event ) {
+            var notification = webkitNotifications.createNotification(
+              'icon.png',  // icon url - can be relative
+              'Hello!',  // notification title
+              'Lorem ipsum...'  // notification body text
+            );
+            // Then show the notification.
+            notification.show();
+        };
+        
+        conn.onclose = function( event ) {
+            alert("closed!");
+        };
+    }
+    else {
+        alert("hum");
+    }
+</script>
