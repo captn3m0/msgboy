@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Growme</title>
+    <meta name="application-name" content="Growme"/>
+    <meta name="description" content="__MSG_app_description__"/>
+    <link rel="shortcut icon" href="http://superfeedr.com/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+    <a href="/templates/subscriptions.html">Subscriptions</a>
+
+    
+    <!-- Show all entries. also reloads the next page when reaching the bottom of the page if applicable... -->
+    <div id="entries"></div>
+
+    <div id="log"></div>
+
+    <div id="rawLog"></div>
+    
+
+<script src="/lib/jquery-ui/js/jquery-1.4.4.min.js" type="text/javascript"></script> 
+    
+    <script>
+    
+    var current_page =  localStorage.getItem("current_page_index") || 1;
+    
+    function showLog(msg) {
+        $('#log').prepend('<p></p>').prepend(document.createTextNode(msg));
+    }
+    
+    function showRawLog(msg) {
+        $('#rawLog').prepend('<p></p>').prepend(document.createTextNode(msg));
+    }
+    
+    function loadPage(page_index) {
+        var page = JSON.parse(localStorage.getItem("page-" + page_index)) || [];
+        for(i=0; i<page.length; i++) {
+            var entry = JSON.parse(localStorage.getItem(page[i]));
+            $("<h2>"+entry.title + "</h2>").appendTo("#entries");
+            $("<p>"+entry.summary + "</p>").appendTo("#entries");
+        }
+    }
+    
+    $(document).ready(function() {
+        loadPage(current_page);
+    });
+    
+    $(window).scroll(function () { 
+        if  ( ($(document).height() - $(window).height()) - $(window).scrollTop() == 0 ){
+           // If we're at the bottom, show the overlay and retrieve the next page
+           current_page = current_page - 1;
+           if(current_page != 0) {
+               loadPage(current_page);
+           }
+        }
+    });
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Growme</title>
+    <meta name="application-name" content="Growme"/>
+    <meta name="description" content="__MSG_app_description__"/>
+    <link rel="shortcut icon" href="http://superfeedr.com/favicon.ico">
+    <link rel="stylesheet" href="/css/notification.css" />
+</head>
+<body>
+    <audio style="display:none" preload="auto" id="updateSound" autobuffer>
+        <source src="/sounds/ping.mp3" type="audio/mp3" />
+    </audio>
+
+    <div id="notification">
+    </div>
+    <script src="/lib/jquery-ui/js/jquery-1.4.4.min.js" type="text/javascript"></script> 
+    <script>
+
+    function truncate(text, len) {
+        if (text.length > len) {
+            text = text.substring(0, len);
+            text = text.replace(/\w+$/, '');
+            text  = text + "&hellip;"
+        }
+        return text;
+    }
+
+    function strip(html) {
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent||tmp.innerText;
+    }
+
+    function getParameterByName( name ) {
+        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+        var regexS = "[\\?&]"+name+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var results = regex.exec( window.location.href );
+        if( results == null )
+        return "";
+        else
+        return decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+    
+    var entry = JSON.parse(localStorage.getItem(getParameterByName("entry")));
+    $("<h1>"+ truncate(entry.title, 42) + "</h1>").appendTo("#notification");
+    $("<p><span>" + entry.source.title + "</span>&nbsp—&nbsp"+ truncate(strip(entry.summary), 96) + "</p>").appendTo("#notification");
+    $(document).click(function() {
+       chrome.tabs.create({url: entry.links.alternate[0].href, selected: false});
+       window.close();
+    });
+    
+    </script>
+</body>

@@ -1,0 +1,55 @@
+<html>
+<head><title>Growme Options</title></head>
+<script type="text/javascript">
+
+// Saves options to localStorage.
+function save_options() {
+  localStorage.setItem("debug", document.getElementById("debug").value == "on");
+  localStorage.setItem("raw_debug", document.getElementById("raw_debug").value == "on");
+  localStorage.setItem("sync_googlereader", document.getElementById("sync_googlereader").value == "on");
+
+  // Update status to let user know options were saved.
+  var status = document.getElementById("status");
+  status.innerHTML = "Options Saved.";
+  setTimeout(function() {
+    status.innerHTML = "";
+  }, 750);
+  restore_options();
+}
+
+// Restores select box state to saved value from localStorage.
+function restore_options() {
+  if(localStorage.getItem("debug") == "true") {
+      document.getElementById("debug").checked = true;
+  }
+
+  if(localStorage.getItem("raw_debug") == "true") {
+      document.getElementById("raw_debug").checked = true;
+  }
+  
+  if(localStorage.getItem("sync_googlereader") == "true") {
+      document.getElementById("sync_googlereader").checked = true;
+      if(localStorage.getItem("sync_googlereader_last") == null) {
+          document.getElementById("sync_googlereader_status").innerHTML = "Google Reader hasn't been sync'ed yet. Just visit <a href='http://www.google.com/reader/view/'>Google Reader</a> to perform the first sync.";
+      } 
+      else {
+          document.getElementById("sync_googlereader_status").innerHTML = "Last sync was " + localStorage.getItem("sync_googlereader_last");
+      }
+  } 
+
+}
+
+</script>
+<body onload="restore_options()">
+    <h2>Developer</h2>
+    <input type="checkbox" id="debug">Debug</input><br />
+    <input type="checkbox" id="raw_debug">Raw Debug</input>
+
+    <h2>3rd party Subscriptions</h2>
+    <input type="checkbox" id="sync_googlereader">Import Google Reader Susbcriptions.</input>&nbsp;<span id="sync_googlereader_status"></span><br />
+    
+    <br />
+    <button onclick="save_options()">Save</button> <span id="status"></span>
+    
+</body>
+</html>

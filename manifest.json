@@ -1,13 +1,39 @@
 {
-  "name": "Growme Extension",
+  "name": "Growme",
   "version": "1.0",
-  "description": "PubSubHubbub notifications in Chrome.",
-  "browser_action": {
-    "default_icon": "icon.png",
-    "default_title": "Growme"
+  "description": "Grownme makes Chrome more useful and smarter!",
+  "icons": { "24": "/icons/24.png", "128": "/icons/128.png" },
+  "options_page": "options.html",
+  "app": {
+    "launch": {
+      "local_path": "templates/default.html"
+    }
   },
   "permissions": [
-      "notifications", "tabs"
+      "notifications", 
+      "tabs", 
+      "unlimitedStorage",
+      "http://superfeedr.com",
+      "https://superfeedr.com",
+      "http://www.google.com/",
+      "https://www.google.com/"
+  ],
+  "content_scripts": [ {
+    "js": [ 
+      "/lib/jquery-ui/js/jquery-1.4.4.min.js", 
+      "/lib/jquery-ui/js/jquery-ui-1.8.9.custom.min.js", 
+      "feed_sniffer.js"
+    ],
+    "matches": [ "http://*/*", "https://*/*" ],
+    "run_at" : "document_idle"
+  }, {
+    "js": [ 
+      "/lib/jquery-ui/js/jquery-1.4.4.min.js", 
+      "/lib/jquery-ui/js/jquery-ui-1.8.9.custom.min.js", 
+      "show_bookmark.js"],
+      "matches": [ "http://*/*", "https://*/*" ],
+      "run_at" : "document_start"
+     }
   ],
   "background_page": "background.html"
 }

@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Growme</title>
+    <meta name="application-name" content="Growme"/>
+    <meta name="description" content="__MSG_app_description__"/>
+    <link rel="shortcut icon" href="http://superfeedr.com/favicon.ico">
+    <link rel="stylesheet" href="/css/notification.css" />
+</head>
+<body>
+    <audio style="display:none" preload="auto" id="updateSound" autobuffer>
+        <source src="/sounds/ping.mp3" type="audio/mp3" />
+    </audio>
+
+    <div id="notification">
+    </div>
+    <script src="/lib/jquery-ui/js/jquery-1.4.4.min.js" type="text/javascript"></script> 
+    <script>
+    $(document).ready(function() {
+        var page = 1;
+        chrome.extension.sendRequest({msg: "list", page: page}, function(response) {
+          
+        });
+        
+    });
+    </script>
+</body>
