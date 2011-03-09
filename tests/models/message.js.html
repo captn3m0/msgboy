@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
+
+    <!-- Dependencies -->
+    <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script> 
+    <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script> 
+    <script src="../../lib/backbone-localstorage/backbone-localstorage.js" type="text/javascript"></script> 
+    <script src="../../lib/strophejs/base64.js" type="text/javascript"></script> 
+    <script src="../../lib/strophejs/md5.js" type="text/javascript"></script> 
+    <script src="../../lib/strophejs/core.js" type="text/javascript"></script> 
+
+    <!-- strope.superfeedr.js -->
+    <script type="text/javascript" src="../../models/message.js"></script>
+
+    <script>
+        
+        test("Testing creation of a new message", function() {
+            var message = new Message({title: "Hello world", id: "hello-world-2010-03-07"})
+            equals("Hello world", message.title, "We expect value to be Hello world" );
+            equals("e4f280e9167d69bbeacaa31480b8e078", message.atom_id, "We expect value to be e4f280e9167d69bbeacaa31480b8e078" );
+            equals("message:e4f280e9167d69bbeacaa31480b8e078", message.localStorage.name, "We expect value to be message:e4f280e9167d69bbeacaa31480b8e078" );
+        });
+        
+    </script>
+
+</head>
+<body>
+    <h1 id="qunit-header">Message QUnit test</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="log" style=""></div>
+</body>
+</html>

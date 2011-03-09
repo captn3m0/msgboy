@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
+
+    <!-- Dependencies -->
+    <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script> 
+    <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script> 
+    <script src="../../lib/backbone-localstorage/backbone-localstorage.js" type="text/javascript"></script> 
+    <script src="../../lib/strophejs/base64.js" type="text/javascript"></script> 
+    <script src="../../lib/strophejs/md5.js" type="text/javascript"></script> 
+    <script src="../../lib/strophejs/core.js" type="text/javascript"></script> 
+
+    <!-- strope.superfeedr.js -->
+    <script type="text/javascript" src="../../models/message.js"></script>
+    <script type="text/javascript" src="../../models/messages.js"></script>
+    <script type="text/javascript" src="../../models/inbox.js"></script>
+
+    <script>
+        test("Testing when adding a new message", function() {
+            localStorage.clear();
+            var message = new Message({title: "Hello world", id: "hello-world-2010-03-07"})
+            var inbox = new Inbox({id: "tester@superfeedr.com"});
+            inbox.addMessage(message)
+            equals(inbox.current_page_number, 1, "We expect current page to be 1" );
+            for(i=0; i<19; i++) {
+                msg_sig =  Math.floor(Math.random()*10000000);
+                message = new Message({title: "Hello world", id: "hello-world-2010-03-07-"+ msg_sig})
+                inbox.addMessage(message)
+                equals(inbox.current_page_number, 1, "We expect current page to be 1" );
+            }
+            inbox.addMessage(message)
+            equals(inbox.current_page_number, 2, "We expect current page to be 2" );
+            for(i=0; i<19; i++) {
+                msg_sig =  Math.floor(Math.random()*10000000);
+                message = new Message({title: "Hello world", id: "hello-world-2010-03-07-"+ msg_sig})
+                inbox.addMessage(message)
+                equals(inbox.current_page_number, 2, "We expect current page to be 2" );
+            }
+            inbox.addMessage(message)
+            equals(inbox.current_page_number, 3, "We expect current page to be 3" );
+        });
+    </script>
+
+</head>
+<body>
+    <h1 id="qunit-header">Inbox QUnit test</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="log" style=""></div>
+</body>
+</html>

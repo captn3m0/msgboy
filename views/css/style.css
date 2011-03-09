@@ -1,9 +1,27 @@
-body {
+body,
+html {
+  margin:0;
+  padding:0;
   background-color: #FBFBFB;
   font-family: Georgia,"Times New Roman", Times, serif;
-  padding: 50px 50px 50px 100px;
 }
 
-h2 {
+#inbox {
+  float:left;
+  padding:10px;
+}
+
+#inbox h2 {
   margin-top: 80px;
 }
+
+.read {
+  color: #CCC;
+}
+
+.starred {
+  background-color: #FF6;
+}
+
+.read a:visited {color: #CCADE5;}
+.read a:active {color: #00E;}
