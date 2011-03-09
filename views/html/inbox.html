@@ -46,8 +46,8 @@
       <h3><a href="<%= main_link(links) %>" target="_blank"><%= title %></a></h3>
       <p>From : <a href="<%= source.url %>"><%= source.title %></a> (<a class="unsubscribe" href="">Unsubscribe</a>)</p>
         <div class="actions">
-          <a href="" class="destroy">Destroy</a>
-          <a href="" class="star"><%= starred ? 'Unstar' : 'Star' %> </a>
+          <a href="" class="destroy">Destroy</a>&nbsp;
+          <a href="" class="star"><%= starred ? 'Unstar' : 'Star' %> </a>&nbsp;
           <% if(read) { %>
               <a href="" class="unread">Unread</a>
           <% } %>
