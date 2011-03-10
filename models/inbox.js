@@ -19,7 +19,7 @@ var Inbox = Backbone.Model.extend({
         this.save();
       }
     }
-    current_page = this.loadCurrentPage();
+    current_page = new Messages(this.get("current_page_number"));
     current_page.fetch();
     message = current_page.create(msg);
     if(current_page.length >= 20) {
@@ -27,18 +27,9 @@ var Inbox = Backbone.Model.extend({
         this.current_page_number++;
         this.set({"current_page_number": this.current_page_number});
         this.save();
-        current_page = this.loadCurrentPage();
+        current_page = new Messages(this.get("current_page_number"));
         current_page.fetch();
     }
-  },
-  
-  loadPage: function(number) {
-    page = new Messages(number);
-    return page;
-  },
-  
-  loadCurrentPage: function() {
-    return this.loadPage(this.get("current_page_number"));
-  },
+  }
   
 });
