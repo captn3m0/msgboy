@@ -3,7 +3,7 @@ var Inbox = Backbone.Model.extend({
   localStorage: new Store("inbox"),
   
   defaults: {
-    current_page_number: 1
+    current_page_number: 1,
   },
   
   initialize: function() {

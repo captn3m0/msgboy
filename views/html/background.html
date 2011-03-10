@@ -34,10 +34,9 @@
     <!-- Lesss go! -->
     <script language='javascript'>
     $(document).ready(function() {
-        var jid = "subscriber@superfeedr.com";
-        var password = "subscriber";
-        
+        var jid = localStorage.getItem("currentJid");
         var inbox = new Inbox({id: jid});
+        var password = inbox.get("settings.password");
         
         var BOSH_SERVICE = 'http://superfeedr.com/http-bind/'
                 

@@ -31,7 +31,6 @@
     <a href="/templates/subscriptions.html">Subscriptions</a>
 
     <div id="header"></div>
-    <div id="nav"></div>
     <div id="inbox">
         <input id="filters" type="radio" name="filters" value="fetch" checked="checked">All Messages</input>
         <input id="filters" type="radio" name="filters" value="unread">Unread Messages</input>
@@ -58,8 +57,9 @@
     </script>
 
     <script>
-    var jid = "subscriber@superfeedr.com";
+    var jid = localStorage.getItem("currentJid");
     var inbox = new Inbox({id: jid});
+    var password = inbox.get("settings.password");
 
     function main_link(links) {
         if(links["alternate"]) {
