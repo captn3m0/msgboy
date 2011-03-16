@@ -1,56 +1,43 @@
-if(isFeedDocument()) {
-  alert("it's a feed!");
-  showFeedmarkForFeeds([{"href": window.location.href, "title": window.location.href}]);
-}
-else {
-  showFeedmarkForFeeds(discoverFeedsFromLinks());
-}
-
-
-// Let's now check well known apps to see if we can copy subscriptions.
-// Google Reader. What else?
-if(window.location.host == "www.google.com" && window.location.pathname == '/reader/view/') {
-  chrome.extension.sendRequest({localstorage: "sync_googlereader"}, function(sync_googlereader) {
-    chrome.extension.sendRequest({localstorage: "sync_googlereader_last"}, function(sync_googlereader_last) {
-       if(sync_googlereader.value == "true" && (parseInt(new Date().getTime()) - parseInt(sync_googlereader_last.value || 0)) >  1000*3600*24) {
-          var request = new XMLHttpRequest();
-          request.open("GET", "http://www.google.com/reader/subscriptions/export", true);
-          request.onreadystatechange = function() {
-            if (request.readyState == 4) {
-              $(request.responseXML).find("outline").each(function() {
-                chrome.extension.sendRequest({msg: "subscribe", feed: {"href": $(this).attr("xmlUrl"), "title": $(this).attr("title")}});
-              });
-            }
-            chrome.extension.sendRequest({localstorage: "sync_googlereader_last", set: new Date().getTime()}, function(response) {
-              // Do nothing.
-            })
-          }
-          request.send();
-        }
-    });
-  });
-}
-
-
-function showFeedmarkForFeeds(feeds) {
-  // If we found a feed!
-  if (feeds.length > 0) {
-    // Let's show a superfeedr subscribe button!
-    $('#subscribe').attr("src", chrome.extension.getURL('/icons/24.png'));
-
-    $('#subscribe').click(function() {
-      var answer = confirm("Are you sure you want to subscribe to '" + feeds[0].title + "' ?");
-      if (answer){
-        // Awesome, we have just one single feed. It's going to be simple!
-        chrome.extension.sendRequest({msg: "subscribe", feed: feeds[0]});
-      }
-    });
+// This function extract the feeds from the document.
+function extractFeedLinks(callback) {
+  links = []
+  if(isFeedDocument()) { 
+    // If we're on a feed document
+    links.push({"href": window.location.href, "title": window.location.href})
+    callback(links);
+  }
+  else {
+    // If we're on a regular page
+    links = discoverFeedsFromLinks();
+    callback(links);
   }
 }
 
-/*
-  Shamelessly stolen from the Official RSS Chrome extension
-*/
+// Let's now check well known apps to see if we can copy subscriptions.
+// Google Reader. What else?
+// if(window.location.host == "www.google.com" && window.location.pathname == '/reader/view/') {
+//   chrome.extension.sendRequest({localstorage: "sync_googlereader"}, function(sync_googlereader) {
+//     chrome.extension.sendRequest({localstorage: "sync_googlereader_last"}, function(sync_googlereader_last) {
+//        if(sync_googlereader.value == "true" && (parseInt(new Date().getTime()) - parseInt(sync_googlereader_last.value || 0)) >  1000*3600*24) {
+//           var request = new XMLHttpRequest();
+//           request.open("GET", "http://www.google.com/reader/subscriptions/export", true);
+//           request.onreadystatechange = function() {
+            // if (request.readyState == 4) {
+            //   $(request.responseXML).find("outline").each(function() {
+            //     chrome.extension.sendRequest({msg: "subscribe", feed: {"href": $(this).attr("xmlUrl"), "title": $(this).attr("title")}});
+            //   });
+            // }
+//             chrome.extension.sendRequest({localstorage: "sync_googlereader_last", set: new Date().getTime()}, function(response) {
+//               // Do nothing.
+//             })
+//           }
+//           request.send();
+//         }
+//     });
+//   });
+// }
+
+/* Shamelessly stolen from the Official RSS Chrome extension */
 function discoverFeedsFromLinks() {
   var results = document.evaluate('//*[local-name()="link"][contains(@rel, "alternate")] [contains(@type, "rss") or contains(@type, "atom") or contains(@type, "rdf")]', document, null, 0, null);
 
@@ -71,14 +58,12 @@ function discoverFeedsFromLinks() {
   return feeds
 }
 
-/*
-  Shamelessly stolen from the Official RSS Chrome extension
-*/
+/* Shamelessly stolen from the Official RSS Chrome extension */
 function isFeedDocument() {
   var body = document.body;
 
   var soleTagInBody = "";
-  if (body && body.childElementCount == 1) {
+  if (body && body.childElementCount == 1 || body.childElementCount == 2 && body.children[1].id == "superfeedr-bookmark") {
     soleTagInBody = body.children[0].tagName;
   }
 
@@ -109,9 +94,7 @@ function isFeedDocument() {
 }
 
 
-/*
-  Shamelessly stolen from the Official RSS Chrome extension
-*/
+/* Shamelessly stolen from the Official RSS Chrome extension */
 function containsFeed(doc) {
 
   // Find all the RSS link elements.

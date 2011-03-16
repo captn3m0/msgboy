@@ -12,6 +12,8 @@
   "permissions": [
       "notifications", 
       "tabs", 
+      "background",
+      "contextMenus",
       "unlimitedStorage",
       "http://superfeedr.com",
       "https://superfeedr.com",
@@ -20,18 +22,16 @@
   ],
   "content_scripts": [ {
     "js": [ 
-      "/lib/jquery/jquery-1.4.4.min.js", 
-      "/controller/feed_sniffer.js"
-    ],
+      "/lib/date.format.js",
+      "/lib/jquery/jquery-1.5.1.min.js",
+      "/lib/jquery/jquery.event.drag-2.0.min.js",
+      "/controllers/feed_sniffer.js",
+      "/controllers/show_bookmark.js"],
+    "css": [
+      "/views/css/bookmark.css"],
     "matches": [ "http://*/*", "https://*/*" ],
-    "run_at" : "document_idle"
-  }, {
-    "js": [ 
-      "/lib/jquery/jquery-1.4.4.min.js", 
-      "/controller/show_bookmark.js"],
-      "matches": [ "http://*/*", "https://*/*" ],
-      "run_at" : "document_start"
-     }
+    "run_at" : "document_end"
+  } 
   ],
   "background_page": "/views/html/background.html"
 }

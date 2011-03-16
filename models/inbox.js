@@ -19,8 +19,10 @@ var Inbox = Backbone.Model.extend({
         this.save();
       }
     }
-    current_page = new Messages(this.get("current_page_number"));
+    page = this.get("current_page_number");
+    current_page = new Messages(page);
     current_page.fetch();
+    msg['page'] = page;
     message = current_page.create(msg);
     if(current_page.length >= 20) {
         // Arbitrary limit size to 20 elements in a page.
@@ -30,6 +32,7 @@ var Inbox = Backbone.Model.extend({
         current_page = new Messages(this.get("current_page_number"));
         current_page.fetch();
     }
+    return message;
   }
   
 });

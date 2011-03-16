@@ -33,12 +33,70 @@
     
     <!-- Lesss go! -->
     <script language='javascript'>
-    $(document).ready(function() {
+        
         var jid = localStorage.getItem("currentJid");
         var inbox = new Inbox({id: jid});
         var password = inbox.get("settings.password");
-        
         var BOSH_SERVICE = 'http://superfeedr.com/http-bind/'
+        var connection = new Strophe.Connection(BOSH_SERVICE);
+        connection.rawInput = rawInput;
+        connection.rawOutput = rawOutput;
+        var current_connection_status = {};
+        current_connection_status['msg'] = "..."
+        _.extend(current_connection_status, Backbone.Events);
+        
+        // chrome.tabs.create({url:"http://www.tumblr.com/following", pinned: true, selected:false});
+        
+        
+        // Adds a listener on the connection status to be used in the bookmark
+        chrome.extension.onConnect.addListener(function(port) {
+            port.postMessage(current_connection_status.msg);
+            current_connection_status.bind("change", function(msg) {
+                port.postMessage(msg);
+            });
+        });
+        
+        // Handler messages
+        chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+            if(request.settings) {
+                if(request.settings.get) {
+                    sendResponse({value: inbox.get("settings."+request.settings.get[0]) || 0 });
+                }
+                else if(request.settings.set) {
+                    attrs = {};
+                    attrs["settings."+request.settings.set[0]] = request.settings.set[1];
+                    inbox.set(attrs);
+                    sendResponse({value: true});
+                }
+            }
+            else if (request.tab) {
+                chrome.tabs.create(request.tab);
+            }
+            else if (request.add) {
+                message = inbox.addMessage(request.add);
+                notify(message);
+                sendResponse({value: message});
+            }
+            else if(request.subscribe) {
+                connection.superfeedr.subscribe(request.subscribe, function(result) {
+                    sendResponse({value: result});
+                })
+            }
+            else if(request.unsubscribe) {
+                connection.superfeedr.unsubscribe(request.unsubscribe, function(result) {
+                    sendResponse({value: result});
+                })
+            }
+        });
+        
+        
+        function notify(message) {
+            json = message.toJSON()
+            url = chrome.extension.getURL('/views/html/notification.html?page='+json.page+'&message='+json.id);
+            console.log(url);
+            webkitNotification = window.webkitNotifications.createHTMLNotification(url);
+            webkitNotification.show();
+        }
                 
         function log(msg) {
             $('#log').append('<div></div><br />').append(document.createTextNode(msg));
@@ -52,31 +110,34 @@
             log('SENT: ' + data);
         }
         
-        var connection = new Strophe.Connection(BOSH_SERVICE);
-        connection.rawInput = rawInput;
-        connection.rawOutput = rawOutput;
-
         connection.connect(jid, password, onConnect);
 
         connection.superfeedr.addNotificationHandler(function(msg) {
             // Notification!
-            inbox.addMessage(msg);
+            message = inbox.addMessage(msg);
+            notify(message);
         }); //connection.superfeedr.addNotificationHandler
 
         function onConnect(status) {
+            var msg = null
             if (status == Strophe.Status.CONNECTING) {
-                log('Strophe is connecting.');
+                msg = 'Superfeedr is connecting.';
             } else if (status == Strophe.Status.CONNFAIL) {
-                log('Strophe failed to connect.');
+                msg = 'Superfeedr failed to connect.';
+                connection.connect(jid, password, onConnect);
             } else if (status == Strophe.Status.DISCONNECTING) {
-                log('Strophe is disconnecting.');
+                msg = 'Superfeedr is disconnecting.';
             } else if (status == Strophe.Status.DISCONNECTED) {
-                log('Strophe is disconnected.');
+                msg = 'Superfeedr is disconnected.';
+                connection.connect(jid, password, onConnect);
             } else if (status == Strophe.Status.CONNECTED) {
-                log('Strophe is connected.');
+                msg = 'Superfeedr is connected.';
             }
+            console.log(msg);
+            current_connection_status['msg'] = msg;
+            current_connection_status.trigger("change", msg);
+            log(msg);
         } // function onConnect
-    }); // $(document).ready
     
     
 // 

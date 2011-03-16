@@ -1,0 +1,47 @@
+#superfeedr-bookmark {
+  font-family: Georgia,"Times New Roman", Times, serif;
+  text-align:left;
+  position:absolute;
+  width: 150px;
+  top:0px;
+  z-index:999997;
+  color: #333;
+  font-size: 16px;
+  line-height: normal;
+  font-style: normal;
+  cursor:pointer;
+  background-color:#ccc;
+  margin: 0px;
+  padding: 0px;
+}
+
+#superfeedr-bookmark li {
+  list-style:none;
+  margin: 0px;
+  padding: 10px;
+}
+
+#superfeedr-bookmark-dialog {
+  font-family: Georgia,"Times New Roman", Times, serif;
+  text-align:left;
+  position:absolute;
+  z-index:999999;
+  color: #333;
+  font-size: 16px;
+  line-height: normal;
+  font-style: normal;
+  cursor:pointer;
+  background-color:#ccc;
+  padding: 20px;
+  border: 1px solid black;
+  overflow: scroll;
+  height: 200px;
+}
+
+#link-list {
+  padding-left: 20px;
+}
+
+#link-list li {
+  list-style-type: disc;
+}

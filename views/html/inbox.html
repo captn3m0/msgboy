@@ -28,7 +28,6 @@
 
 </head>
 <body>
-    <a href="/templates/subscriptions.html">Subscriptions</a>
 
     <div id="header"></div>
     <div id="inbox">
@@ -111,7 +110,9 @@
         },
 
         unsubscribeFeed: function() {
-            alert("TODO!");
+            chrome.extension.sendRequest({unsubscribe: this.model.toJSON().source.url}, function(response) {
+                alert("Unsubscribed from " + this.model.toJSON().source.url);
+            });
             return false;
         },
 
@@ -195,6 +196,8 @@
             // loadMore
             if(this.current_page_number == 1) {
                 // We can't really go further!
+                current_page = this.showSinglePage(this.current_page_number);
+                this.refresh();
                 $("#loader").attr('disabled', true);
                 $("#loader").attr('value', "No more pages to load");
             }
