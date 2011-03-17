@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/qunit/git/qunit.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="http://code.jquery.com/qunit/git/qunit.js"></script>
+
+    <!-- Dependencies -->
+    <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script> 
+    <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script> 
+    <script src="../../lib/backbone-localstorage/backbone-localstorage.js" type="text/javascript"></script> 
+
+    <script>
+
+    
+    var Movie = Backbone.Model.extend({
+        storeName: "movie"
+    });
+    
+    test("create", function() {
+        localStorage.clear();
+        movie = new Movie();
+        movie.set({
+            title: "The Matrix",
+            format: "dvd"
+        });
+        movie.save();
+        equals(JSON.parse(localStorage.getItem("movie"))[0], movie.id , "The movie should be stored in the list of all movies.");
+        stored = JSON.parse(localStorage.getItem("movie:"+movie.id))
+        equals(stored.id, movie.toJSON().id , "The movie should be stored with the right id");
+        equals(stored.title, movie.toJSON().title , "The movie should be stored with the right title");
+        equals(stored.format, movie.toJSON().format , "The movie should be stored with the right format");
+    });
+    
+    
+    test("read", function() {
+        localStorage.clear();
+        movie = new Movie();
+        movie.set({
+            title: "The Matrix",
+            format: "dvd"
+        });
+        movie.save();
+        
+        n = new Movie();
+        n.set({
+            id: movie.id
+        })
+        n.fetch()
+        equals(n.toJSON().id, movie.toJSON().id , "The movie should be stored with the right id");
+        equals(n.toJSON().title, movie.toJSON().title , "The movie should be stored with the right title");
+        equals(n.toJSON().format, movie.toJSON().format , "The movie should be stored with the right format");
+    });
+
+    test("update", function() {
+        localStorage.clear();
+        movie = new Movie();
+        movie.set({
+            title: "The Matrix",
+            format: "dvd"
+        });
+        movie.save();
+        equals(movie.toJSON().title, "The Matrix" , "The title should be unchanged");
+        movie.set({title: "The Matrix: Revolution"})
+        movie.save();
+        equals(movie.toJSON().title, "The Matrix: Revolution" , "The title should have been updated");
+    });
+
+    test("delete", function() {
+        localStorage.clear();
+        movie = new Movie();
+        movie.set({
+            title: "The Matrix",
+            format: "dvd"
+        });
+        movie.save();
+        stored = JSON.parse(localStorage.getItem("movie:"+movie.id))
+        equals(stored.id, movie.toJSON().id , "The movie should be stored with the right id");
+        movie.destroy();
+        stored = JSON.parse(localStorage.getItem("movie:"+movie.id))
+        equals(stored, null , "The movie should be null");
+        console.log(JSON.parse(localStorage.getItem("movie")));
+        equals(_.isEmpty(JSON.parse(localStorage.getItem("movie"))), true,"The movie should not be in the list of movies anymore.");
+        
+    });
+
+    </script>
+
+</head>
+<body>
+    <h1 id="qunit-header">Inbox QUnit test</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="log" style=""></div>
+</body>
+</html>
