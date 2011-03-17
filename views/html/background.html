@@ -94,6 +94,11 @@
             json = message.toJSON()
             url = chrome.extension.getURL('/views/html/notification.html?page='+json.page+'&message='+json.id);
             webkitNotification = window.webkitNotifications.createHTMLNotification(url);
+            webkitNotification.ondisplay = function() {
+                setTimeout(function() {
+                    webkitNotification.cancel();
+                }, 5000);
+            }
             webkitNotification.show();
         }
                 

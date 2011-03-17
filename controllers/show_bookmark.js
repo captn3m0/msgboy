@@ -194,7 +194,6 @@ else {
                 }}, function(response) {
                   chrome.extension.sendRequest({notify: response.value}, function(response) {
                   });
-                  alert("Saved!");
                   return false;
                 });
               }

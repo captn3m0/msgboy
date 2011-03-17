@@ -93,7 +93,7 @@ Strophe.addConnectionPlugin('superfeedr', {
             links[link.getAttribute("rel")][link.getAttribute("type")].push(l);
           }
           items.push({
-            id: Strophe.getText(atom.getElementsByTagName("id")[0]),
+            atom_id: Strophe.getText(atom.getElementsByTagName("id")[0]),
             published: Strophe.getText(atom.getElementsByTagName("published")[0]),
             updated: Strophe.getText(atom.getElementsByTagName("updated")[0]),
             title: Strophe.getText(atom.getElementsByTagName("title")[0]),

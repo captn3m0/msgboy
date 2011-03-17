@@ -67,7 +67,6 @@
     $(document).ready(function() {
         var page = parseInt(getParameterByName("page"));
         var message_id = getParameterByName("message")
-        console.log("Page : " + page + " - Message : " + message_id);
         var messages = new Messages(page);
          messages.fetch();
          var message = messages.get(message_id);
@@ -88,6 +87,7 @@
 
               openViewer: function() {
                   chrome.tabs.create({url:this.model.toJSON().links.alternate["text/html"][0].href, selected: false});
+                  window.close();
               }
           });
 
