@@ -29,8 +29,6 @@
 </head>
 <body>
     
-    <div id="log" style=""></div>
-    
     <!-- Lesss go! -->
     <script language='javascript'>
         
@@ -39,6 +37,8 @@
         var password = inbox.get("settings.password");
         var BOSH_SERVICE = 'http://superfeedr.com/http-bind/'
         var connection = new Strophe.Connection(BOSH_SERVICE);
+        var logEnabled = false;
+        
         connection.rawInput = rawInput;
         connection.rawOutput = rawOutput;
         var current_connection_status = {};
@@ -93,13 +93,14 @@
         function notify(message) {
             json = message.toJSON()
             url = chrome.extension.getURL('/views/html/notification.html?page='+json.page+'&message='+json.id);
-            console.log(url);
             webkitNotification = window.webkitNotifications.createHTMLNotification(url);
             webkitNotification.show();
         }
                 
         function log(msg) {
-            $('#log').append('<div></div><br />').append(document.createTextNode(msg));
+            if(logEnabled) {
+                console.log(msg);
+            }
         }
         
         function rawInput(data) {
@@ -133,7 +134,6 @@
             } else if (status == Strophe.Status.CONNECTED) {
                 msg = 'Superfeedr is connected.';
             }
-            console.log(msg);
             current_connection_status['msg'] = msg;
             current_connection_status.trigger("change", msg);
             log(msg);

@@ -97,8 +97,6 @@ Strophe.addConnectionPlugin('superfeedr', {
             published: Strophe.getText(atom.getElementsByTagName("published")[0]),
             updated: Strophe.getText(atom.getElementsByTagName("updated")[0]),
             title: Strophe.getText(atom.getElementsByTagName("title")[0]),
-            summary: Strophe.getText(atom.getElementsByTagName("summary")[0]),
-            content: Strophe.getText(atom.getElementsByTagName("content")[0]),
             links: links,
             source: source
           });
