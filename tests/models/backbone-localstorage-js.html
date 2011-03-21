@@ -15,76 +15,93 @@
 
     
     var Movie = Backbone.Model.extend({
-        storeName: "movie"
     });
+    
+    var Theater = Backbone.Collection.extend({
+        storeName: "movies",
+        model: Movie
+    })
     
     test("create", function() {
         localStorage.clear();
-        movie = new Movie();
-        movie.set({
+        theater = new Theater();
+        movie = theater.create({
             title: "The Matrix",
             format: "dvd"
         });
-        movie.save();
-        equals(JSON.parse(localStorage.getItem("movie"))[0], movie.id , "The movie should be stored in the list of all movies.");
-        stored = JSON.parse(localStorage.getItem("movie:"+movie.id))
+        equals(JSON.parse(localStorage.getItem("movies"))[0], movie.id , "The movie should be stored in the list of all movies.");
+        stored = JSON.parse(localStorage.getItem("movies:"+movie.id))
         equals(stored.id, movie.toJSON().id , "The movie should be stored with the right id");
         equals(stored.title, movie.toJSON().title , "The movie should be stored with the right title");
         equals(stored.format, movie.toJSON().format , "The movie should be stored with the right format");
     });
     
     
+    
     test("read", function() {
         localStorage.clear();
-        movie = new Movie();
-        movie.set({
+        theater = new Theater();
+        theater.fetch();
+        movie = theater.create({
             title: "The Matrix",
             format: "dvd"
         });
-        movie.save();
-        
-        n = new Movie();
-        n.set({
-            id: movie.id
-        })
-        n.fetch()
+    
+        n = theater.get(movie.toJSON().id)
+    
         equals(n.toJSON().id, movie.toJSON().id , "The movie should be stored with the right id");
         equals(n.toJSON().title, movie.toJSON().title , "The movie should be stored with the right title");
         equals(n.toJSON().format, movie.toJSON().format , "The movie should be stored with the right format");
     });
-
+    
+    
     test("update", function() {
         localStorage.clear();
-        movie = new Movie();
-        movie.set({
+        theater = new Theater();
+        movie = theater.create({
             title: "The Matrix",
             format: "dvd"
         });
-        movie.save();
         equals(movie.toJSON().title, "The Matrix" , "The title should be unchanged");
         movie.set({title: "The Matrix: Revolution"})
         movie.save();
         equals(movie.toJSON().title, "The Matrix: Revolution" , "The title should have been updated");
     });
-
+      
     test("delete", function() {
         localStorage.clear();
-        movie = new Movie();
-        movie.set({
+        theater = new Theater();
+        movie = theater.create({
             title: "The Matrix",
             format: "dvd"
         });
-        movie.save();
-        stored = JSON.parse(localStorage.getItem("movie:"+movie.id))
+        stored = JSON.parse(localStorage.getItem("movies:"+movie.id))
         equals(stored.id, movie.toJSON().id , "The movie should be stored with the right id");
         movie.destroy();
         stored = JSON.parse(localStorage.getItem("movie:"+movie.id))
         equals(stored, null , "The movie should be null");
-        console.log(JSON.parse(localStorage.getItem("movie")));
         equals(_.isEmpty(JSON.parse(localStorage.getItem("movie"))), true,"The movie should not be in the list of movies anymore.");
-        
     });
-
+    
+    test("read", function() {
+        localStorage.clear();
+        theater = new Theater();
+        movie = theater.create({
+            title: "The Matrix",
+            format: "dvd"
+        });
+        movie = theater.create({
+            title: "La vie est belle",
+            format: "Tape"
+        });
+        
+        theater = new Theater();
+        theater.fetch();
+        theater.each(function(movie) {
+            movie.fetch();
+        })
+    });
+    
     </script>
 
 </head>

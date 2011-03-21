@@ -6,6 +6,14 @@ html {
   font-family: Georgia,"Times New Roman", Times, serif;
 }
 
+#nav {
+  margin : 0px 0px 30px 0px;
+  padding: 0px;
+}
+#nav span {
+  padding: 10px;
+}
+
 #inbox, #settings {
   float:left;
   padding:10px;
@@ -25,3 +33,7 @@ html {
 
 .read a:visited {color: #CCADE5;}
 .read a:active {color: #00E;}
+
+#settings #saved {
+  display:none;
+}

@@ -20,17 +20,33 @@
 
     <!-- Model includes -->
     <script src="../../models/message.js" type="text/javascript"></script> 
-    <script src="../../models/messages.js" type="text/javascript"></script> 
+    <script src="../../models/archive.js" type="text/javascript"></script> 
     <script src="../../models/inbox.js" type="text/javascript"></script> 
-    <script src="../../models/setting.js" type="text/javascript"></script> 
-    <script src="../../models/settings.js" type="text/javascript"></script> 
     <script src="../../models/subscription.js" type="text/javascript"></script> 
+
+    <!-- Controller includes -->
+    <script src="../../controllers/utils.js" type="text/javascript"></script> 
 
 </head>
 <body>
 
-    <div id="header"></div>
-    <div id="inbox">
+    <div id="nav">
+        <span class="inbox">Inbox</span>
+        <span class="settings">Settings</span>
+    </div>
+    
+    <script>
+    $("#nav span.inbox").click(function() {
+        window.location = chrome.extension.getURL('/views/html/inbox.html')
+        return false;
+    })
+    $("#nav span.settings").click(function() {
+        window.location = chrome.extension.getURL('/views/html/options.html')
+        return false;
+    })
+    </script>
+
+    <div id="archive">
         <input id="filters" type="radio" name="filters" value="fetch" checked="checked">All Messages</input>
         <input id="filters" type="radio" name="filters" value="unread">Unread Messages</input>
         <input id="filters" type="radio" name="filters" value="starred">Starred Messages</input>
@@ -39,46 +55,38 @@
         </div>
         <div id="content">
         </div>
-        <input type="button" id="loader" value="Load next page" />
+        <input type="button" id="loader" value="Load more" />
     </div>
 
     <!-- Templates -->
     <script type="text/template" id="message-template">
     <div class="message<%= read ? ' read' : ' unread' %> <%= starred ? ' starred' : '' %>">
-    <h3><a href="<%= main_link(links) %>" target="_blank"><%= title %></a></h3>
-    <p>From : <a href="<%= source.url %>"><%= source.title %></a> (<a class="unsubscribe" href="">Unsubscribe</a>)</p>
-    <div class="actions">
-    <a href="" class="destroy">Destroy</a>&nbsp;
-    <a href="" class="star"><%= starred ? 'Unstar' : 'Star' %> </a>&nbsp;
-    <a href="" class="unread"><%= read ? 'Mark as unread' : 'Mark as read' %> </a>
-    </div>
+        <h3><%= title %></h3>
+        <% if(source) { %>
+        <p>From : <a href="<%= source.url %>"><%= source.title %></a> (<a class="unsubscribe" href="">Unsubscribe</a>)</p>
+        <% } %>
+        <p><%= truncate(strip(summary), 240)%> &nbsp;
+        <% if(main_link(links) != "") {
+            %>
+            <a href="<%= main_link(links) %>" target="_blank">read more</a>
+            <%
+        } %>
+        </p>
+        <div class="actions">
+            <a href="" class="destroy">Destroy</a>&nbsp;
+            <a href="" class="star"><%= starred ? 'Unstar' : 'Star' %> </a>&nbsp;
+            <a href="" class="unread"><%= read ? 'Mark as unread' : 'Mark as read' %> </a>
+        </div>
     </div>
     </script>
 
     <script>
-    var jid = localStorage.getItem("currentJid");
-    var inbox = new Inbox({id: jid});
-    var password = inbox.get("settings.password");
-
-    function main_link(links) {
-        if(links["alternate"]) {
-            if(links["alternate"]["text/html"]) {
-                return links["alternate"]["text/html"][0].href;
-            }
-            else {
-                // Hum, let's see what other types we have!
-                return "";
-            }
-        }
-        else {
-            return "";
-        }
-    }
+    var archive = new Archive();
 
     var MessageView = Backbone.View.extend({
 
         events: {
-            "click h3 a"                       : "openViewer",
+            "click p a"                        : "openViewer",
             "click a.unsubscribe"              : "unsubscribeFeed",
             "click a.destroy"                  : "destroyMessage",
             "click a.star"                     : "toggleStarMessage",
@@ -89,6 +97,7 @@
             _.bindAll(this, "render", "openViewer", "unsubscribeFeed", "destroyMessage", "toggleStarMessage", "toggleReadMessage");
             this.model.bind('change', this.render);
             this.model.view = this;
+            this.model.fetch();
         },
 
         render: function() {
@@ -111,7 +120,7 @@
 
         unsubscribeFeed: function() {
             chrome.extension.sendRequest({unsubscribe: this.model.toJSON().source.url}, function(response) {
-                alert("Unsubscribed from " + this.model.toJSON().source.url);
+                alert("Unsubscribed");
             });
             return false;
         },
@@ -149,40 +158,19 @@
 
     });
 
-    var MessagesView = Backbone.View.extend({
-        tagName: "div",
-        className: "page",
-
-        initialize: function() {
-            _.bindAll(this, "render");
-            this.collection.view = this;
-        },
-
-        render: function() {
-            $("#" + this.collection.page).remove();
-            $(this.el).attr("id", this.collection.page);
-            var el = $(this.el);
-            this.collection.each(function(msg) {
-                view = new MessageView({model: msg});
-                el.append(view.render().el); 
-            })
-            return this;
-        },
-    });
-
     // Our overall InboxView is the top-level piece of UI.
-    var InboxView = Backbone.View.extend({
-        current_page_number: null,
+    var ArchiveView = Backbone.View.extend({
         events: {
             "click #loader" : "loadMore",
-            "change #filters" : "refresh",
+            "change #filters" : "filter",
         },
         
         initialize: function() {
-            _.bindAll(this, 'scrolled', 'showSinglePage', 'render', 'refresh', 'loadMore');
-            this.current_page_number = inbox.get("current_page_number");
-            this.render();
+            _.bindAll(this, 'scrolled', 'showSinglePage', 'render', 'filter', 'loadMore');
             $(document).scroll(this.scrolled) // Looks like we can't do it thru 'events' call. Is that a bug in Backbone?
+            this.collection.fetch();
+            this.currentIndex = 0;
+            this.loadMore();
         },
 
         scrolled: function() {
@@ -193,42 +181,28 @@
         },
         
         loadMore: function() {
-            // loadMore
-            if(this.current_page_number == 1) {
-                // We can't really go further!
-                current_page = this.showSinglePage(this.current_page_number);
-                this.refresh();
+            message = this.collection.at(this.currentIndex + 1);
+            if(message) {
+                this.currentIndex++
+                var view = new MessageView({model: message});
+                this.$("#content").append(view.render().el);
+                this.filter();
+                // We should also pre-emptively load more pages if the document is shorter than the page.
+                if(document.documentElement.clientHeight == $(document).height()) {
+                    this.loadMore()
+                }
+            }
+            else {
                 $("#loader").attr('disabled', true);
                 $("#loader").attr('value', "No more pages to load");
             }
-            else {
-                this.current_page_number--;
-                current_page = this.showSinglePage(this.current_page_number);
-                if(current_page.length < 5) {
-                    loadMore
-                }
-                this.refresh();
-            }
-        },
-
-        showSinglePage: function(page_number) {
-            messages = new Messages(page_number);
-            messages.fetch();
-            if(messages) {
-                view = new MessagesView({collection: messages});
-                $("#content").append(view.render().el);
-            }
-            else {
-                alert("Looks like there is no more page!")
-            }
-            return messages;
         },
 
         render: function() {
             this.loadMore();
         },
         
-        refresh: function() {
+        filter: function() {
             this.$(".message").hide();
             switch($("#filters:checked").val()) {
                 case "fetch":
@@ -244,11 +218,9 @@
                 this.$(".message").css("display", "block");
             }
         }
-        
-
     });
 
-    var inboxView = new InboxView({el: "#inbox"});
+    var archiveView = new ArchiveView({el: "#archive", collection: archive});
 
     </script>
 </body>

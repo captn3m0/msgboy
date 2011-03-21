@@ -18,20 +18,37 @@
       "http://superfeedr.com",
       "https://superfeedr.com",
       "http://www.google.com/",
-      "https://www.google.com/"
+      "https://www.google.com/",
+      "http://www.tumblr.com/",
+      "https://www.tumblr.com/"
   ],
-  "content_scripts": [ {
+  "content_scripts": [ 
+  {
     "js": [ 
       "/lib/date.format.js",
       "/lib/jquery/jquery-1.5.1.min.js",
       "/lib/jquery/jquery.event.drag-2.0.min.js",
+      "/controllers/utils.js",
       "/controllers/feed_sniffer.js",
       "/controllers/show_bookmark.js"],
     "css": [
       "/views/css/bookmark.css"],
     "matches": [ "http://*/*", "https://*/*" ],
     "run_at" : "document_end"
-  } 
+  },
+  {
+    "js": [ 
+      "/lib/date.format.js",
+      "/lib/jquery/jquery-1.5.1.min.js",
+      "/lib/jquery/jquery.event.drag-2.0.min.js",
+      "/controllers/utils.js",
+      "/controllers/site_plugins.js",
+      "/controllers/run_plugins.js"
+    ],
+    "matches": [ "http://*/*", "https://*/*" ],
+    "run_at" : "document_end",
+    "all_frames" : true
+  }
   ],
   "background_page": "/views/html/background.html"
 }

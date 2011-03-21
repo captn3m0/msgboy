@@ -1,4 +1,5 @@
 var Message = Backbone.Model.extend({
+  storeName: "messages",
 
   defaults: {
     "title":        null,
@@ -22,7 +23,6 @@ var Message = Backbone.Model.extend({
   },
   
 });
-
 
 // {
 //     "id": "tag:typepad.com,2003:post-6a0133f4720546970b0147e303aff5970b",
