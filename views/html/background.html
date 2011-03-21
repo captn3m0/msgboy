@@ -146,7 +146,6 @@
                 sendResponse({value: message});
             }
             else if(request.subscribe) { // Subscribes to more feeds
-                console.log(request.subscribe);
                 connection.superfeedr.subscribe(request.subscribe, function(result) {
                     var atom_id = "tag:superfeedr.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe);
                    var msg = {

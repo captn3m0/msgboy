@@ -80,10 +80,6 @@
             this.model.bind('change', function() {
                 $("#settings #saved").show();
                 $("#settings #saved").fadeOut("slow")
-                // Reconnect!
-                chrome.extension.sendRequest({"connect": true}, function(response) {
-                   // Nothing specific 
-                });
             });
             
             this.render();
@@ -109,11 +105,17 @@
         jid: function() {
             this.model.set({"settings.jid": this.$("#jid").val()})
             this.model.save();
+            chrome.extension.sendRequest({"connect": true}, function(response) {
+               // Nothing specific 
+            });
         },
         
         password: function() {
             this.model.set({"settings.password": this.$("#password").val()})
             this.model.save();
+            chrome.extension.sendRequest({"connect": true}, function(response) {
+               // Nothing specific 
+            });
         },
         
         plugin: function(event) {

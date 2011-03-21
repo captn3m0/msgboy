@@ -43,11 +43,9 @@ Plugins.register(new function() {
       if(content.find("h1")[0] && $(content.find("h1")[0]).text().match(/Following [0-9]* people/)) {
         links = content.find(".follower .name a")
         links.each(function(index, link) {
-          console.log($(link).attr("href"));
           chrome.extension.sendRequest({subscribe: $(link).attr("href")}, function(response) {
           });
         });
-        console.log(links.length)
         if(links.length > 0) {
           that.importSubscriptionsPage(page+1, 0);
         }
