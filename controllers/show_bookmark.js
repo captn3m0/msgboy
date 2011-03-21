@@ -155,7 +155,7 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
         $("<ul>", {
             id: "superfeedr-bookmark"
         }).appendTo("body");
-        var left = Math.min(Math.max(response.value,0), $(window).width() - $("#superfeedr-bookmark").width());
+        var left = Math.min(Math.max(response.value, 0), $(window).width() - $("#superfeedr-bookmark").width());
         $("#superfeedr-bookmark").css("left", left);
 
         $.each(actions, function(count, action) {

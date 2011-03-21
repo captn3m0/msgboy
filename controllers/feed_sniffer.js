@@ -13,30 +13,6 @@ function extractFeedLinks(callback) {
   }
 }
 
-// Let's now check well known apps to see if we can copy subscriptions.
-// Google Reader. What else?
-// if(window.location.host == "www.google.com" && window.location.pathname == '/reader/view/') {
-//   chrome.extension.sendRequest({localstorage: "sync_googlereader"}, function(sync_googlereader) {
-//     chrome.extension.sendRequest({localstorage: "sync_googlereader_last"}, function(sync_googlereader_last) {
-//        if(sync_googlereader.value == "true" && (parseInt(new Date().getTime()) - parseInt(sync_googlereader_last.value || 0)) >  1000*3600*24) {
-//           var request = new XMLHttpRequest();
-//           request.open("GET", "http://www.google.com/reader/subscriptions/export", true);
-//           request.onreadystatechange = function() {
-            // if (request.readyState == 4) {
-            //   $(request.responseXML).find("outline").each(function() {
-            //     chrome.extension.sendRequest({msg: "subscribe", feed: {"href": $(this).attr("xmlUrl"), "title": $(this).attr("title")}});
-            //   });
-            // }
-//             chrome.extension.sendRequest({localstorage: "sync_googlereader_last", set: new Date().getTime()}, function(response) {
-//               // Do nothing.
-//             })
-//           }
-//           request.send();
-//         }
-//     });
-//   });
-// }
-
 /* Shamelessly stolen from the Official RSS Chrome extension */
 function discoverFeedsFromLinks() {
   var results = document.evaluate('//*[local-name()="link"][contains(@rel, "alternate")] [contains(@type, "rss") or contains(@type, "atom") or contains(@type, "rdf")]', document, null, 0, null);
