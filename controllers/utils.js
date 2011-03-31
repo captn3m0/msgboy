@@ -71,5 +71,41 @@ function main_link(links) {
 function nameToId(name) {
     return name.toLowerCase().replace(/\s+/g, '-')
 }
-    
+
+
+Log = function(level) {
+	this.level = level;
+}
+
+Log.levels 			= {};
+Log.levels.debug 	= 100;
+Log.levels.info 	= 200;
+Log.levels.warning 	= 300;
+Log.levels.error 	= 400;
+Log.levels.fatal	= 500;
+
+Log.prototype = {
+	print: function(level, message) {
+		if (this.level <= level) {
+			console.log(message);
+		}
+	},
+	debug: function(message) {
+		this.print(Log.levels.debug, message)
+	},
+	info: function(message) {
+		this.print(Log.levels.info, message)
+	},
+	warning: function(message) {
+		this.print(Log.levels.warning, message)
+	},
+	error: function(message) {
+		this.print(Log.levels.error, message)
+	},
+	fatal: function(message) {
+		this.print(Log.levels.fatal, message)
+	}
+}
+
+log = new Log(Log.levels.error)    
     

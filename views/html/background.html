@@ -67,7 +67,7 @@
         
         // Handles XMPP Connections
         function onConnect(status) {
-            var msg = '';
+            var msg = currentConnectionStatus['msg'];
             if (status == Strophe.Status.CONNECTING) {
                 msg = 'Superfeedr is connecting.';
             } else if (status == Strophe.Status.CONNFAIL) {

@@ -20,7 +20,9 @@
       "http://www.google.com/",
       "https://www.google.com/",
       "http://www.tumblr.com/",
-      "https://www.tumblr.com/"
+      "https://www.tumblr.com/",
+      "http://github.com/",
+      "https://github.com/"
   ],
   "content_scripts": [ 
   {
