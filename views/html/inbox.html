@@ -190,7 +190,7 @@
                 	this.filter();
 				}
 				catch(err) {
-					log.error("Couldn't display entry : " + JSON.stringify(message.toJSON()));
+					logger.error("Couldn't display entry : " + JSON.stringify(message.toJSON()));
 				}
 
                 // We should also pre-emptively load more pages if the document is shorter than the page.

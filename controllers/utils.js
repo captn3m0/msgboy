@@ -107,5 +107,5 @@ Log.prototype = {
 	}
 }
 
-log = new Log(Log.levels.error)    
+logger = new Log(Log.levels.error)    
     

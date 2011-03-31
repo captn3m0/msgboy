@@ -147,6 +147,8 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
           name: "",
           id: "connectionStatus",
           callback: function() {
+	          chrome.extension.sendRequest({connect: true}, function(response) {
+              });
             return false;
           }
         }
