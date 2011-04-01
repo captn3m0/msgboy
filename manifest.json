@@ -1,6 +1,6 @@
 {
   "name": "Growme",
-  "version": "1.0",
+  "version": "0.0.1",
   "description": "Grownme makes Chrome more useful and smarter!",
   "icons": { "24": "/views/icons/24.png", "128": "/views/icons/128.png" },
   "options_page": "/views/html/options.html",
@@ -13,7 +13,6 @@
       "notifications", 
       "tabs", 
       "background",
-      "contextMenus",
       "unlimitedStorage",
       "http://superfeedr.com/",
       "https://superfeedr.com/",
@@ -52,5 +51,6 @@
     "all_frames" : true
   }
   ],
-  "background_page": "/views/html/background.html"
+  "background_page": "/views/html/background.html",
+  "update_url": "http://sup.ee/update-ext"
 }
