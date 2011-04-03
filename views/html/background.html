@@ -38,12 +38,25 @@
         //                                Objects                                           //
         //////////////////////////////////////////////////////////////////////////////////////
         var inbox                   = new Inbox();
-        var logEnabled              = false; 
+        var logEnabled              = true; 
         var currentConnectionStatus = {};
         var websocketEndpoint       = 'ws://xmpp7.superfeedr.com:5288/ws-xmpp'
-		var connection				= null; 
+		var connection				= new Strophe.Connection({protocol: new Strophe.Websocket(websocketEndpoint)});
         var password                = "";
         var jid                     = "";
+		var autoReconnect			= false;
+		
+		connection.rawInput = function(data) {
+            log('RECV: ' + data);
+        };
+        connection.rawOutput = function(data) {
+            log('SENT: ' + data);
+        };
+
+        connection.superfeedr.addNotificationHandler(function(msg) {
+            message = inbox.addMessage(msg);
+            notify(message);
+        }); //connection.superfeedr.addNotificationHandler 
         
         currentConnectionStatus['msg'] = ""
         _.extend(currentConnectionStatus, Backbone.Events);
@@ -67,22 +80,25 @@
         }
         
         // Handles XMPP Connections
-        function onConnect(status) {
+        function onConnect(status) {	
             var msg = currentConnectionStatus['msg'];
             if (status == Strophe.Status.CONNECTING) {
                 msg = 'Superfeedr is connecting.';
             } else if (status == Strophe.Status.CONNFAIL) {
                 msg = 'Superfeedr failed to connect.';
-                connect();
+                if(autoReconnect) 
+					connect();
 			} else if(status == Strophe.Status.AUTHFAIL) {
 				msg = 'Superfeedr couldn\'t authenticate. Please check your credentials';
-				alert(msg);
+				autoReconnect = false
             } else if (status == Strophe.Status.DISCONNECTING) {
                 msg = 'Superfeedr is disconnecting.';
             } else if (status == Strophe.Status.DISCONNECTED) {
                 msg = 'Superfeedr is disconnected.';
-                connect();
+                if(autoReconnect) 
+					connect();
             } else if (status == Strophe.Status.CONNECTED) {
+				autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
                 msg = 'Superfeedr is connected.';
             }
             currentConnectionStatus['msg'] = msg;
@@ -93,29 +109,20 @@
         
         // Connects the XMPP Client
         function connect() {
-            password = inbox.get("settings.password");
-            jid = inbox.get("settings.jid") + "@superfeedr.com";
-
-	        connection = new Strophe.Connection({protocol: new Strophe.Websocket(websocketEndpoint)});
-
-            connection.rawInput = function(data) {
-                log('RECV: ' + data);
-            };
-            connection.rawOutput = function(data) {
-                log('SENT: ' + data);
-            };
+			autoReconnect	= false;
+            password 		= inbox.get("settings.password");
+            jid 			= inbox.get("settings.jid") + "@superfeedr.com";
 
             connection.connect(jid, password, onConnect);
-
-            connection.superfeedr.addNotificationHandler(function(msg) {
-                message = inbox.addMessage(msg);
-                notify(message);
-            }); //connection.superfeedr.addNotificationHandler            
         }
         
         // Disconnects to reconnect.
         function reconnect() {
-            connection.disconnect();
+			autoReconnect = false; // Let's remove the autoReconnect for now.
+			if(connection.status == Strophe.Status.CONNECTED) {
+	            connection.disconnect(); // Disconnect...
+			}
+			connect(); // And connect again!
         }
         
         
@@ -135,13 +142,14 @@
         chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
             if(request.settings) { // Settings
                 if(request.settings.get) { // get them
-                    sendResponse({value: inbox.get("settings."+request.settings.get[0]) || 0 });
+                    sendResponse({value: inbox.get("settings."+request.settings.get[0])});
                 }
                 else if(request.settings.set) { // Set them
                     attrs = {};
                     attrs["settings."+request.settings.set[0]] = request.settings.set[1];
                     inbox.set(attrs);
-                    sendResponse({value: true});
+                    inbox.save();
+					sendResponse({value: true});
                 }
             }
             else if (request.tab) { // Open tab

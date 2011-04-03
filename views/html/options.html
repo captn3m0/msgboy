@@ -31,23 +31,15 @@
         <span class="inbox">Inbox</span>
         <span class="settings">Settings</span>
     </div>
-    <script>
-    $("#nav span.inbox").click(function() {
-        window.location = chrome.extension.getURL('/views/html/inbox.html')
-        return false;
-    })
-    $("#nav span.settings").click(function() {
-        window.location = chrome.extension.getURL('/views/html/options.html')
-        return false;
-    })
-    </script>
     <div id="settings">
         <h2>Account</h2>
         Login : <input type="text" id="jid"><br />
         Password : <input type="Password" id="password"><br />
-        <h2>Plugins</h2>
-		<p>Make sure you are logged in these services before you check the import box.</p>
-        <div id="plugins">
+		<input id="reconnect" type="button" value="Connect!" />
+		<p id="connectionStatus"></p>
+        <div id="plugins" style="display:none">
+	        <h2>Plugins</h2>
+			<p>Make sure you are logged in these services before you check the import box.</p>
         </div>
         <span id="saved">Saved</span>
     </div>
@@ -60,8 +52,26 @@
     
     <script>
 
-    
-    var inbox = new Inbox();
+    $("#nav span.inbox").click(function() {
+        window.location = chrome.extension.getURL('/views/html/inbox.html')
+        return false;
+    })
+    $("#nav span.settings").click(function() {
+        window.location = chrome.extension.getURL('/views/html/options.html')
+        return false;
+    })
+
+    chrome.extension.connect({name: "connection"}).onMessage.addListener(function(msg) {
+		$('#connectionStatus').text(msg);
+		if(msg == "Superfeedr is connected.") {
+			// Good, we can show the plugins.
+			$("#plugins").show();
+		}
+		else {
+			// Bad, we can't show the plugins... but let's allow the user to reconnect!
+			$("#plugins").hide();
+		}
+    });
     
     // Our overall InboxView is the top-level piece of UI.
     var InboxView = Backbone.View.extend({
@@ -69,78 +79,94 @@
             "change #settings #jid" : "jid",
             "change #settings #password" : "password",
             "change #plugins span.plugin input" : "plugin",
+			"click #settings #reconnect" : "reconnect"
         },
         
         initialize: function() {
             _.bindAll(this, 'render');
-            this.model.bind('change', function() {
-                $("#settings #saved").show();
-                $("#settings #saved").fadeOut("slow")
-            });
+            // this.model.bind('change', function() {
+            //     $("#settings #saved").show();
+            //     $("#settings #saved").fadeOut("slow")
+            // });
             
             this.render();
         },
    
         render: function() {
-            if(this.model.id) {
-                for( var i in this.model.attributes) {
-                    if(this.model.attributes[i] == true || this.model.attributes[i] == false) {
-                        $("#"+i.split(".").join(" #")).attr('checked', this.model.attributes[i]);
-                    }
-                    else {
-                        $("#"+i.split(".").join(" #")).val(this.model.attributes[i]);
-                    }
-                }
-            } 
-            else {
-                // This must be an empty inbox.
-            }
+			chrome.extension.sendRequest({"settings": {"get": ["jid"]}}, function(response) {
+				$("#jid").val(response.value);
+		    });
+			chrome.extension.sendRequest({"settings": {"get": ["password"]}}, function(response) {
+				$("#password").val(response.value);
+		    });
+
         },
         
         // Fine. What now? We saved the login. We need to save the jid too. As it's used to retrieve the inbox object too!
         jid: function() {
-            this.model.set({"settings.jid": this.$("#jid").val()})
-            this.model.save();
-            chrome.extension.sendRequest({"connect": true}, function(response) {
-               // Nothing specific 
-            });
+		    chrome.extension.sendRequest({"settings": {"set" : ["jid",this.$("#jid").val()]}}, function(response) {
+		    });
         },
         
         password: function() {
-            this.model.set({"settings.password": this.$("#password").val()})
-            this.model.save();
-            chrome.extension.sendRequest({"connect": true}, function(response) {
-               // Nothing specific 
-            });
+		    chrome.extension.sendRequest({"settings": {"set" : ["password",this.$("#password").val()]}}, function(response) {
+		    });
         },
         
         plugin: function(event) {
             element = $(event.target);
-            setting = "settings.plugins." + nameToId(element.attr("name"));
-            settings = {}
-            settings[setting] = element.is(':checked')
-            this.model.set(settings)
-            this.model.save();
-        }
+            setting = "plugins." + nameToId(element.attr("name"));
+            val = element.is(':checked')
+
+		    chrome.extension.sendRequest({"settings": {"set" : ["setting", val]}}, function(response) {
+		    });
+        },
+
+		reconnect: function() {
+			chrome.extension.sendRequest({connect: true}, function(response) {
+			});
+		}
    });
    
     var PluginView = Backbone.View.extend({
         initialize: function() {
             _.each(Plugins.all, function(plugin) {
                 element = $(_.template($('#plugin-template').html(), plugin))
+				
+				chrome.extension.sendRequest({"settings": {"get": [nameToId(plugin.name)]}}, function(response) {
+					console.log()
+			    });
+
+
                 element.change(function() {
                     if($(this).find("input").is(':checked')) {
                         // When clicked. We should just import the feeds in the back!
                         plugin.importSubscriptions();
                     }
                 })
+
+	            // 	
+	            // if(this.model.id) {
+	            //     for( var i in this.model.attributes) {
+	            //         if(this.model.attributes[i] == true || this.model.attributes[i] == false) {
+	            //             $("#"+i.split(".").join(" #")).attr('checked', this.model.attributes[i]);
+	            //         }
+	            //         else {
+	            //             $("#"+i.split(".").join(" #")).val(this.model.attributes[i]);
+	            //         }
+	            //     }
+	            // } 
+	            // else {
+	            //     // This must be an empty inbox.
+	            // }
+
                 $("#plugins").append(element);
             });
         }
     })
     
     var pluginView = new PluginView({el: "#plugins"});
-    var inboxView = new InboxView({el: "#settings", model: inbox});
+    var inboxView = new InboxView({el: "#settings"});
     
 
     </script>
