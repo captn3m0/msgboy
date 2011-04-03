@@ -43,6 +43,7 @@
     <script>
     
     $(document).ready(function() {
+		window.focus();
         var message = new Message({id: getParameterByName("message")})
         message.fetch();
         var MessageView = Backbone.View.extend({
