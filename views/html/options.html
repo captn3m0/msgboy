@@ -78,17 +78,11 @@
         events: {
             "change #settings #jid" : "jid",
             "change #settings #password" : "password",
-            "change #plugins span.plugin input" : "plugin",
 			"click #settings #reconnect" : "reconnect"
         },
         
         initialize: function() {
             _.bindAll(this, 'render');
-            // this.model.bind('change', function() {
-            //     $("#settings #saved").show();
-            //     $("#settings #saved").fadeOut("slow")
-            // });
-            
             this.render();
         },
    
@@ -113,15 +107,6 @@
 		    });
         },
         
-        plugin: function(event) {
-            element = $(event.target);
-            setting = "plugins." + nameToId(element.attr("name"));
-            val = element.is(':checked')
-
-		    chrome.extension.sendRequest({"settings": {"set" : ["setting", val]}}, function(response) {
-		    });
-        },
-
 		reconnect: function() {
 			chrome.extension.sendRequest({connect: true}, function(response) {
 			});
@@ -133,33 +118,23 @@
             _.each(Plugins.all, function(plugin) {
                 element = $(_.template($('#plugin-template').html(), plugin))
 				
-				chrome.extension.sendRequest({"settings": {"get": [nameToId(plugin.name)]}}, function(response) {
-					console.log()
+				chrome.extension.sendRequest({"settings": {"get": ["plugins." + nameToId(plugin.name)]}}, function(response) {
+					$("#"+nameToId(plugin.name)).attr('checked', response.value);
 			    });
 
 
                 element.change(function() {
                     if($(this).find("input").is(':checked')) {
                         // When clicked. We should just import the feeds in the back!
+						chrome.extension.sendRequest({"settings": {"set" : ["plugins." + nameToId(plugin.name), true]}}, function(response) {
+					    });
                         plugin.importSubscriptions();
+					}
+					else {
+						chrome.extension.sendRequest({"settings": {"set" : ["plugins." + nameToId(plugin.name), false]}}, function(response) {
+					    });
                     }
                 })
-
-	            // 	
-	            // if(this.model.id) {
-	            //     for( var i in this.model.attributes) {
-	            //         if(this.model.attributes[i] == true || this.model.attributes[i] == false) {
-	            //             $("#"+i.split(".").join(" #")).attr('checked', this.model.attributes[i]);
-	            //         }
-	            //         else {
-	            //             $("#"+i.split(".").join(" #")).val(this.model.attributes[i]);
-	            //         }
-	            //     }
-	            // } 
-	            // else {
-	            //     // This must be an empty inbox.
-	            // }
-
                 $("#plugins").append(element);
             });
         }
