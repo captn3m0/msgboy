@@ -14,6 +14,7 @@
     <script src="../../lib/strophejs/base64.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/md5.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/core.js" type="text/javascript"></script> 
+    <script src="../../lib/strophejs/websocket.js" type="text/javascript"></script> 
     <script src="../../lib/date.format.js" type="text/javascript"></script> 
     
     <!-- Model includes -->
@@ -39,8 +40,8 @@
         var inbox                   = new Inbox();
         var logEnabled              = false; 
         var currentConnectionStatus = {};
-        var boshService             = 'http://superfeedr.com/http-bind/'
-        var connection              = new Strophe.Connection(boshService);
+        var websocketEndpoint       = 'ws://xmpp7.superfeedr.com:5288/ws-xmpp'
+		var connection				= null; 
         var password                = "";
         var jid                     = "";
         
@@ -73,6 +74,9 @@
             } else if (status == Strophe.Status.CONNFAIL) {
                 msg = 'Superfeedr failed to connect.';
                 connect();
+			} else if(status == Strophe.Status.AUTHFAIL) {
+				msg = 'Superfeedr couldn\'t authenticate. Please check your credentials';
+				alert(msg);
             } else if (status == Strophe.Status.DISCONNECTING) {
                 msg = 'Superfeedr is disconnecting.';
             } else if (status == Strophe.Status.DISCONNECTED) {
@@ -92,12 +96,15 @@
             password = inbox.get("settings.password");
             jid = inbox.get("settings.jid") + "@superfeedr.com";
 
+	        connection = new Strophe.Connection({protocol: new Strophe.Websocket(websocketEndpoint)});
+
             connection.rawInput = function(data) {
                 log('RECV: ' + data);
             };
             connection.rawOutput = function(data) {
                 log('SENT: ' + data);
             };
+
             connection.connect(jid, password, onConnect);
 
             connection.superfeedr.addNotificationHandler(function(msg) {
@@ -108,7 +115,6 @@
         
         // Disconnects to reconnect.
         function reconnect() {
-	console.log("reconnect")
             connection.disconnect();
         }
         
