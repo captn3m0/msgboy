@@ -100,7 +100,7 @@
             } else if (status == Strophe.Status.CONNECTED) {
 				autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
                 msg = 'Superfeedr is connected.';
-				connection.send($pres());// Send presence!
+				connection.send($pres());// Send presence! connection.send($pres({xmlns: Strophe.NS.CLIENT}).c("priority").t("10000"));// Send presence!
             }
             currentConnectionStatus['msg'] = msg;
             currentConnectionStatus.trigger("change", msg);
@@ -112,7 +112,7 @@
         function connect() {
 			autoReconnect	= false;
             password 		= inbox.get("settings.password");
-            jid 			= inbox.get("settings.jid") + "@superfeedr.com";
+            jid 			= inbox.get("settings.jid") + "@superfeedr.com/growme";
 
             connection.connect(jid, password, onConnect);
         }
