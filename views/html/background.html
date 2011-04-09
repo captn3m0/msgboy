@@ -40,7 +40,7 @@
         var inbox                   = new Inbox();
         var logEnabled              = true; 
         var currentConnectionStatus = {};
-        var websocketEndpoint       = 'ws://xmpp7.superfeedr.com:5288/ws-xmpp'
+        var websocketEndpoint       = 'ws://msgboy.com:5288/ws-xmpp'
 		var connection				= new Strophe.Connection({protocol: new Strophe.Websocket(websocketEndpoint)});
         var password                = "";
         var jid                     = "";
@@ -112,7 +112,7 @@
         function connect() {
 			autoReconnect	= false;
             password 		= inbox.get("settings.password");
-            jid 			= inbox.get("settings.jid") + "@superfeedr.com/growme";
+            jid 			= inbox.get("settings.jid") + "@msgboy.com/growme";
 
             connection.connect(jid, password, onConnect);
         }
@@ -188,6 +188,9 @@
                 reconnect();
                 sendResponse({value: true});
             }
+			else if(request.reset) {
+				localStorage.clear();
+			}
         });
         
         

@@ -42,6 +42,7 @@
 			<p>Make sure you are logged in these services before you check the import box.</p>
         </div>
         <span id="saved">Saved</span>
+		<input id="reset" type="button" value="Reset" />
     </div>
     
     <script type="text/template" id="plugin-template">
@@ -78,7 +79,8 @@
         events: {
             "change #settings #jid" : "jid",
             "change #settings #password" : "password",
-			"click #settings #reconnect" : "reconnect"
+			"click #settings #reconnect" : "reconnect",
+			"click #settings #reset" : "reset"
         },
         
         initialize: function() {
@@ -110,6 +112,13 @@
 		reconnect: function() {
 			chrome.extension.sendRequest({connect: true}, function(response) {
 			});
+		},
+		
+		reset: function() {
+			if(confirm("Are you sure? There is no way back and all your data will be deleted!")) {
+				chrome.extension.sendRequest({reset: true}, function(response) {
+				});
+			}
 		}
    });
    

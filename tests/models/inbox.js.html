@@ -22,7 +22,7 @@
         test("Testing when adding a new message", function() {
             localStorage.clear();
             var message = new Message({title: "Hello world", id: "hello-world-2010-03-07"})
-            var inbox = new Inbox({id: "tester@superfeedr.com"});
+            var inbox = new Inbox({id: "tester@msgboy.com"});
             inbox.addMessage(message)
             equals(inbox.current_page_number, 1, "We expect current page to be 1" );
             for(i=0; i<19; i++) {
