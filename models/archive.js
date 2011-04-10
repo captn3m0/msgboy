@@ -6,7 +6,7 @@ var Archive = Backbone.Collection.extend({
 		_.each(this, function(item, index) {
 			model = this.at(index);
 			if(model) {
-				model.set({"read": false});
+				model.set({"read": true});
 				model.save();
 			}
 		}, this)
