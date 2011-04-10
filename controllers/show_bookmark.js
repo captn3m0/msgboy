@@ -1,4 +1,18 @@
 // Show the bookmark
+
+function listenToConnectionstatus() {
+	console.log("Connected to background script.")
+	port = chrome.extension.connect({name: "connection"})
+	port.onMessage.addListener(function(msg) {
+		$('#connectionStatus').text(msg);
+    });
+	port.onDisconnect.addListener(function() {
+		console.log("Disconnected from background script.");
+		listenToConnectionstatus(); // We reconnect.
+	});
+}
+
+
 chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, function(response) {
   var actions = [ {
             name: "subscribe", 
@@ -172,9 +186,7 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
             )
         });
 
-        chrome.extension.connect({name: "connection"}).onMessage.addListener(function(msg) {
-          $('#connectionStatus').text(msg);
-        });
+		listenToConnectionstatus();
 
 
   // Called when the bookmark has been moved.

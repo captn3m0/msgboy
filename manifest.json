@@ -1,6 +1,6 @@
 {
   "name": "Growme",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Grownme makes Chrome more useful and smarter!",
   "icons": { "24": "/views/icons/24.png", "128": "/views/icons/128.png" },
   "options_page": "/views/html/options.html",
