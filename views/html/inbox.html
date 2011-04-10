@@ -47,9 +47,13 @@
         <input id="filters" type="radio" name="filters" value="fetch" checked="checked">All Messages</input>
         <input id="filters" type="radio" name="filters" value="unread">Unread Messages</input>
         <input id="filters" type="radio" name="filters" value="starred">Starred Messages</input>
+
         <div class="title">
             <h1>Inbox</h1>
         </div>
+        <input type="button" id="mark_all_as_read" value="Mark all as Read" />
+        <input type="button" id="delete_all" value="Delete all" />
+
         <div id="content">
         </div>
         <input type="button" id="loader" value="Load more" />
@@ -158,6 +162,8 @@
     var ArchiveView = Backbone.View.extend({
         events: {
             "click #loader" : "loadMore",
+			"click #delete_all" : "delete_all",
+			"click #mark_all_as_read" : "mark_all_as_read",
             "change #filters" : "filter",
         },
         
@@ -175,6 +181,14 @@
                 this.loadMore();
             }
         },
+
+		mark_all_as_read: function() {
+			this.collection.mark_all_as_read();
+		},
+		
+		delete_all: function() {
+			this.collection.delete_all();
+		},
         
         loadMore: function() {
             message = this.collection.at(this.currentIndex);
