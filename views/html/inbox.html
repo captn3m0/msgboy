@@ -102,8 +102,13 @@
         },
 
         render: function() {
-            $(this.el).html(_.template($('#message-template').html(), this.model.toJSON()));
-            return this;
+			try {
+				$(this.el).html(_.template($('#message-template').html(), this.model.toJSON()));
+			}
+			catch(err) {
+				logger.error("Couldn't display entry : " + JSON.stringify(message.toJSON()));
+			}
+			return this;
         },
 
         openViewer: function() {
@@ -195,14 +200,8 @@
             if(message) {
                 this.currentIndex++
                 var view = new MessageView({model: message});
-				try {
-                	this.$("#content").append(view.render().el);
-                	this.filter();
-				}
-				catch(err) {
-					logger.error("Couldn't display entry : " + JSON.stringify(message.toJSON()));
-				}
-
+                this.$("#content").append(view.render().el);
+                this.filter();
                 // We should also pre-emptively load more pages if the document is shorter than the page.
                 if(document.documentElement.clientHeight == $(document).height()) {
                     this.loadMore()
