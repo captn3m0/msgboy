@@ -44,7 +44,8 @@
 		var connection				= new Strophe.Connection({protocol: new Strophe.Websocket(websocketEndpoint)});
         var password                = "";
         var jid                     = "";
-		var autoReconnect			= false;
+		var autoReconnect			= true;
+		var ports					= [];
 		
 		connection.rawInput = function(data) {
             log('RECV: ' + data);
@@ -53,6 +54,10 @@
             log('SENT: ' + data);
         };
 
+		Strophe.log = function(level, msg) {
+			log(level + " :: " + msg);
+		}
+
         connection.superfeedr.addNotificationHandler(function(msg) {
             message = inbox.addMessage(msg);
             notify(message);
@@ -60,6 +65,16 @@
         
         currentConnectionStatus['msg'] = ""
         _.extend(currentConnectionStatus, Backbone.Events);
+		currentConnectionStatus.bind("change", function(msg) {
+			$.each(ports, function(index, port) {
+				try {
+			        port.postMessage(msg);
+				}
+				catch(error) {
+					log("Could not post message to port : " + error)
+				}
+			})
+		});
         
         //////////////////////////////////////////////////////////////////////////////////////
         //                                  Functions                                       //
@@ -86,17 +101,19 @@
                 msg = 'Superfeedr is connecting.';
             } else if (status == Strophe.Status.CONNFAIL) {
                 msg = 'Superfeedr failed to connect.';
-                if(autoReconnect) 
-					connect();
+                if(autoReconnect) {
+					setTimeout(connect,5000);
+				}
 			} else if(status == Strophe.Status.AUTHFAIL) {
 				msg = 'Superfeedr couldn\'t authenticate. Please check your credentials';
 				autoReconnect = false
             } else if (status == Strophe.Status.DISCONNECTING) {
                 msg = 'Superfeedr is disconnecting.';
             } else if (status == Strophe.Status.DISCONNECTED) {
-                msg = 'Superfeedr is disconnected.';
-                if(autoReconnect) 
-					connect();
+                msg = 'Superfeedr is disconnected. ';
+                if(autoReconnect) {
+					setTimeout(connect,5000);
+				}
             } else if (status == Strophe.Status.CONNECTED) {
 				autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
                 msg = 'Superfeedr is connected.';
@@ -110,7 +127,7 @@
         
         // Connects the XMPP Client
         function connect() {
-			autoReconnect	= false;
+			autoReconnect	= true;
             password 		= inbox.get("settings.password");
             jid 			= inbox.get("settings.jid") + "@msgboy.com/growme";
 
@@ -119,11 +136,10 @@
         
         // Disconnects to reconnect.
         function reconnect() {
-			autoReconnect = false; // Let's remove the autoReconnect for now.
+			autoReconnect = true; // Let's make sure we have the autoReconnect.
 			if(connection.status == Strophe.Status.CONNECTED) {
 	            connection.disconnect(); // Disconnect...
 			}
-			connect(); // And connect again!
         }
         
         
@@ -133,10 +149,16 @@
         
         // Adds a listener on the connection status to be used in the bookmark
         chrome.extension.onConnect.addListener(function(port) {
-            port.postMessage(currentConnectionStatus.msg);
-            currentConnectionStatus.bind("change", function(msg) {
-                port.postMessage(msg);
-            });
+			console.log("New port connected : " + port.tab.id);
+			port.onDisconnect.addListener(function() {
+				console.log("This port was disconnected : " + port.tab.id)
+				idx = ports.indexOf(port);
+			    if(idx!=-1) {
+			      ports.splice(idx, 1);
+			    }
+			});
+			port.postMessage(currentConnectionStatus.msg);
+			ports.push(port);
         });
         
         // Handler messages
