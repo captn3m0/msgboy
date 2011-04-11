@@ -1,6 +1,6 @@
 body {
   font-family: helvetica;
-  line-height:16px;
+  line-height:14px;
 }
 
 h1 {
@@ -11,10 +11,10 @@ h1 {
 
 p {
   margin:0px;
-  font-size:12px;
+  font-size:11px;
 }
 
 p span {
-  font-size:13px;
+  font-size:11px;
   color: #999;
 }

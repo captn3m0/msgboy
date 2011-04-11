@@ -26,7 +26,7 @@
     </div>
     <!-- Templates -->
     <script type="text/template" id="notification-template">
-		<h1><%= truncate(title , 42)%></h1>
+		<h1><%= truncate(title, 36)%></h1>
 		<p>
 		<% if(source) {
 		%>
@@ -34,7 +34,7 @@
 		<%
 		} 
 		%>
-		<%= truncate(strip(summary), 96)%> </p>
+		<%= truncate(strip(summary), 128)%> </p>
     </script>
     
     <script>

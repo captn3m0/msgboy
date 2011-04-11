@@ -237,6 +237,17 @@
 
     var archiveView = new ArchiveView({el: "#archive", collection: archive});
 
+	// Listens to new messages coming from the background
+	chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+		if(request.notify) {
+			message = new Message({'id': request.notify.message})
+	        message.fetch();
+			var view = new MessageView({model: message});
+            $("#content").prepend(view.render().el);
+            archiveView.filter();
+		}
+	});
+    
     </script>
 </body>
 </html>
