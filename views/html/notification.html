@@ -51,6 +51,8 @@
         },
         
         openViewer: function() {
+            this.model.set({"read": true});
+            this.model.save();
             chrome.tabs.create({url:this.model.toJSON().links.alternate["text/html"][0].href, selected: false});
 			chrome.extension.sendRequest({close: true}, function(response) {
                 window.close();
