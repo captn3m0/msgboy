@@ -47,6 +47,7 @@
         var jid                     = "";
 		var autoReconnect			= true;
 		var ports					= [];
+		var currentNotification		= null;
 		
 		connection.rawInput = function(data) {
             log('RECV: ' + data);
@@ -83,9 +84,19 @@
         
         // Creates the HTML5 notification
         function notify(id) {
-            url = chrome.extension.getURL('/views/html/notification.html?message='+id);
-            webkitNotification = window.webkitNotifications.createHTMLNotification(url);
-            webkitNotification.show();
+			if(!currentNotification) {
+	            url = chrome.extension.getURL('/views/html/notification.html');
+	            webkitNotification = window.webkitNotifications.createHTMLNotification(url);
+				webkitNotification.onclose = function() {
+					currentNotification = null;
+				};
+	            webkitNotification.show();
+				currentNotification = webkitNotification;
+			}
+			chrome.extension.sendRequest({"notify": {"message" : id}}, function(response) {
+				// Let's notify the people who may care about this!
+			});
+			return currentNotification;
         }
         
         // Logs messages to the console
@@ -150,9 +161,9 @@
         
         // Adds a listener on the connection status to be used in the bookmark
         chrome.extension.onConnect.addListener(function(port) {
-			console.log("New port connected : " + port.tab.id);
+			log("New port connected : " + port.tab.id);
 			port.onDisconnect.addListener(function() {
-				console.log("This port was disconnected : " + port.tab.id)
+				log("This port was disconnected : " + port.tab.id)
 				idx = ports.indexOf(port);
 			    if(idx!=-1) {
 			      ports.splice(idx, 1);
@@ -213,6 +224,13 @@
             }
 			else if(request.reset) {
 				localStorage.clear();
+			}
+			else if(request.close) {
+				currentNotification = null;
+				sendResponse({value: true});
+			}
+			else {
+				log("Could not handle message : " + request)
 			}
         });
         

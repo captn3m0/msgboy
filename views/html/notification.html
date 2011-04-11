@@ -38,39 +38,53 @@
     </script>
     
     <script>
+	/* Creates the view and render */
+    var MessageView = Backbone.View.extend({
+        initialize: function() {
+            _.bindAll(this, "render", "openViewer");
+            $('body').click(this.openViewer);
+        },
+        
+        render: function() {
+            $(this.el).html(_.template($('#notification-template').html(), this.model.toJSON()));
+            return this;
+        },
+        
+        openViewer: function() {
+            chrome.tabs.create({url:this.model.toJSON().links.alternate["text/html"][0].href, selected: false});
+			chrome.extension.sendRequest({close: true}, function(response) {
+                window.close();
+          	});
+        }
+    });
+
+    var currentView = new MessageView({el: "#message"});
+
+
+	function showMessageForId(messageId) {
+		message = new Message({'id': messageId})
+        message.fetch();
+		currentView.model = message;
+        currentView.render();
+	}
+
     $(document).ready(function() {
-		
 		window.focus(); // Put this alert in front!
 
 		/* Makes sure we close this alert */
-        setTimeout(function() {
-            window.close();
-        }, 5000);
+		/* Suspended for now. We should update live notifications, rather than delete them to leave room for others. */
+        // setTimeout(function() {
+        //     window.close();
+        // }, 5000);
 
-		/* Fetches the actual message */
-        var message = new Message({id: getParameterByName("message")})
-        message.fetch();
+		
 
-		/* Creates the view and render */
-        var MessageView = Backbone.View.extend({
-            initialize: function() {
-                _.bindAll(this, "render", "openViewer");
-                $('body').click(this.openViewer);
-            },
-            
-            render: function() {
-                $(this.el).html(_.template($('#notification-template').html(), this.model.toJSON()));
-                return this;
-            },
-            
-            openViewer: function() {
-                chrome.tabs.create({url:this.model.toJSON().links.alternate["text/html"][0].href, selected: false});
-                window.close();
-            }
-        });
-        view = new MessageView({model: message, el: "#message"});
-        view.render();
-
+        chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+			if(request.notify) {
+				showMessageForId(request.notify.message);
+				window.focus(); // Put this alert in front!
+			}
+		});
     });
     </script>
 </body>
