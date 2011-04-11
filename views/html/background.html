@@ -61,7 +61,7 @@
 
         connection.superfeedr.addNotificationHandler(function(msg) {
             message = inbox.addMessage(msg);
-            notify(message);
+            notify(message.toJSON().id);
         }); //connection.superfeedr.addNotificationHandler 
         
         currentConnectionStatus['msg'] = ""
@@ -82,8 +82,8 @@
         //////////////////////////////////////////////////////////////////////////////////////
         
         // Creates the HTML5 notification
-        function notify(message) {
-            url = chrome.extension.getURL('/views/html/notification.html?message='+message.toJSON().id);
+        function notify(id) {
+            url = chrome.extension.getURL('/views/html/notification.html?message='+id);
             webkitNotification = window.webkitNotifications.createHTMLNotification(url);
             webkitNotification.show();
         }
@@ -181,7 +181,7 @@
             }
             else if (request.add) { // Add a new message to the inbox.
                 message = inbox.addMessage(request.add);
-                notify(message);
+                notify(message.toJSON().id);
                 sendResponse({value: message});
             }
             else if(request.subscribe) { // Subscribes to more feeds
@@ -198,7 +198,7 @@
                       source: null
                     };
                     message = inbox.addMessage(msg);
-                    notify(message);
+                    notify(message.toJSON().id);
                     sendResponse({value: result});
                 })
             }
