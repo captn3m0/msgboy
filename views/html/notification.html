@@ -69,16 +69,6 @@
 	}
 
     $(document).ready(function() {
-		window.focus(); // Put this alert in front!
-
-		/* Makes sure we close this alert */
-		/* Suspended for now. We should update live notifications, rather than delete them to leave room for others. */
-        // setTimeout(function() {
-        //     window.close();
-        // }, 5000);
-
-		
-
         chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 			if(request.notify) {
 				showMessageForId(request.notify.message);
