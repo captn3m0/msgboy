@@ -37,3 +37,9 @@ html {
 #settings #saved {
   display:none;
 }
+
+#loader {
+	margin-right: auto;
+	margin-left: auto;
+	display:block;
+}
