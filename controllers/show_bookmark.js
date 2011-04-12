@@ -25,11 +25,11 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
                 switch (links.length) {
                   case 0 : 
                     $("<div>", {
-                      id: "superfeedr-bookmark-dialog"
+                      id: "msgboy-bookmark-dialog"
                     }).appendTo("body");
                     $("<h4>", {
                       text: "Sorry, there is nothing to subscribe to on this page, but you can type a feed url below :"
-                      }).appendTo($("#superfeedr-bookmark-dialog"));
+                      }).appendTo($("#msgboy-bookmark-dialog"));
                     var maskHeight = $(document).height();
                     var maskWidth = $(window).width();
 
@@ -38,26 +38,26 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
                     var winW = $(window).width();
 
                     //Set the popup window to center
-                    $("#superfeedr-bookmark-dialog").height(winH);
-                    $("#superfeedr-bookmark-dialog").css('top', winH/2-$("#superfeedr-bookmark-dialog").height()/4);
-                    $("#superfeedr-bookmark-dialog").css('left', winW/2-$("#superfeedr-bookmark-dialog").width()/2);
-                    $("<form>", {id: "superfeedr-bookmark-form", submit: function() {
-                      url = $("#superfeedr-feed-url").val();
+                    $("#msgboy-bookmark-dialog").height(winH);
+                    $("#msgboy-bookmark-dialog").css('top', winH/2-$("#msgboy-bookmark-dialog").height()/4);
+                    $("#msgboy-bookmark-dialog").css('left', winW/2-$("#msgboy-bookmark-dialog").width()/2);
+                    $("<form>", {id: "msgboy-bookmark-form", submit: function() {
+                      url = $("#msgboy-feed-url").val();
                       chrome.extension.sendRequest({subscribe: url}, function(response) {
-                        $("#superfeedr-bookmark-dialog").remove();
+                        $("#msgboy-bookmark-dialog").remove();
                       });
                       return false;
-                    }}).appendTo($("#superfeedr-bookmark-dialog"));
-                    $("<input>", {type: "text", name: "feed-url", id: "superfeedr-feed-url", size: "72"}).appendTo($("#superfeedr-bookmark-form"));
-                    $("<input>", {type: "submit"}).appendTo($("#superfeedr-bookmark-form"));
+                    }}).appendTo($("#msgboy-bookmark-dialog"));
+                    $("<input>", {type: "text", name: "feed-url", id: "msgboy-feed-url", size: "72"}).appendTo($("#msgboy-bookmark-form"));
+                    $("<input>", {type: "submit"}).appendTo($("#msgboy-bookmark-form"));
 
 
                     $("<a>", {
                       text: "close",
                       click: function() {
-                        $("#superfeedr-bookmark-dialog").remove();
+                        $("#msgboy-bookmark-dialog").remove();
                       }
-                    }).appendTo($("#superfeedr-bookmark-dialog"));
+                    }).appendTo($("#msgboy-bookmark-dialog"));
                     break;
                   case 1 : 
                     chrome.extension.sendRequest({subscribe: links[0].href}, function(response) {
@@ -65,11 +65,11 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
                     break;
                   default : 
                     $("<div>", {
-                      id: "superfeedr-bookmark-dialog"
+                      id: "msgboy-bookmark-dialog"
                     }).appendTo("body");
                     $("<h4>", {
                       text: "Please chose which resource you want to subscribe to"
-                      }).appendTo($("#superfeedr-bookmark-dialog"));
+                      }).appendTo($("#msgboy-bookmark-dialog"));
                     var maskHeight = $(document).height();
                     var maskWidth = $(window).width();
 
@@ -78,12 +78,12 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
                     var winW = $(window).width();
 
                     //Set the popup window to center
-                    $("#superfeedr-bookmark-dialog").css('top', winH/2-$("#superfeedr-bookmark-dialog").height()/2);
-                    $("#superfeedr-bookmark-dialog").css('left', winW/2-$("#superfeedr-bookmark-dialog").width()/2);
+                    $("#msgboy-bookmark-dialog").css('top', winH/2-$("#msgboy-bookmark-dialog").height()/2);
+                    $("#msgboy-bookmark-dialog").css('left', winW/2-$("#msgboy-bookmark-dialog").width()/2);
 
                     $("<ul>", {
                       id: "link-list"
-                    }).appendTo($("#superfeedr-bookmark-dialog"));
+                    }).appendTo($("#msgboy-bookmark-dialog"));
 
                     $.each(links, function(count, link) {
                         $("#link-list").append(
@@ -102,9 +102,9 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
                     $("<a>", {
                       text: "close",
                       click: function() {
-                        $("#superfeedr-bookmark-dialog").remove();
+                        $("#msgboy-bookmark-dialog").remove();
                       }
-                    }).appendTo($("#superfeedr-bookmark-dialog"));
+                    }).appendTo($("#msgboy-bookmark-dialog"));
 
 
                     break;
@@ -169,13 +169,13 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
         ];
 
         $("<ul>", {
-            id: "superfeedr-bookmark"
+            id: "msgboy-bookmark"
         }).appendTo("body");
-        var left = Math.min(Math.max(response.value, 0), $(window).width() - $("#superfeedr-bookmark").width());
-        $("#superfeedr-bookmark").css("left", left);
+        var left = Math.min(Math.max(response.value, 0), $(window).width() - $("#msgboy-bookmark").width());
+        $("#msgboy-bookmark").css("left", left);
 
         $.each(actions, function(count, action) {
-            $("#superfeedr-bookmark").append(
+            $("#msgboy-bookmark").append(
                 $("<li>", {
                     id: action.id,
                     text: action.name,
@@ -190,13 +190,13 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
 
 
   // Called when the bookmark has been moved.
-  $("#superfeedr-bookmark" ).bind('drag', function(ev, dd){ 
+  $("#msgboy-bookmark" ).bind('drag', function(ev, dd){ 
     $( this ).css({
       left: dd.offsetX
     });      
   });
 
-  $("#superfeedr-bookmark" ).bind('dragend', function(ev, dd){ 
+  $("#msgboy-bookmark" ).bind('dragend', function(ev, dd){ 
     chrome.extension.sendRequest({"settings": {"set" : ["bookmarkPosition", dd.offsetX]}}, function(response) {
     });
   });  

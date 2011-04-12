@@ -113,25 +113,25 @@
         function onConnect(status) {	
             var msg = currentConnectionStatus['msg'];
             if (status == Strophe.Status.CONNECTING) {
-                msg = 'Superfeedr is connecting.';
+                msg = 'Msgboy is connecting.';
             } else if (status == Strophe.Status.CONNFAIL) {
-                msg = 'Superfeedr failed to connect.';
+                msg = 'Msgboy failed to connect.';
                 if(autoReconnect) {
 					setTimeout(connect,5000);
 				}
 			} else if(status == Strophe.Status.AUTHFAIL) {
-				msg = 'Superfeedr couldn\'t authenticate. Please check your credentials';
+				msg = 'Msgboy couldn\'t authenticate. Please check your credentials';
 				autoReconnect = false
             } else if (status == Strophe.Status.DISCONNECTING) {
-                msg = 'Superfeedr is disconnecting.';
+                msg = 'Msgboy is disconnecting.';
             } else if (status == Strophe.Status.DISCONNECTED) {
-                msg = 'Superfeedr is disconnected. ';
+                msg = 'Msgboy is disconnected. ';
                 if(autoReconnect) {
 					setTimeout(connect,5000);
 				}
             } else if (status == Strophe.Status.CONNECTED) {
 				autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
-                msg = 'Superfeedr is connected.';
+                msg = 'Msgboy is connected.';
 				connection.send($pres());// Send presence! connection.send($pres({xmlns: Strophe.NS.CLIENT}).c("priority").t("10000"));// Send presence!
             }
             currentConnectionStatus['msg'] = msg;
@@ -144,7 +144,7 @@
         function connect() {
 			autoReconnect	= true;
             password 		= inbox.get("settings.password");
-            jid 			= inbox.get("settings.jid") + "@msgboy.com/growme";
+            jid 			= inbox.get("settings.jid") + "@msgboy.com/extension";
 
             connection.connect(jid, password, onConnect);
         }
@@ -211,7 +211,7 @@
             else if(request.subscribe) { // Subscribes to more feeds
 				log("Request : subscribe" )
                 connection.superfeedr.subscribe(request.subscribe, function(result) {
-                   	var atom_id = "tag:superfeedr.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe);
+                   	var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe);
  					var msg = {
 					  id: MD5.hexdigest(atom_id + Math.random()*11),
                       atom_id: atom_id,

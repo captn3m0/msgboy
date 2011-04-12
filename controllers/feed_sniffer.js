@@ -39,7 +39,7 @@ function isFeedDocument() {
   var body = document.body;
 
   var soleTagInBody = "";
-  if (body && body.childElementCount == 1 || body.childElementCount == 2 && body.children[1].id == "superfeedr-bookmark") {
+  if (body && body.childElementCount == 1 || body.childElementCount == 2 && body.children[1].id == "msgboy-bookmark") {
     soleTagInBody = body.children[0].tagName;
   }
 

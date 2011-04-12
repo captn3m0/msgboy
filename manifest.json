@@ -1,6 +1,6 @@
 {
   "name": "Growme",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Grownme makes Chrome more useful and smarter!",
   "icons": {
     "24": "/views/icons/24.png",
@@ -17,8 +17,6 @@
     "tabs",
     "background",
     "unlimitedStorage",
-    "http://superfeedr.com/",
-    "https://superfeedr.com/",
     "http://msgboy.com/",
     "https://msgboy.com/",
     "http://www.google.com/",

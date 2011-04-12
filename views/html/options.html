@@ -65,7 +65,7 @@
 
     chrome.extension.connect({name: "connection"}).onMessage.addListener(function(msg) {
 		$('#connectionStatus').text(msg);
-		if(msg == "Superfeedr is connected.") {
+		if(msg == "Msgboy is connected.") {
 			// Good, we can show the plugins.
 			$("#plugins").show();
 		}
