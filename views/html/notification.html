@@ -23,58 +23,80 @@
 </head>
 <body>
     <div id="message">
+		<h2></h2>
+		<p></p>
     </div>
-    <!-- Templates -->
-    <script type="text/template" id="notification-template">
-		<h1><%= truncate(title, 36)%></h1>
-		<p>
-		<% if(source) {
-		%>
-			<span><%= source.title %></span>&nbsp—&nbsp
-		<%
-		} 
-		%>
-		<%= truncate(strip(summary), 128)%> </p>
-    </script>
-    
+
     <script>
 	/* Creates the view and render */
     var MessageView = Backbone.View.extend({
         initialize: function() {
+			this.message_count = 0;
             _.bindAll(this, "render", "openViewer");
             $('body').click(this.openViewer);
         },
         
         render: function() {
-            $(this.el).html(_.template($('#notification-template').html(), this.model.toJSON()));
-            return this;
+			json = this.model.toJSON();
+			if(this.message_count == 1) {
+				$(this.el + " h2").html(json.title)
+				if(json.source) {
+					$(this.el + " p").html("<span>" + json.source.title + "</span>&nbsp—&nbsp" + truncate(strip(json.summary), 128))
+				}
+				else {
+					$(this.el + " p").html(truncate(strip(json.summary), 128))
+				}
+	            return this;
+			} else {
+				$(this.el + " h2").html("You have " + this.message_count + " messages")
+				if(json.source) {
+					$(this.el + " p").html("including &ldquo;" + json.title + "&rdquo;, from <span>" + json.source.title + "</span")
+				}
+				else {
+					$(this.el + " p").html("including &ldquo;" + json.title + "&rdquo;")
+				}
+	            return this;
+				
+			}
         },
         
         openViewer: function() {
-            this.model.set({"read": true});
-            this.model.save();
-            chrome.tabs.create({url:this.model.toJSON().links.alternate["text/html"][0].href, selected: false});
+			if(this.message_count == 1) {
+            	// Open the message!
+				this.model.set({"read": true});
+            	this.model.save();
+            	chrome.tabs.create({url:this.model.toJSON().links.alternate["text/html"][0].href, selected: false});
+			} else {
+				// Open the inbox
+				chrome.extension.sendRequest({"tab": {url: chrome.extension.getURL('/views/html/inbox.html'), selected: true}}, function(response) {
+				});
+			}
 			chrome.extension.sendRequest({close: true}, function(response) {
-                window.close();
-          	});
-        }
+            	window.close();
+      		});
+        },
+
+		add_message: function(message) {
+			this.message_count++;
+			this.model = message;
+		}
     });
 
-    var currentView = new MessageView({el: "#message"});
-
+	var view = new MessageView({el: "#message"});;
 
 	function showMessageForId(messageId) {
 		message = new Message({'id': messageId})
         message.fetch();
-		currentView.model = message;
-        currentView.render();
+		
+		view.add_message(message);
+        view.render();
+		window.focus(); // Put this alert in front!
 	}
 
     $(document).ready(function() {
         chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 			if(request.notify) {
 				showMessageForId(request.notify.message);
-				window.focus(); // Put this alert in front!
 			}
 		});
     });

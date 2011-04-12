@@ -84,6 +84,7 @@
         
         // Creates the HTML5 notification
         function notify(id) {
+			log("Showing notification for " + id)
 			if(!currentNotification) {
 	            url = chrome.extension.getURL('/views/html/notification.html');
 	            webkitNotification = window.webkitNotifications.createHTMLNotification(url);
@@ -189,6 +190,7 @@
             }
             else if (request.tab) { // Open tab
                 chrome.tabs.create(request.tab);
+				sendResponse({value: true});
             }
             else if (request.add) { // Add a new message to the inbox.
                 message = inbox.addMessage(request.add);
