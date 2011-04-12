@@ -198,20 +198,33 @@
         loadMore: function() {
             message = this.collection.at(this.currentIndex);
             if(message) {
-                this.currentIndex++
-                var view = new MessageView({model: message});
-                this.$("#content").append(view.render().el);
-                this.filter();
-                // We should also pre-emptively load more pages if the document is shorter than the page.
-                if(document.documentElement.clientHeight == $(document).height()) {
-                    this.loadMore()
-                }
+                this.currentIndex++;
+				this.showMessageAtBottom(message);
             }
             else {
                 $("#loader").attr('disabled', true);
                 $("#loader").attr('value', "No more pages to load");
             }
         },
+
+		showMessageOnTop: function(message) {
+			var view = new MessageView({model: message});
+            $("#content").prepend(view.render().el);
+            this.filter();
+		},
+
+		showMessageAtBottom: function(message) {
+            var view = new MessageView({model: message});
+            this.$("#content").append(view.render().el);
+            this.filter();
+		},
+
+		completePage: function() {
+			// We should also pre-emptively load more pages if the document is shorter than the page.
+	        if(document.documentElement.clientHeight == $(document).height()) {
+	            this.loadMore()
+	        }
+		},
 
         render: function() {
             this.loadMore();
@@ -232,6 +245,7 @@
                 default:
                 this.$(".message").css("display", "block");
             }
+			this.completePage();
         }
     });
 
@@ -242,9 +256,7 @@
 		if(request.notify) {
 			message = new Message({'id': request.notify.message})
 	        message.fetch();
-			var view = new MessageView({model: message});
-            $("#content").prepend(view.render().el);
-            archiveView.filter();
+			archiveView.showMessageOnTop(message);
 		}
 	});
     
