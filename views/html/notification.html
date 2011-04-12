@@ -95,7 +95,7 @@
 
     $(document).ready(function() {
         chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-			if(request.notify) {
+			if(request.notify && request.notify.message) {
 				showMessageForId(request.notify.message);
 			}
 		});

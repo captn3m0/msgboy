@@ -136,6 +136,7 @@
             if(resp) {
                 this.model.destroy();
                 $(this.el).remove();
+				archiveView.completePage();
             }
             return false;
         },
@@ -169,7 +170,7 @@
         events: {
 			"click #delete_all" : "delete_all",
 			"click #mark_all_as_read" : "mark_all_as_read",
-            "change #filters" : "filter",
+            "change #filters" : "filter"
         },
         
         initialize: function() {
@@ -189,10 +190,12 @@
 
 		mark_all_as_read: function() {
 			this.collection.mark_all_as_read();
+			this.filter();
 		},
 		
 		delete_all: function() {
 			this.collection.delete_all();
+			this.filter();
 		},
         
         loadMore: function() {
@@ -219,7 +222,7 @@
 
 		completePage: function() {
 			// We should also pre-emptively load more pages if the document is shorter than the page.
-	        if(document.documentElement.clientHeight == $(document).height()) {
+	        if($("#content").height() < $(window).height()) {
 				$("#loader").show();
 				setTimeout('archiveView.loadMore()', 1)
 	        } else {

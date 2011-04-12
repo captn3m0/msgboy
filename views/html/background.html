@@ -62,7 +62,9 @@
 
         connection.superfeedr.addNotificationHandler(function(msg) {
             message = inbox.addMessage(msg);
-            notify(message.toJSON().id);
+			if(message) {
+	            notify(message.toJSON().id);
+			}
         }); //connection.superfeedr.addNotificationHandler 
         
         currentConnectionStatus['msg'] = ""
@@ -193,14 +195,18 @@
 				sendResponse({value: true});
             }
             else if (request.add) { // Add a new message to the inbox.
+				request.add["id"] = MD5.hexdigest(request.add.atom_id + Math.random()*11),
                 message = inbox.addMessage(request.add);
-                notify(message.toJSON().id);
-                sendResponse({value: message});
+				if(message) {
+	                notify(message.toJSON().id);
+				}
+				sendResponse({value: message});
             }
             else if(request.subscribe) { // Subscribes to more feeds
                 connection.superfeedr.subscribe(request.subscribe, function(result) {
-                    var atom_id = "tag:superfeedr.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe);
-                   var msg = {
+                   	var atom_id = "tag:superfeedr.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe);
+ 					var msg = {
+					  id: MD5.hexdigest(atom_id + Math.random()*11),
                       atom_id: atom_id,
                       title: "New subscription",
                       summary: "Successfully subscribed to " + request.subscribe,
@@ -211,9 +217,11 @@
                       source: null
                     };
                     message = inbox.addMessage(msg);
-                    notify(message.toJSON().id);
-                    sendResponse({value: result});
-                })
+					if(message) {
+						notify(message.toJSON().id);
+	                    sendResponse({value: result});
+					}
+				})
             }
             else if(request.unsubscribe) { // Unsubscribes from feeds
                 connection.superfeedr.unsubscribe(request.unsubscribe, function(result) {

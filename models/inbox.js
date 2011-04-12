@@ -9,8 +9,20 @@ var Inbox = Backbone.Model.extend({
   },
   
   addMessage: function(msg) {
-    var message = this.messages.create(msg);
-    return message;
+	// Adds the message if the message isn't yet present
+	var message = new Message({'id': msg.id})
+	message.fetch({
+		error: function() {
+			// The message was not found, so we just have to create one!
+			message.set(msg) // And now set the attributes.
+			message.collection = this.messages;
+			message.save();
+		},
+		success: function() {
+			// Success, we should return null, as this message was not added, because it already existed!
+		}
+	});
+	return message;
   }
   
 });
