@@ -15,7 +15,7 @@ function listenToConnectionstatus() {
 
 chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, function(response) {
   var actions = [ {
-            name: "subscribe", 
+            name: "follow", 
             callback: function() {
               // Detect feed url(s)
               // If there are 0, leave the icon greyed.
