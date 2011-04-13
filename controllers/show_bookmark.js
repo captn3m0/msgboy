@@ -117,47 +117,7 @@ chrome.extension.sendRequest({"settings": {"get" : ["bookmarkPosition"]}}, funct
               chrome.extension.sendRequest({"tab": {url: chrome.extension.getURL('/views/html/inbox.html'), selected: true}}, function(response) {
               });
             }
-        }, {
-            name: "like",
-            callback: function() {
-              var parsedLocation = parseUri(document.location);
-              var atom_id = "tag:"+parsedLocation.host + (parsedLocation.port ? ":" + parsedLocation.port : "") + "," + (new Date()).format("yyyy-mm-dd") + parsedLocation.path + (parsedLocation.anchor ? "/" + parsedLocation.anchor : "");
-
-              // We want to add to inbox this specific page.
-              selected = document.getSelection().toString();
-              if(selected == "") {
-                selected = document.title || "";
-              }
-              var source = {
-                title: document.title,
-                url: window.location.toString(),
-              }
-              var links = {};
-              links["alternate"] = {}
-              links["alternate"]["text/html"] = [
-                  {
-                    "href": window.location.toString(),
-                    "rel": "alternate",
-                    "title": document.title,
-                    "type": "text/html"
-                  }
-              ];
-              chrome.extension.sendRequest({"add": {
-                atom_id: atom_id,
-                title: selected.substring(0, 80),
-                summary: selected,
-                read: true,
-                starred: true,
-                content : null,
-                links: links,
-                source: source
-              }}, function(response) {
-                chrome.extension.sendRequest({notify: response.value}, function(response) {
-                });
-                return false;
-              });
-            }
-        }, {
+        },  {
           name: "",
           id: "connectionStatus",
           callback: function() {
