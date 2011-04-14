@@ -29,265 +29,302 @@
     
 </head>
 <body>
-    
-    <!-- Less go! -->
     <script language='javascript'>
-        
-        
-        //////////////////////////////////////////////////////////////////////////////////////
-        //                                Objects                                           //
-        //////////////////////////////////////////////////////////////////////////////////////
-        var inbox                   = new Inbox();
-        var logEnabled              = true; 
-        var currentConnectionStatus = {};
-// ws://websocket.msgboy.com/ws-xmpp
-        var websocketEndpoint       = 'ws://websocket.msgboy.com:5288/ws-xmpp'
-		var connection				= new Strophe.Connection({protocol: new Strophe.Websocket(websocketEndpoint)});
-		connection.max_stanzas_per_second = 3; // We limit to 3 stanzas per second.
-        var password                = "";
-        var jid                     = "";
-		var autoReconnect			= true;
-		var ports					= [];
-		var currentNotification		= null;
-		
-		connection.rawInput = function(data) {
-            log('RECV: ' + data);
-        };
-        connection.rawOutput = function(data) {
-            log('SENT: ' + data);
-        };
 
-		Strophe.log = function(level, msg) {
-			log(level + " :: " + msg);
-		}
+	// Google Analytics
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-22746593-1']);
+	_gaq.push(['_trackPageview']);
 
-        connection.superfeedr.addNotificationHandler(function(msg) {
-            message = inbox.addMessage(msg);
-			if(message) {
+	(function () {
+	    var ga = document.createElement('script');
+	    ga.type = 'text/javascript';
+	    ga.async = true;
+	    ga.src = 'https://ssl.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0];
+	    s.parentNode.insertBefore(ga, s);
+	})();
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	//                                Objects                                           //
+	//////////////////////////////////////////////////////////////////////////////////////
+	var inbox = new Inbox();
+	var logEnabled = true;
+	var currentConnectionStatus = {};
+	var websocketEndpoint = 'ws://websocket.msgboy.com:5288/ws-xmpp'
+	var connection = new Strophe.Connection({
+	    protocol: new Strophe.Websocket(websocketEndpoint)
+	});
+	connection.max_stanzas_per_second = 3; // We limit to 3 stanzas per second.
+	var password = "";
+	var jid = "";
+	var autoReconnect = true;
+	var ports = [];
+	var currentNotification = null;
+
+	connection.rawInput = function (data) {
+	    log('RECV: ' + data);
+	};
+	connection.rawOutput = function (data) {
+	    log('SENT: ' + data);
+	};
+
+	Strophe.log = function (level, msg) {
+	    log(level + " :: " + msg);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	//                   Notification Handler                                           //
+	//////////////////////////////////////////////////////////////////////////////////////
+	connection.superfeedr.addNotificationHandler(function (msg) {
+	    _gaq.push(['_trackEvent', 'message-received']);
+	    message = inbox.addMessage(msg);
+	    if (message) {
+	        notify(message.toJSON().id);
+	    }
+	}); //connection.superfeedr.addNotificationHandler 
+	
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	//                   Connection Status                                              //
+	//////////////////////////////////////////////////////////////////////////////////////
+	currentConnectionStatus['msg'] = 'Msgboy is disconnected. ';
+	_.extend(currentConnectionStatus, Backbone.Events);
+	currentConnectionStatus.bind("change", function (msg) {
+	    $.each(ports, function (index, port) {
+	        try {
+	            port.postMessage(msg);
+	        } catch (error) {
+	            log("Could not post message to port : " + error)
+	        }
+	    })
+	});
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	//                                  Functions                                       //
+	//////////////////////////////////////////////////////////////////////////////////////
+	// Creates the HTML5 notification
+	function notify(id) {
+	    _gaq.push(['_trackEvent', 'notification-showed']);
+
+	    log("Showing notification for " + id)
+	    if (!currentNotification) {
+	        url = chrome.extension.getURL('/views/html/notification.html');
+	        webkitNotification = window.webkitNotifications.createHTMLNotification(url);
+	        webkitNotification.onclose = function () {
+	            currentNotification = null;
+	        };
+	        webkitNotification.show();
+	        currentNotification = webkitNotification;
+	    }
+	    chrome.extension.sendRequest({
+	        "notify": {
+	            "message": id
+	        }
+	    }, function (response) {
+	        // Let's notify the people who may care about this!
+	    });
+	    return currentNotification;
+	}
+
+	// Logs messages to the console
+	function log(msg) {
+	    if (logEnabled) {
+	        console.log(msg);
+	    }
+	}
+
+	// Handles XMPP Connections
+	function onConnect(status) {
+	    var msg = currentConnectionStatus['msg'];
+	    if (status == Strophe.Status.CONNECTING) {
+	        msg = 'Msgboy is connecting.';
+	    } else if (status == Strophe.Status.CONNFAIL) {
+	        msg = 'Msgboy failed to connect.';
+	        setTimeout(function () {
+	            if (autoReconnect) connect
+	        }, 5000);
+	    } else if (status == Strophe.Status.AUTHFAIL) {
+	        msg = 'Msgboy couldn\'t authenticate. Please check your credentials';
+	        autoReconnect = false
+	        // We need to open the settings tab
+	        chrome.tabs.create({
+	            url: chrome.extension.getURL('/views/html/options.html'),
+	            selected: true
+	        });
+	    } else if (status == Strophe.Status.DISCONNECTING) {
+	        msg = 'Msgboy is disconnecting.';
+	    } else if (status == Strophe.Status.DISCONNECTED) {
+	        msg = 'Msgboy is disconnected. ';
+	        setTimeout(function () {
+	            if (autoReconnect) connect
+	        }, 5000);
+	    } else if (status == Strophe.Status.CONNECTED) {
+	        autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
+	        msg = 'Msgboy is connected.';
+	        connection.send($pres()); // Send presence! connection.send($pres({xmlns: Strophe.NS.CLIENT}).c("priority").t("10000"));// Send presence!
+	    }
+	    currentConnectionStatus['msg'] = msg;
+	    currentConnectionStatus.trigger("change", msg);
+	    log(msg);
+	} // function onConnect
+
+	// Connects the XMPP Client
+	function connect() {
+	    autoReconnect = true;
+	    password = inbox.get("settings.password");
+	    jid = inbox.get("settings.jid") + "@msgboy.com/extension";
+
+	    connection.connect(jid, password, onConnect);
+	}
+
+	// Disconnects to reconnect.
+	function reconnect() {
+	    autoReconnect = true; // Let's make sure we have the autoReconnect.
+	    if (connection.status == Strophe.Status.CONNECTING || connection.status == Strophe.Status.CONNECTED || connection.status == Strophe.Status.DISCONNECTING) {
+	        connection.disconnect(); // Disconnect...
+	    } else if (
+	    connection.status == null || connection.status == Strophe.Status.DISCONNECTED || connection.status == Strophe.Status.CONNFAIL || connection.status == Strophe.Status.AUTHFAIL) {
+	        connect(); // Looks like we never tried to actually connect!
+	    }
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	//                          Chrome Extension Handlers                               //
+	//////////////////////////////////////////////////////////////////////////////////////
+	// Adds a listener on the connection status to be used in the bookmark
+	chrome.extension.onConnect.addListener(function (port) {
+	    log("New port connected : " + port.tab.id);
+	    port.onDisconnect.addListener(function () {
+	        log("This port was disconnected : " + port.tab.id)
+	        idx = ports.indexOf(port);
+	        if (idx != -1) {
+	            ports.splice(idx, 1);
+	        }
+	    });
+	    port.postMessage(currentConnectionStatus.msg);
+	    ports.push(port);
+	});
+
+	// Handler for messages
+	chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
+	    if (request.settings) { // Settings
+	        if (request.settings.get) { // get them
+	            log("Request : settings.get")
+	            sendResponse({
+	                value: inbox.get("settings." + request.settings.get[0])
+	            });
+	        } else if (request.settings.set) { // Set them
+	            log("Request : settings.set")
+	            attrs = {};
+	            attrs["settings." + request.settings.set[0]] = request.settings.set[1];
+	            inbox.set(attrs);
+	            inbox.save();
+	            sendResponse({
+	                value: true
+	            });
+	        }
+	    } else if (request.tab) { // Open tab
+	        _gaq.push(['_trackEvent', 'tab-opened']);
+	        log("Request : tab")
+	        chrome.tabs.create(request.tab);
+	        sendResponse({
+	            value: true
+	        });
+	    } else if (request.add) { // Add a new message to the inbox.
+	        log("Request : add")
+	        request.add["id"] = MD5.hexdigest(request.add.atom_id + Math.random() * 11), message = inbox.addMessage(request.add);
+	        if (message) {
 	            notify(message.toJSON().id);
-			}
-        }); //connection.superfeedr.addNotificationHandler 
-        
-        currentConnectionStatus['msg'] = 'Msgboy is disconnected. ';
-        _.extend(currentConnectionStatus, Backbone.Events);
-		currentConnectionStatus.bind("change", function(msg) {
-			$.each(ports, function(index, port) {
-				try {
-			        port.postMessage(msg);
-				}
-				catch(error) {
-					log("Could not post message to port : " + error)
-				}
-			})
-		});
-        
-        //////////////////////////////////////////////////////////////////////////////////////
-        //                                  Functions                                       //
-        //////////////////////////////////////////////////////////////////////////////////////
-        
-        // Creates the HTML5 notification
-        function notify(id) {
-			log("Showing notification for " + id)
-			if(!currentNotification) {
-	            url = chrome.extension.getURL('/views/html/notification.html');
-	            webkitNotification = window.webkitNotifications.createHTMLNotification(url);
-				webkitNotification.onclose = function() {
-					currentNotification = null;
-				};
-	            webkitNotification.show();
-				currentNotification = webkitNotification;
-			}
-			chrome.extension.sendRequest({"notify": {"message" : id}}, function(response) {
-				// Let's notify the people who may care about this!
-			});
-			return currentNotification;
-        }
-        
-        // Logs messages to the console
-        function log(msg) {
-            if(logEnabled) {
-                console.log(msg);
-            }
-        }
-        
-        // Handles XMPP Connections
-        function onConnect(status) {	
-            var msg = currentConnectionStatus['msg'];
-            if (status == Strophe.Status.CONNECTING) {
-                msg = 'Msgboy is connecting.';
-            } else if (status == Strophe.Status.CONNFAIL) {
-                msg = 'Msgboy failed to connect.';
-				setTimeout(function() {
-					if(autoReconnect)
-					connect
-				},5000);
-			} else if(status == Strophe.Status.AUTHFAIL) {
-				msg = 'Msgboy couldn\'t authenticate. Please check your credentials';
-				autoReconnect = false
-				// We need to open the settings tab
-				chrome.tabs.create({url:chrome.extension.getURL('/views/html/options.html'), selected: true});
-            } else if (status == Strophe.Status.DISCONNECTING) {
-                msg = 'Msgboy is disconnecting.';
-            } else if (status == Strophe.Status.DISCONNECTED) {
-                msg = 'Msgboy is disconnected. ';
-				setTimeout(function() {
-					if(autoReconnect)
-					connect
-				},5000);
-            } else if (status == Strophe.Status.CONNECTED) {
-				autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
-                msg = 'Msgboy is connected.';
-				connection.send($pres());// Send presence! connection.send($pres({xmlns: Strophe.NS.CLIENT}).c("priority").t("10000"));// Send presence!
-            }
-            currentConnectionStatus['msg'] = msg;
-            currentConnectionStatus.trigger("change", msg);
-            log(msg);
-        } // function onConnect
-        
-        
-        // Connects the XMPP Client
-        function connect() {
-			autoReconnect	= true;
-            password 		= inbox.get("settings.password");
-            jid 			= inbox.get("settings.jid") + "@msgboy.com/extension";
-
-            connection.connect(jid, password, onConnect);
-        }
-        
-        // Disconnects to reconnect.
-        function reconnect() {
-			autoReconnect = true; // Let's make sure we have the autoReconnect.
-			if(	connection.status == Strophe.Status.CONNECTING ||
-				connection.status == Strophe.Status.CONNECTED ||
-				connection.status == Strophe.Status.DISCONNECTING) {
-	            connection.disconnect(); // Disconnect...
-			} else if (
-				connection.status == null || 
-				connection.status ==  Strophe.Status.DISCONNECTED || 
-				connection.status == Strophe.Status.CONNFAIL || 
-				connection.status == Strophe.Status.AUTHFAIL) {
-				connect(); // Looks like we never tried to actually connect!
-			}
-        }
-        
-        
-        //////////////////////////////////////////////////////////////////////////////////////
-        //                          Chrome Extension Handlers                               //
-        //////////////////////////////////////////////////////////////////////////////////////
-        
-        // Adds a listener on the connection status to be used in the bookmark
-        chrome.extension.onConnect.addListener(function(port) {
-			log("New port connected : " + port.tab.id);
-			port.onDisconnect.addListener(function() {
-				log("This port was disconnected : " + port.tab.id)
-				idx = ports.indexOf(port);
-			    if(idx!=-1) {
-			      ports.splice(idx, 1);
-			    }
-			});
-			port.postMessage(currentConnectionStatus.msg);
-			ports.push(port);
-        });
-        
-        // Handler messages
-        chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
-            if(request.settings) { // Settings
-                if(request.settings.get) { // get them
-					log("Request : settings.get" )
-                    sendResponse({value: inbox.get("settings."+request.settings.get[0])});
-                }
-                else if(request.settings.set) { // Set them
-					log("Request : settings.set" )
-                    attrs = {};
-                    attrs["settings."+request.settings.set[0]] = request.settings.set[1];
-                    inbox.set(attrs);
-                    inbox.save();
-					sendResponse({value: true});
-                }
-            }
-            else if (request.tab) { // Open tab
-				log("Request : tab" )
-                chrome.tabs.create(request.tab);
-				sendResponse({value: true});
-            }
-            else if (request.add) { // Add a new message to the inbox.
-				log("Request : add" )
-				request.add["id"] = MD5.hexdigest(request.add.atom_id + Math.random()*11),
-                message = inbox.addMessage(request.add);
-				if(message) {
+	        }
+	        sendResponse({
+	            value: message
+	        });
+	    } else if (request.subscribe) { // Subscribes to more feeds
+	        log("Request : subscribe")
+	        _gaq.push(['_trackEvent', 'subscription-requested']);
+	        connection.superfeedr.subscribe(request.subscribe, function (result) {
+	            _gaq.push(['_trackEvent', 'feed-subscribed']);
+	            var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe);
+	            var msg = {
+	                id: MD5.hexdigest(atom_id + Math.random() * 11),
+	                atom_id: atom_id,
+	                title: "New subscription",
+	                summary: "Successfully subscribed to " + request.subscribe,
+	                read: true,
+	                starred: false,
+	                content: null,
+	                links: {},
+	                source: null
+	            };
+	            message = inbox.addMessage(msg);
+	            if (message) {
 	                notify(message.toJSON().id);
-				}
-				sendResponse({value: message});
-            }
-            else if(request.subscribe) { // Subscribes to more feeds
-				log("Request : subscribe" )
-                connection.superfeedr.subscribe(request.subscribe, function(result) {
-                   	var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe);
- 					var msg = {
-					  id: MD5.hexdigest(atom_id + Math.random()*11),
-                      atom_id: atom_id,
-                      title: "New subscription",
-                      summary: "Successfully subscribed to " + request.subscribe,
-                      read:true,
-                      starred:false,
-                      content : null,
-                      links: {},
-                      source: null
-                    };
-                    message = inbox.addMessage(msg);
-					if(message) {
-						notify(message.toJSON().id);
-	                    sendResponse({value: result});
-					}
-				})
-            }
-            else if(request.unsubscribe) { // Unsubscribes from feeds
-				log("Request : unsubscribe" )
-                connection.superfeedr.unsubscribe(request.unsubscribe, function(result) {
-                    sendResponse({value: result});
-                })
-            }
-            else if(request.connect) {
-				log("Request : connect" )
-                reconnect();
-                sendResponse({value: true});
-            }
-			else if(request.reset) {
-				log("Request : reset" )
-				// First, disconnect
-				autoReconnect = false; // Let's make sure we don't the autoReconnect.
-				connection.disconnect();
-				// Then delete pending notifications
-				if(currentNotification) {
-					currentNotification.cancel();
-				}
-				// Finally, clean the storage.
-				localStorage.clear();
-				inbox = new Inbox();
-				sendResponse({value: true});
-				
-			}
-			else if(request.close) {
-				log("Request : close" )
-				currentNotification = null;
-				sendResponse({value: true});
-			}
-			else {
-				log("Could not handle message : " + request)
-			}
-        });
-        
-        
-        //////////////////////////////////////////////////////////////////////////////////////
-        //                                        Main                                      //
-        //////////////////////////////////////////////////////////////////////////////////////
-        if(inbox.get("settings.jid")) { // If the settings are entered.
-            connect();
-        }
-        else {
-            // We need the user to enter its settings
-            chrome.tabs.create({url:chrome.extension.getURL('/views/html/options.html'), selected: true});
-        }
+	                sendResponse({
+	                    value: result
+	                });
+	            }
+	        })
+	    } else if (request.unsubscribe) { // Unsubscribes from feeds
+	        log("Request : unsubscribe")
+	        _gaq.push(['_trackEvent', 'unsubscription-requested']);
+	        connection.superfeedr.unsubscribe(request.unsubscribe, function (result) {
+	            _gaq.push(['_trackEvent', 'feed-unsubscribed']);
+	            sendResponse({
+	                value: result
+	            });
+	        })
+	    } else if (request.connect) {
+	        _gaq.push(['_trackEvent', 'connection-initiated']);
+	        log("Request : connect")
+	        reconnect();
+	        sendResponse({
+	            value: true
+	        });
+	    } else if (request.reset) {
+	        _gaq.push(['_trackEvent', 'reset-requested']);
+	        log("Request : reset")
+	        // First, disconnect
+	        autoReconnect = false; // Let's make sure we don't the autoReconnect.
+	        connection.disconnect();
+	        // Then delete pending notifications
+	        if (currentNotification) {
+	            currentNotification.cancel();
+	        }
+	        // Finally, clean the storage.
+	        localStorage.clear();
+	        inbox = new Inbox();
+	        sendResponse({
+	            value: true
+	        });
 
-    </script>
+	    } else if (request.close) {
+	        _gaq.push(['_trackEvent', 'notification-closed']);
+	        log("Request : close")
+	        currentNotification = null;
+	        sendResponse({
+	            value: true
+	        });
+	    } else {
+	        log("Could not handle message : " + request)
+	    }
+	});
+
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	//                                        Main                                      //
+	//////////////////////////////////////////////////////////////////////////////////////
+	if (inbox.get("settings.jid")) { // If the settings are entered.
+	    _gaq.push(['_trackEvent', 'connection-initiated']);
+	    connect();
+	} else {
+	    // We need the user to enter its settings
+	    chrome.tabs.create({
+	        url: chrome.extension.getURL('/views/html/options.html'),
+	        selected: true
+	    });
+	}
+	
+	</script>
 </body>
