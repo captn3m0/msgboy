@@ -68,7 +68,7 @@
 			}
         }); //connection.superfeedr.addNotificationHandler 
         
-        currentConnectionStatus['msg'] = ""
+        currentConnectionStatus['msg'] = 'Msgboy is disconnected. ';
         _.extend(currentConnectionStatus, Backbone.Events);
 		currentConnectionStatus.bind("change", function(msg) {
 			$.each(ports, function(index, port) {
@@ -117,19 +117,23 @@
                 msg = 'Msgboy is connecting.';
             } else if (status == Strophe.Status.CONNFAIL) {
                 msg = 'Msgboy failed to connect.';
-                if(autoReconnect) {
-					setTimeout(connect,5000);
-				}
+				setTimeout(function() {
+					if(autoReconnect)
+					connect
+				},5000);
 			} else if(status == Strophe.Status.AUTHFAIL) {
 				msg = 'Msgboy couldn\'t authenticate. Please check your credentials';
 				autoReconnect = false
+				// We need to open the settings tab
+				chrome.tabs.create({url:chrome.extension.getURL('/views/html/options.html'), selected: true});
             } else if (status == Strophe.Status.DISCONNECTING) {
                 msg = 'Msgboy is disconnecting.';
             } else if (status == Strophe.Status.DISCONNECTED) {
                 msg = 'Msgboy is disconnected. ';
-                if(autoReconnect) {
-					setTimeout(connect,5000);
-				}
+				setTimeout(function() {
+					if(autoReconnect)
+					connect
+				},5000);
             } else if (status == Strophe.Status.CONNECTED) {
 				autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
                 msg = 'Msgboy is connected.';
@@ -153,9 +157,15 @@
         // Disconnects to reconnect.
         function reconnect() {
 			autoReconnect = true; // Let's make sure we have the autoReconnect.
-			if(connection.status == Strophe.Status.CONNECTED) {
+			if(	connection.status == Strophe.Status.CONNECTING ||
+				connection.status == Strophe.Status.CONNECTED ||
+				connection.status == Strophe.Status.DISCONNECTING) {
 	            connection.disconnect(); // Disconnect...
-			} else if (connection.status == null) {
+			} else if (
+				connection.status == null || 
+				connection.status ==  Strophe.Status.DISCONNECTED || 
+				connection.status == Strophe.Status.CONNFAIL || 
+				connection.status == Strophe.Status.AUTHFAIL) {
 				connect(); // Looks like we never tried to actually connect!
 			}
         }
@@ -244,7 +254,18 @@
             }
 			else if(request.reset) {
 				log("Request : reset" )
+				// First, disconnect
+				autoReconnect = false; // Let's make sure we don't the autoReconnect.
+				connection.disconnect();
+				// Then delete pending notifications
+				if(currentNotification) {
+					currentNotification.cancel();
+				}
+				// Finally, clean the storage.
 				localStorage.clear();
+				inbox = new Inbox();
+				sendResponse({value: true});
+				
 			}
 			else if(request.close) {
 				log("Request : close" )

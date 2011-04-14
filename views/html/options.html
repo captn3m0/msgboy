@@ -129,6 +129,9 @@
 		reset: function() {
 			if(confirm("Are you sure? There is no way back and all your data will be deleted!")) {
 				chrome.extension.sendRequest({reset: true}, function(response) {
+					this.$("#jid").val("");
+					this.$("#password").val("");
+					window.close();
 				});
 			}
 		}
