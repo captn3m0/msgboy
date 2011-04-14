@@ -101,9 +101,19 @@
         },
         
         // Fine. What now? We saved the login. We need to save the jid too. As it's used to retrieve the inbox object too!
+		// We must make sure the user used their login, not their email @.
         jid: function() {
-		    chrome.extension.sendRequest({"settings": {"set" : ["jid",this.$("#jid").val()]}}, function(response) {
-		    });
+			val = this.$("#jid").val();
+			emailRegEx = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+			if (val.search(emailRegEx) == -1) {
+				chrome.extension.sendRequest({"settings": {"set" : ["jid",this.$("#jid").val()]}}, function(response) {
+		    	});
+			}
+			else {
+				alert("Please make sure you use your msgboy login, and not your email address.");
+				this.$("#jid").val("");
+				this.$("#jid").focus();
+			}
         },
         
         password: function() {

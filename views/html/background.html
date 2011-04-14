@@ -40,7 +40,8 @@
         var inbox                   = new Inbox();
         var logEnabled              = true; 
         var currentConnectionStatus = {};
-        var websocketEndpoint       = 'ws://msgboy.com:5288/ws-xmpp'
+// ws://websocket.msgboy.com/ws-xmpp
+        var websocketEndpoint       = 'ws://websocket.msgboy.com:5288/ws-xmpp'
 		var connection				= new Strophe.Connection({protocol: new Strophe.Websocket(websocketEndpoint)});
 		connection.max_stanzas_per_second = 3; // We limit to 3 stanzas per second.
         var password                = "";
