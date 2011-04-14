@@ -70,7 +70,7 @@
         <p><%= truncate(strip(summary), 240)%> &nbsp;
         <% if(main_link(links) != "") {
             %>
-            <a href="<%= main_link(links) %>" target="_blank">read more</a>
+            <a href="<%= main_link(links) %>" target="_blank" class="more">read more</a>
             <%
         } %>
         </p>
@@ -88,7 +88,7 @@
     var MessageView = Backbone.View.extend({
 
         events: {
-            "click p a"                        : "openViewer",
+            "click p a.more"                   : "openViewer",
             "click a.unsubscribe"              : "unsubscribeFeed",
             "click a.destroy"                  : "destroyMessage",
             "click a.star"                     : "toggleStarMessage",
@@ -127,6 +127,8 @@
         },
 
         unsubscribeFeed: function() {
+	        this.model.set({"read": true});
+            this.model.save();
             chrome.extension.sendRequest({unsubscribe: this.model.toJSON().source.url}, function(response) {
             });
             return false;
