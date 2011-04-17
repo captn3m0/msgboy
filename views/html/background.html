@@ -25,6 +25,7 @@
 
     <!-- Controller includes -->
     <script src="../../controllers/strophe.superfeedr.js" type="text/javascript"></script> 
+    <script src="../../controllers/strophe.roster.js" type="text/javascript"></script> 
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     
 </head>
@@ -76,14 +77,19 @@
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                   Notification Handler                                           //
 	//////////////////////////////////////////////////////////////////////////////////////
-	connection.superfeedr.addNotificationHandler(function (msg) {
+    $(document).bind('notification', function (ev, msg) {
 	    _gaq.push(['_trackEvent', 'message-received']);
 	    message = inbox.addMessage(msg);
 	    if (message) {
 	        notify(message.toJSON().id);
 	    }
-	}); //connection.superfeedr.addNotificationHandler 
+	}); 
 	
+	$(document).bind('roster_changed', function (ev, msg) {
+	    _gaq.push(['_trackEvent', 'roster-changed']);
+		console.log(msg.contacts);
+	}); 
+    
 
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                   Connection Status                                              //
