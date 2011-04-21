@@ -19,9 +19,9 @@
 
     <script>
 
-    var BOSH_SERVICE = 'http://superfeedr.com/http-bind/'
-    var connection = null;
-
+	var websocketEndpoint = 'ws://zipline.local:5288/ws-xmpp'
+	var connection = null
+	
     function log(msg) {
         $('#log').append('<div></div><br />').append(document.createTextNode(msg));
     }
@@ -37,7 +37,10 @@
 
     $(document).ready(function(){
 
-        connection = new Strophe.Connection(BOSH_SERVICE);
+        connection = new Strophe.Connection({
+		    protocol: new Strophe.Websocket(websocketEndpoint)
+		});
+		
         connection.rawInput = rawInput;
         connection.rawOutput = rawOutput;
 

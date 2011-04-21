@@ -24,7 +24,7 @@ Contact.prototype = {
 Strophe.addConnectionPlugin('roster', {
     init: function (connection) {
         this.connection = connection;
-        this.contacts = {};
+        this.contacts = null;
 
         Strophe.addNamespace('ROSTER', 'jabber:iq:roster');
     },
@@ -33,16 +33,13 @@ Strophe.addConnectionPlugin('roster', {
     statusChanged: function (status) {
         if (status === Strophe.Status.CONNECTED) {
             this.contacts = {};
-
             // set up handlers for updates
-            this.connection.addHandler(this.rosterChanged.bind(this),
-                                       Strophe.NS.ROSTER, "iq", "set");
-            this.connection.addHandler(this.presenceChanged.bind(this),
-                                       null, "presence");
+            this.connection.addHandler(this.rosterChanged.bind(this), 	Strophe.NS.ROSTER, 	"iq", 		"set",	null,	null, null);
+            this.connection.addHandler(this.presenceChanged.bind(this), null, 				"presence", null, 	null,	null, null);
 
             // build and send initial roster query
-            var roster_iq = $iq({type: "get"})
-                .c('query', {xmlns: Strophe.NS.ROSTER});
+            var roster_iq = $iq({type: "get"}).c('query', {xmlns: Strophe.NS.ROSTER});
+
 
             var that = this;
             this.connection.sendIQ(roster_iq, function (iq) {
@@ -50,8 +47,7 @@ Strophe.addConnectionPlugin('roster', {
                     // build a new contact and add it to the roster
                     var contact = new Contact();
                     contact.name = $(this).attr('name') || "";
-                    contact.subscription = $(this).attr('subscription') ||
-                        "none";
+                    contact.subscription = $(this).attr('subscription') || "none";
                     contact.ask = $(this).attr('ask') || ""; 
                     $(this).find("group").each(function () {
                         contact.groups.push($(this).text());
@@ -60,7 +56,7 @@ Strophe.addConnectionPlugin('roster', {
                 });
 
                 // let user code know something happened
-                $(document).trigger('roster_changed', that);
+                $(document).trigger('roster_changed', that.contacts);
             });
         } else if (status === Strophe.Status.DISCONNECTED) {
             // set all users offline
@@ -69,7 +65,7 @@ Strophe.addConnectionPlugin('roster', {
             }
             
             // notify user code
-            $(document).trigger('roster_changed', this);
+            $(document).trigger('roster_changed', this.contacts);
         }
     },
 
@@ -79,25 +75,29 @@ Strophe.addConnectionPlugin('roster', {
         var jid = item.attr('jid');
         var subscription = item.attr('subscription') || "";
         
-        if (subscription === "remove") {
-            // removing contact from roster
-            delete this.contacts[jid];
-        } else if (subscription === "none") {
-            // adding contact to roster
-            var contact = new Contact();
-            contact.name = item.attr('name') || "";
-            item.find("group").each(function () {
-                contact.groups.push(this.text());
-            });
-            this.contacts[jid] = contact;
-        } else {
-            // modifying contact on roster
-            var contact = this.contacts[jid];
-            contact.name = item.attr('name') || contact.name;
-            contact.subscription = subscription || contact.subscription;
-            contact.ask = item.attr('ask') || contact.ask;
-            contact.groups = [];
-            item.find("group").each(function () {
+		if (subscription === "remove") {
+			// removing contact from roster
+			delete this.contacts[jid];
+		} else if (subscription === "none") {
+			// adding contact to roster
+			var contact = new Contact();
+			contact.name = item.attr('name') || "";
+			item.find("group").each(function () {
+				contact.groups.push(this.text());
+			});
+			this.contacts[jid] = contact;
+		} else {
+			// modifying contact on roster
+			var contact = this.contacts[jid];
+			if(!contact) {
+				var contact = new Contact();
+				this.contacts[jid] = contact;
+			}
+			contact.name = item.attr('name') || contact.name;
+			contact.subscription = subscription || contact.subscription;
+			contact.ask = item.attr('ask') || contact.ask;
+			contact.groups = [];
+			item.find("group").each(function () {
                 contact.groups.push(this.text());
             });
         }
@@ -106,7 +106,7 @@ Strophe.addConnectionPlugin('roster', {
         this.connection.send($iq({type: "result", id: $(iq).attr('id')}));
         
         // notify user code of roster changes
-        $(document).trigger("roster_changed", this);
+        $(document).trigger("roster_changed", this.contacts);
         
         return true;
     },
@@ -118,16 +118,20 @@ Strophe.addConnectionPlugin('roster', {
         var resource = Strophe.getResourceFromJid(from);
         var ptype = $(presence).attr("type") || "available";
 
-        if (!this.contacts[jid] || ptype === "error") {
+        if (ptype === "subscribe") {
+		    $(document).trigger("connection_requested", jid);
+			return true; // We want to keep that handler!
+		}
+        else if (!this.contacts[jid] || ptype === "error") {
             // ignore presence updates from things not on the roster
             // as well as error presence
             return true;
         }
-        
-        if (ptype === "unavailable") {
+        else if (ptype === "unavailable" || resource == null) {
             // remove resource, contact went offline
             delete this.contacts[jid].resources[resource];
-        } else {
+        } 
+		else {
             // contact came online or changed status
             this.contacts[jid].resources[resource] = {
                 show: $(presence).find("show").text() || "online",
@@ -136,7 +140,8 @@ Strophe.addConnectionPlugin('roster', {
         }
         
         // notify user code of roster changes
-        $(document).trigger("roster_changed", this);
+        $(document).trigger("roster_changed", this.contacts);
+		return true; // We want to keep that handler!
     },
 
     // add a contact to the roster
@@ -168,17 +173,27 @@ Strophe.addConnectionPlugin('roster', {
 
     // subscribe to a new contact's presence
     subscribe: function (jid, name, groups) {
-        this.addContact(jid, name, groups);
-        
         var presence = $pres({to: jid, "type": "subscribe"});
         this.connection.send(presence);
+        this.addContact(jid, name, groups);
     },
     
     // unsubscribe from a contact's presence
     unsubscribe: function (jid) {
         var presence = $pres({to: jid, "type": "unsubscribe"});
         this.connection.send(presence);
-        
         this.deleteContact(jid);
-    }
+    },
+
+	approve: function(jid, name, groups) {
+        var presence = $pres({to: jid, "type": "subscribed"});
+        this.connection.send(presence);
+		this.addContact(jid, name, groups);
+	},
+	
+	decline: function(jid) {
+		
+	}
+	
+
 });

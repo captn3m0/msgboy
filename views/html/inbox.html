@@ -27,12 +27,17 @@
 
     <div id="nav">
         <span class="inbox">Inbox</span>
+        <span class="connections">Connections</span>
         <span class="settings">Settings</span>
     </div>
     
     <script>
     $("#nav span.inbox").click(function() {
         window.location = chrome.extension.getURL('/views/html/inbox.html')
+        return false;
+    })
+    $("#nav span.connections").click(function() {
+        window.location = chrome.extension.getURL('/views/html/connections.html')
         return false;
     })
     $("#nav span.settings").click(function() {
@@ -73,7 +78,16 @@
         } %>
         </p>
         <div class="actions">
-            <a href="" class="destroy">Destroy</a>&nbsp;
+			<% if(typeof actions == "undefined" || actions == null) {
+			} else {
+				for (var name in actions) {
+					action = actions[name];
+					%>
+						<a href="" class="<%= name %>"><%= actions[name].name %></a>&nbsp;
+					<%
+		        }
+			} %>
+			<a href="" class="destroy">Destroy</a>&nbsp;
             <a href="" class="star"><%= starred ? 'Unstar' : 'Star' %> </a>&nbsp;
             <a href="" class="unread"><%= read ? 'Mark as unread' : 'Mark as read' %> </a>
         </div>
@@ -106,15 +120,15 @@
 	//////////////////////////////////////////////////////////////////////////////////////
 	var MessageView = Backbone.View.extend({
 	    events: {
-	        "click p a.more": "openViewer",
-	        "click a.unsubscribe": "unsubscribeFeed",
-	        "click a.destroy": "destroyMessage",
-	        "click a.star": "toggleStarMessage",
-	        "click a.unread": "toggleReadMessage"
+	        "click p a.more"		: "openViewer",
+	        "click a.unsubscribe"	: "unsubscribeFeed",
+	        "click a.destroy"		: "destroyMessage",
+	        "click a.star"			: "toggleStarMessage",
+	        "click a.unread"		: "toggleReadMessage"
 	    },
 
 	    initialize: function () {
-	        _.bindAll(this, "render", "openViewer", "unsubscribeFeed", "destroyMessage", "toggleStarMessage", "toggleReadMessage");
+	        _.bindAll(this, "render", "openViewer", "unsubscribeFeed", "destroyMessage", "toggleStarMessage", "toggleReadMessage", "acceptConnection", "declineConnection");
 	        this.model.bind('change', this.render);
 	        this.model.view = this;
 	        this.model.fetch();
@@ -124,12 +138,35 @@
 	        try {
 	            $(this.el).html(_.template($('#message-template').html(), this.model.toJSON()));
 	        } catch (err) {
-	            logger.error("Couldn't display entry, deleting it : " + JSON.stringify(message.toJSON()));
+	            logger.error("Couldn't display entry (" + err + "), deleting it : " + JSON.stringify(message.toJSON()));
 	            message.destroy();
+	        }
+			// Also attach actions!
+			that = this;
+			for (var callback in this.model.toJSON().actions) {
+				var action = this.model.toJSON().actions[callback]
+				$(this.el).find('a.' + callback).click(function(event){
+					this.model.set({
+			            "read": true
+			        });
+			        this.model.save();
+					this[$(event.target).attr("class")](action.params.jid);
+					return false;
+				}.bind(this));
 	        }
 	        _gaq.push(['_trackEvent', 'message-shown']);
 	        return this;
 	    },
+	
+		acceptConnection: function(jid) {
+			chrome.extension.sendRequest({"acceptConnection": jid}, function (response) {});
+			return false;
+		},
+		
+		declineConnection: function(jid) {
+			chrome.extension.sendRequest({"declineConnection": jid}, function (response) {});
+			return false;
+		},
 
 	    openViewer: function () {
 	        this.model.set({

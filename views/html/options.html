@@ -27,10 +27,28 @@
 </head>
 
 <body>
+
     <div id="nav">
         <span class="inbox">Inbox</span>
+        <span class="connections">Connections</span>
         <span class="settings">Settings</span>
     </div>
+    
+    <script>
+    $("#nav span.inbox").click(function() {
+        window.location = chrome.extension.getURL('/views/html/inbox.html')
+        return false;
+    })
+    $("#nav span.connections").click(function() {
+        window.location = chrome.extension.getURL('/views/html/connections.html')
+        return false;
+    })
+    $("#nav span.settings").click(function() {
+        window.location = chrome.extension.getURL('/views/html/options.html')
+        return false;
+    })
+    </script>
+
     <div id="settings">
 		<span id="signup">Please <a href="http://msgboy.com/" target="_blank">sign up</a> first if you don't have an account just yet.</span>
         <h2>Account</h2>
@@ -67,15 +85,6 @@
 	    var s = document.getElementsByTagName('script')[0];
 	    s.parentNode.insertBefore(ga, s);
 	})();
-
-	$("#nav span.inbox").click(function () {
-	    window.location = chrome.extension.getURL('/views/html/inbox.html')
-	    return false;
-	})
-	$("#nav span.settings").click(function () {
-	    window.location = chrome.extension.getURL('/views/html/options.html')
-	    return false;
-	})
 
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                          Chrome Extension Handlers                               //
