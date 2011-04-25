@@ -22,12 +22,15 @@ Strophe.addConnectionPlugin('pep', {
 
     pepNotificationReceived: function (msg) {
 		// Check if the sender is in the roster of this user.
-		if(this._connection.roster.contacts[$(msg).attr('from')]) {
+		if(this._connection.roster.contacts[$(msg).attr('from')] || Strophe.getBareJidFromJid(this._connection.jid) == $(msg).attr('from')) {
 			var entries = msg.getElementsByTagName("entry");
             for (i = 0; i < entries.length; i++) {
                 var atom = entries[i];
 				$(document).trigger('notification_received', {via: $(msg).attr('from'), payload: atom});
 			}
+		}
+		else {
+			// Message from somebody else!
 		}
         return true; // We must return true to keep the handler active!
     },
