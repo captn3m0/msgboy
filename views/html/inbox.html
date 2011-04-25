@@ -67,9 +67,13 @@
     <script type="text/template" id="message-template">
     <div class="message<%= read ? ' read' : ' unread' %> <%= starred ? ' starred' : '' %>">
         <h3><%= title %></h3>
-        <% if(source) { %>
+        <% if(typeof(source) != "undefined" && source) { %>
         <p>From : <a href="<%= source.url %>"><%= source.title %></a> (<a class="unsubscribe" href="">Unsubscribe</a>)</p>
         <% } %>
+        <% if(typeof(via) != "undefined" && via) { %>
+        <p>Via : <%= via %></a></p>
+        <% } %>
+
         <p><%= truncate(strip(summary), 240)%> &nbsp;
         <% if(main_link(links) != "") {
             %>
