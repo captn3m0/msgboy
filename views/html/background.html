@@ -339,16 +339,16 @@
 	                value: true
 	            });
 	        } else if (request.subscribe) { // Subscribes to more feeds
-	            log("Request : subscribe")
+	            log("Request : subscribe ")
 	            _gaq.push(['_trackEvent', 'subscription-requested']);
-	            connection.superfeedr.subscribe(request.subscribe, function (result) {
+	            connection.superfeedr.subscribe(request.subscribe.url, function (result) {
 	                _gaq.push(['_trackEvent', 'feed-subscribed']);
-	                var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe);
+	                var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe.url);
 	                var msg = {
 	                    id: MD5.hexdigest(atom_id + Math.random() * 11),
 	                    atom_id: atom_id,
-	                    title: "New subscription",
-	                    summary: "Successfully subscribed to " + request.subscribe,
+	                    title: "Following " + request.subscribe.title,
+	                    summary: "You're now following " + request.subscribe.title,
 	                    read: true,
 	                    starred: false,
 	                    content: null,

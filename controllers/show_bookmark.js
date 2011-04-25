@@ -52,7 +52,10 @@ chrome.extension.sendRequest({
 						submit: function () {
 							url = $("#msgboy-feed-url").val();
 							chrome.extension.sendRequest({
-								subscribe: url
+								subscribe: {
+									url: url,
+									title: url
+								}
 							}, function (response) {
 								$("#msgboy-bookmark-dialog").remove();
 							});
@@ -77,7 +80,10 @@ chrome.extension.sendRequest({
 					break;
 				case 1:
 					chrome.extension.sendRequest({
-						subscribe: links[0].href
+						subscribe: {
+							url: links[0].href,
+							title: links[0].title || document.title
+						}
 					}, function (response) {});
 					break;
 				default:
@@ -105,7 +111,10 @@ chrome.extension.sendRequest({
 							click: function () {
 								this.style.color = "#E6E6E6";
 								chrome.extension.sendRequest({
-									subscribe: link.href
+									subscribe: {
+										url: link.href,
+										title: document.title
+									}
 								}, function (response) {});
 							}
 						}))

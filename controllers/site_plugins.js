@@ -31,7 +31,13 @@ Plugins.register(new function() {
 
 	this.hijack = function(callback) {
 		$('form[action|="/follow"]').submit(function() {
-			chrome.extension.sendRequest({subscribe: "http://" + $('form[action|="/follow"] input[name="id"]').val() + ".tumblr.com/rss"}, function(response) {
+			chrome.extension.sendRequest({
+				subscribe: {
+					title: $('form[action|="/follow"] input[name="id"]').val() + " on Tumblr",
+					url : "http://" + $('form[action|="/follow"] input[name="id"]').val() + ".tumblr.com/rss"
+				}
+			}, function(response) {
+				// Done
 			});
 		});
 	}
@@ -43,7 +49,13 @@ Plugins.register(new function() {
 			if(content.find("h1")[0] && $(content.find("h1")[0]).text().match(/Following [0-9]* people/)) {
 				links = content.find(".follower .name a")
 				links.each(function(index, link) {
-					chrome.extension.sendRequest({subscribe: $(link).attr("href") + "rss"}, function(response) {
+					chrome.extension.sendRequest({
+						subscribe: {
+							url: $(link).attr("href") + "rss",
+							title: $(link).html() + " on Tumblr"
+						}
+					}, function(response) {
+						// Done
 					});
 				});
 				if(links.length > 0) {
@@ -79,7 +91,12 @@ Plugins.register(new function() {
 	this.hijack = function(callback) {
 		// This methods hijacks the susbcription action on the specific website for this plugin.
 		var submitted = function() {
-			chrome.extension.sendRequest({subscribe: $("#quickadd").val()}, function(response) {
+			chrome.extension.sendRequest({
+				subscribe: {
+					url: $("#quickadd").val(),
+					title: $("#quickadd").val()
+				}
+			}, function(response) {
 			});
 		}
 		$("#quick-add-form .goog-button-body").click(submitted)
@@ -93,7 +110,13 @@ Plugins.register(new function() {
 		request.onreadystatechange = function() {
 			if (request.readyState == 4) {
 				urls = $(request.responseXML).find("outline").each(function() {
-					chrome.extension.sendRequest({subscribe: $(this).attr("xmlUrl")}, function(response) {
+					chrome.extension.sendRequest({
+						subscribe: {
+							url: $(this).attr("xmlUrl"),
+							title: $(this).attr("title")
+						}
+					}, function(response) {
+						// Done
 					});
 				});
 			}
@@ -121,7 +144,13 @@ Plugins.register(new function() {
 			action = url.split("/")[2]
 			switch(action) {
 				case "follow":
-				chrome.extension.sendRequest({subscribe:"http://digg.com/" + login + ".rss"}, function(response) {
+				chrome.extension.sendRequest({
+					subscribe: {
+						url: "http://digg.com/" + login + ".rss",
+						title: login + " on Digg"
+					}
+				}, function(response) {
+					//
 				});
 				break;
 				case "unfollow":
@@ -154,7 +183,13 @@ Plugins.register(new function() {
 			action = $(event.target).text();
 			switch(action) {
 				case "Watch":
-				chrome.extension.sendRequest({subscribe:url}, function(response) {
+				chrome.extension.sendRequest({
+					subscribe:{
+						url: url,
+						title: document.title
+					}
+				}, function(response) {
+					// Done
 				});
 				break;
 				case "Unwatch":
@@ -179,7 +214,13 @@ Plugins.register(new function() {
 					content = $(data);
 					// Let's now import them all.
 					content.find(".repo_list .source a").each(function(){
-						chrome.extension.sendRequest({subscribe:this.href+"/commits/master.atom"}, function(response) {
+						chrome.extension.sendRequest({
+							subscribe: {
+								url: this.href+"/commits/master.atom",
+								title: this.title
+							}
+						}, function(response) {
+							// Done
 						});
 					});
 				})
@@ -201,7 +242,13 @@ Plugins.register(new function() {
 		// This methods hijacks the susbcription action on the specific website for this plugin.
 		$("a.btn-follow").live('click', function(event) {
 			url = 'https://github.com/' + $(event.target).attr("data-user") + ".atom";
-			chrome.extension.sendRequest({subscribe:url}, function(response) {
+			chrome.extension.sendRequest({
+				subscribe: {
+					url: url,
+					title: $(event.target).attr("data-user") + " on Github"
+				}
+			}, function(response) {
+				// Done
 			});
 		});
 		$("a.btn-unfollow").live('click', function(event) {
@@ -218,7 +265,13 @@ Plugins.register(new function() {
 			links = content.find("#watchers li a.follow")
 			links.each(function() {
 				url = 'https://github.com/' + $(this).attr("data-user") + ".atom";
-				chrome.extension.sendRequest({subscribe:url}, function(response) {
+				chrome.extension.sendRequest({
+					subscribe:{
+						url: url,
+						title: $(this).attr("data-user") + " on Github"
+					}
+				}, function(response) {
+					// Done
 				});
 			});
 			if(links.length > 0) {
@@ -256,14 +309,19 @@ Plugins.register(new function() {
 
 	this.hijack = function(callback) {
 		$("#dsq-post-button").live('click', function(event) {
-			chrome.extension.sendRequest({subscribe:$(".dsq-subscribe-rss a").attr("href")}, function(response) {
+			chrome.extension.sendRequest({
+				subscribe: {
+					url: $(".dsq-subscribe-rss a").attr("href"),
+					title: document.title
+				}
+			}, function(response) {
+				// Done
 			});
 		});
 	},
 	
 	this.importSubscriptions = function() {
 		alert("Sorry, we cannot import your current disqus threads, but when you will post answers to new threads, you will be subscribed to those.")
-		
 	}
 	
 });
