@@ -1,6 +1,6 @@
 {
   "name": "Msgboy",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Grownme makes Chrome more useful and smarter!",
   "icons": {
     "24": "/views/icons/24.png",
@@ -16,7 +16,7 @@
     "notifications",
     "tabs",
     "background",
-	"management",
+    "management",
     "unlimitedStorage",
     "http://msgboy.com/",
     "https://msgboy.com/",
