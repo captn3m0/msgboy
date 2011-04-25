@@ -91,7 +91,6 @@ Strophe.addConnectionPlugin('superfeedr', {
 
     notificationReceived: function (msg) {
         if (msg.getAttribute('from') == "firehoser.superfeedr.com") {
-            var items = [];
             var entries = msg.getElementsByTagName("entry");
             var status = msg.getElementsByTagName("status")[0];
             var source = {
@@ -99,36 +98,35 @@ Strophe.addConnectionPlugin('superfeedr', {
                 url: status.getAttribute("feed")
             }
             for (i = 0; i < entries.length; i++) {
-                var atom = entries[i];
-                var links = {};
-                var atom_links = atom.getElementsByTagName("link");
-                for (j = 0; j < atom_links.length; j++) {
-                    var link = atom_links[j];
-                    l = {
-                        href: link.getAttribute("href"),
-                        rel: link.getAttribute("rel"),
-                        title: link.getAttribute("title"),
-                        type: link.getAttribute("type")
-                    };
-                    links[link.getAttribute("rel")] = (links[link.getAttribute("rel")] ? links[link.getAttribute("rel")] : {});
-                    links[link.getAttribute("rel")][link.getAttribute("type")] = (links[link.getAttribute("rel")][link.getAttribute("type")] ? links[link.getAttribute("rel")][link.getAttribute("type")] : []);
-                    links[link.getAttribute("rel")][link.getAttribute("type")].push(l);
-                }
-                items.push({
-                    id: MD5.hexdigest(source.url + ":" + Strophe.getText(atom.getElementsByTagName("id")[0])),
-                    atom_id: Strophe.getText(atom.getElementsByTagName("id")[0]),
-                    published: Strophe.getText(atom.getElementsByTagName("published")[0]),
-                    updated: Strophe.getText(atom.getElementsByTagName("updated")[0]),
-                    title: Strophe.getText(atom.getElementsByTagName("title")[0]),
-                    summary: Strophe.getText(atom.getElementsByTagName("summary")[0]),
-                    links: links,
-                    source: source
-                });
-            }
-            for (i = 0; i < items.length; i++) {
-	            $(document).trigger('notification', items[i]);
+	            $(document).trigger('notification_received', {payload: entries[i], source: source});
             }
         }
         return true; // We must return true to keep the handler active!
-    }
+    },
+
+	convertAtomToJson: function (atom) {
+	    var links = {};
+	    var atom_links = atom.getElementsByTagName("link");
+	    for (j = 0; j < atom_links.length; j++) {
+	        var link = atom_links[j];
+	        l = {
+	            href: link.getAttribute("href"),
+	            rel: link.getAttribute("rel"),
+	            title: link.getAttribute("title"),
+	            type: link.getAttribute("type")
+	        };
+	        links[link.getAttribute("rel")] = (links[link.getAttribute("rel")] ? links[link.getAttribute("rel")] : {});
+	        links[link.getAttribute("rel")][link.getAttribute("type")] = (links[link.getAttribute("rel")][link.getAttribute("type")] ? links[link.getAttribute("rel")][link.getAttribute("type")] : []);
+	        links[link.getAttribute("rel")][link.getAttribute("type")].push(l);
+	    }
+	    return {
+	        id: MD5.hexdigest(Strophe.getText(atom.getElementsByTagName("id")[0])),
+	        atom_id: Strophe.getText(atom.getElementsByTagName("id")[0]),
+	        published: Strophe.getText(atom.getElementsByTagName("published")[0]),
+	        updated: Strophe.getText(atom.getElementsByTagName("updated")[0]),
+	        title: Strophe.getText(atom.getElementsByTagName("title")[0]),
+	        summary: Strophe.getText(atom.getElementsByTagName("summary")[0]),
+	        links: links,
+	    };
+	}
 });

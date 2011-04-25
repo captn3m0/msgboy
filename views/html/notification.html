@@ -57,11 +57,16 @@
 	        json = this.model.toJSON();
 	        if (this.message_count == 1) {
 	            $(this.el + " h2").html(json.title)
-	            if (json.source) {
-	                $(this.el + " p").html("<span>" + json.source.title + "</span>&nbsp—&nbsp" + truncate(strip(json.summary), 128))
+	            html = "";
+				if (json.source) {
+					html += "<span>" + json.source.title + "</span>&nbsp—&nbsp" + truncate(strip(json.summary), 128)
 	            } else {
-	                $(this.el + " p").html(truncate(strip(json.summary), 128))
+					html += truncate(strip(json.summary), 128)
 	            }
+				if(json.via) {
+					html += "via <span>" + json.via + "</span>."
+				}
+	            $(this.el + " p").html(html)
 	            return this;
 	        } else {
 	            $(this.el + " h2").html("You have " + this.message_count + " messages")
