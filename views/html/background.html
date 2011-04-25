@@ -25,9 +25,9 @@
     <script src="../../models/subscription.js" type="text/javascript"></script> 
 
     <!-- Controller includes -->
+	<script src="../../controllers/strophe.caps.js" type="text/javascript" ></script>
     <script src="../../controllers/strophe.superfeedr.js" type="text/javascript"></script> 
     <script src="../../controllers/strophe.pep.js" type="text/javascript"></script> 
-	<script src="../../controllers/strophe.caps.js" type="text/javascript" ></script>
     <script src="../../controllers/strophe.roster.js" type="text/javascript"></script> 
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     
@@ -164,8 +164,6 @@
     }
 
     // Disconnects to reconnect.
-
-
     function reconnect() {
         autoReconnect = true; // Let's make sure we have the autoReconnect.
         if (connection.status == Strophe.Status.CONNECTING || connection.status == Strophe.Status.CONNECTED || connection.status == Strophe.Status.DISCONNECTING) {
@@ -447,6 +445,30 @@
 	            connection.roster.unsubscribe(request.refuseConnection);
 	            sendResponse({
 	                value: true
+	            });
+			} else if (request.share) {
+	            _gaq.push(['_trackEvent', 'item-shared']);
+	            log("Request : share");
+				// And now we need to share stuff!
+				payload = connection.superfeedr.buildAtomFromJson(
+					request.share.title,
+					request.share.selection,
+					[
+						{
+							"rel": "alternate",
+							"type": "text/html",
+							"title": request.share.title,
+							"href": request.share.location
+						}
+					]
+					, function() {
+						console.log("Successfully shared");
+					}, function() {
+						console.log("Failed to share")
+					});
+				connection.pep.publish("http://jabber.org/protocol/links", payload);
+				sendResponse({
+					value: true
 	            });
 	        } else {
 	            log("Could not handle message : " + request)

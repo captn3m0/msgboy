@@ -22,7 +22,8 @@ chrome.extension.sendRequest({
 	}
 }, function (response) {
 	var actions = [{
-		name: "follow",
+		id: "follow",
+		name: "Follow",
 		callback: function () {
 			// Detect feed url(s)
 			// If there are 0, leave the icon greyed.
@@ -120,7 +121,21 @@ chrome.extension.sendRequest({
 			});
 		}
 	}, {
-		name: "inbox",
+		id: "share",
+		name: "Share",
+		callback: function () {
+			chrome.extension.sendRequest({
+				share: {
+					location: window.location.toString(),
+					selection: window.getSelection().toString(),
+					title: document.title || "Untitled",
+				}
+			}, function (response) {});
+			return false;
+		}
+	}, {
+		id: "inbox",
+		name: "Inbox",
 		callback: function () {
 			chrome.extension.sendRequest({
 				"tab": {
@@ -130,8 +145,8 @@ chrome.extension.sendRequest({
 			}, function (response) {});
 		}
 	}, {
-		name: "",
 		id: "connectionStatus",
+		name: "",
 		callback: function () {
 			chrome.extension.sendRequest({
 				connect: true

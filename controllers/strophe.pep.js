@@ -46,8 +46,7 @@ Strophe.addConnectionPlugin('pep', {
      * (Function) error - The callback function on error.
      */
     publish: function (node, content, success, error) {
-        this._connection.sendIQ(
-        this.createPublishIQ(node, content), success, error);
+		this._connection.sendIQ(this.createPublishIQ(node, content), success, error);
     },
 
     /**
@@ -118,7 +117,6 @@ Strophe.addConnectionPlugin('pep', {
      * (Object) content	- The content as an DOM object or an array of DOM objets
      */
     createPublishIQ: function (node, content) {
-
         var pubid = this._connection.getUniqueId("peppublishiq");
 
         if (!this.isArray(content)) {
@@ -132,18 +130,21 @@ Strophe.addConnectionPlugin('pep', {
         }).c("publish", {
             node: node
         });
+		console.log(iq.tree())
 
         for (var i in content) {
 
             if (content[i]) {
 
                 var c = content[i];
+				console.log(c)
 
                 if (this.isNode(c) || this.isElement) {
                     iq.c("item").cnode(c).up().up();
                 }
             }
         }
+
         return iq;
     },
 

@@ -29,7 +29,7 @@
 }
 
 #msgboy-bookmark-dialog {
-	font-family: Georgia,"Times New Roman", Times, serif;
+	font-family: DroidSerifRegular, Georgia, serif;
 	text-align:left;
 	position:absolute;
 	z-index:999999;
@@ -51,4 +51,8 @@
 
 #link-list li {
 	list-style-type: disc;
+},
+
+#connectionStatus {
+	display: none;
 }
