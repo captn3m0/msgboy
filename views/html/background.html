@@ -81,35 +81,8 @@
 	//////////////////////////////////////////////////////////////////////////////////////
     //                                  Functions                                       //
     //////////////////////////////////////////////////////////////////////////////////////
-    // Creates the HTML5 notification
-
-
-    function notify(id) {
-        _gaq.push(['_trackEvent', 'notification-showed']);
-
-        log("Showing notification for " + id)
-        if (!currentNotification) {
-            url = chrome.extension.getURL('/views/html/notification.html');
-            webkitNotification = window.webkitNotifications.createHTMLNotification(url);
-            webkitNotification.onclose = function () {
-                currentNotification = null;
-            };
-            webkitNotification.show();
-            currentNotification = webkitNotification;
-        }
-        chrome.extension.sendRequest({
-            "notify": {
-                "message": id
-            }
-        }, function (response) {
-            // Let's notify the people who may care about this!
-        });
-        return currentNotification;
-    }
 
     // Logs messages to the console
-
-
     function log(msg) {
         if (logEnabled) {
             console.log(msg);
@@ -117,8 +90,6 @@
     }
 
     // Handles XMPP Connections
-
-
     function onConnect(status) {
         var msg = currentConnectionStatus['msg'];
         if (status == Strophe.Status.CONNECTING) {
@@ -152,9 +123,8 @@
         currentConnectionStatus.trigger("change", msg);
         log(msg);
     } // function onConnect
+
     // Connects the XMPP Client
-
-
     function connect() {
         autoReconnect = true;
         password = inbox.get("settings.password");
@@ -173,6 +143,30 @@
             connect(); // Looks like we never tried to actually connect!
         }
     }
+
+
+	inbox.bind("messages:added", function(id) {
+		_gaq.push(['_trackEvent', 'notification-showed']);
+		log("Showing notification for " + id)
+		// Open a notification window if needed!
+		if (!currentNotification) {
+			url = chrome.extension.getURL('/views/html/notification.html');
+			webkitNotification = window.webkitNotifications.createHTMLNotification(url);
+			webkitNotification.onclose = function () {
+				currentNotification = null;
+			};
+			webkitNotification.show();
+			currentNotification = webkitNotification;
+		}
+		chrome.extension.sendRequest({
+			"notify": {
+				"message": id
+			}
+		}, function (response) {
+			// Let's notify the people who may care about this, includingthe notification popup, hopefully :)
+		});
+		return currentNotification;
+	})
 
 	chrome.management.get("fhedmfoledcafkkdnfmikkciacgoapom", function (extension_infos) {
 
@@ -213,10 +207,6 @@
 				msg.via = notification.via
 			}
 	        message = inbox.addMessage(msg);
-	        if (message) {
-	            log("notifying");
-	            notify(message.toJSON().id);
-	        }
 		});
 
 	    //////////////////////////////////////////////////////////////////////////////////////
@@ -262,10 +252,6 @@
                 source: null
             }
             message = inbox.addMessage(msg);
-            if (message) {
-                notify(message.toJSON().id);
-            }
-			
 	        // connection.roster.approve(connection_jid);
 	    });
 
@@ -370,12 +356,10 @@
 	                    source: null
 	                };
 	                message = inbox.addMessage(msg);
-	                if (message) {
-	                    notify(message.toJSON().id);
-	                    sendResponse({
-	                        value: result
-	                    });
-	                }
+	                sendResponse({
+                        value: result
+                    });
+    
 	            })
 	        } else if (request.unsubscribe) { // Unsubscribes from feeds
 	            log("Request : unsubscribe")
