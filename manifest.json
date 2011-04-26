@@ -18,15 +18,8 @@
     "background",
     "management",
     "unlimitedStorage",
-    "http://msgboy.com/",
-    "https://msgboy.com/",
-    "http://www.google.com/",
-    "https://www.google.com/",
-    "http://www.tumblr.com/",
-    "https://www.tumblr.com/",
-    "http://github.com/",
-    "http://digg.com/",
-    "https://github.com/"
+    "http://*/",
+    "https://*/"
   ],
   "content_scripts": [
     {
@@ -60,6 +53,7 @@
         "/controllers/plugins/github-repos.js",
         "/controllers/plugins/github-users.js",
         "/controllers/plugins/disqus.js",
+        "/controllers/plugins/statusnet.js",
         "/controllers/run_plugins.js"
       ],
       "matches": [

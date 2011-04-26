@@ -58,9 +58,8 @@ function main_link(links) {
 }
 
 function nameToId(name) {
-    return name.toLowerCase().replace(/\s+/g, '-')
+    return name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '-')
 }
-
 
 Log = function(level) {
 	this.level = level;

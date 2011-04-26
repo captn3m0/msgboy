@@ -18,13 +18,14 @@ var Plugin = new function() {
 	this.importSubscriptions = function() {
 		// This methods will implements how all the subscriptions from the specific website for this plugin can be imported
 		alert("Importing")
-	}
+	},
 	
 	this.hijack = function() {
 		// This method will add a callback that hijack a website subscription (or follow, or equivalent) so that msgboy also mirrors this subscription.
-	}
+	},
 	
 	this.isUsing = function(callback) {
-		// This method calls back if the user is a logged-in user of the service for this plugin.
+		// This method calls back with true if the user is a logged-in user of the service for this plugin. It callsback with false otherwise.
+		// callback(true)
 	}
 }
