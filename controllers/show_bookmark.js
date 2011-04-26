@@ -1,6 +1,4 @@
 // Show the bookmark
-
-
 function listenToConnectionStatus() {
 	console.log("Connected to background script.")
 	port = chrome.extension.connect({

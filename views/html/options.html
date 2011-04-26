@@ -23,6 +23,12 @@
     <!-- Controller includes -->
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     <script src="../../controllers/site_plugins.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/digg.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/disqus.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/github-repos.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/github-users.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/google-reader.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/tumblr.js" type="text/javascript"></script> 
 
 </head>
 
@@ -58,7 +64,7 @@
 		<p id="connectionStatus"></p>
         <div id="plugins" style="display:none">
 	        <h2>Plugins</h2>
-			<p>Make sure you are logged in these services before you check the import box.</p>
+			<p>We're loading the services that you seem to be using on the web, so you can import subscriptions you've made there. the msgboy will keep that  sync'ed for you! </p>
         </div>
         <span id="saved">Saved</span>
 		<input id="reset" type="button" value="Reset" />
@@ -185,38 +191,39 @@
 	var PluginView = Backbone.View.extend({
 	    initialize: function () {
 	        _.each(Plugins.all, function (plugin) {
-	            element = $(_.template($('#plugin-template').html(), plugin))
-
-	            chrome.extension.sendRequest({
-	                "settings": {
-	                    "get": ["plugins." + nameToId(plugin.name)]
-	                }
-	            }, function (response) {
-	                $("#" + nameToId(plugin.name)).attr('checked', response.value);
-	            });
-
-
-	            element.change(function () {
-	                if ($(this).find("input").is(':checked')) {
-	                    // When clicked. We should just import the feeds in the back!
-	                    chrome.extension.sendRequest({
-	                        "settings": {
-	                            "set": ["plugins." + nameToId(plugin.name), true]
-	                        }
-	                    }, function (response) {});
-	                    _gaq.push(['_trackEvent', 'plugin-import-' + nameToId(plugin.name)]);
-	                    plugin.importSubscriptions();
-	                } else {
-	                    _gaq.push(['_trackEvent', 'plugin-stop-import-' + nameToId(plugin.name)]);
-	                    chrome.extension.sendRequest({
-	                        "settings": {
-	                            "set": ["plugins." + nameToId(plugin.name), false]
-	                        }
-	                    }, function (response) {});
-	                }
-	            })
-	            $("#plugins").append(element);
-	        });
+				plugin.isUsing(function(using) {
+					if(using) {
+						element = $(_.template($('#plugin-template').html(), plugin))
+						chrome.extension.sendRequest({
+							"settings": {
+								"get": ["plugins." + nameToId(plugin.name)]
+							}
+						}, function (response) {
+							$("#" + nameToId(plugin.name)).attr('checked', response.value);
+						});
+						element.change(function () {
+							if ($(this).find("input").is(':checked')) {
+								// When clicked. We should just import the feeds in the back!
+								chrome.extension.sendRequest({
+									"settings": {
+										"set": ["plugins." + nameToId(plugin.name), true]
+									}
+								}, function (response) {});
+								_gaq.push(['_trackEvent', 'plugin-import-' + nameToId(plugin.name)]);
+								plugin.importSubscriptions();
+							} else {
+								_gaq.push(['_trackEvent', 'plugin-stop-import-' + nameToId(plugin.name)]);
+								chrome.extension.sendRequest({
+									"settings": {
+										"set": ["plugins." + nameToId(plugin.name), false]
+									}
+								}, function (response) {});
+							}
+						})
+						$("#plugins").append(element);
+					}
+				})
+			});
 	    }
 	})
 

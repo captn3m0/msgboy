@@ -25,6 +25,7 @@
     "http://www.tumblr.com/",
     "https://www.tumblr.com/",
     "http://github.com/",
+    "http://digg.com/",
     "https://github.com/"
   ],
   "content_scripts": [
@@ -53,6 +54,12 @@
         "/lib/jquery/jquery.event.drag-2.0.min.js",
         "/controllers/utils.js",
         "/controllers/site_plugins.js",
+        "/controllers/plugins/tumblr.js",
+        "/controllers/plugins/google-reader.js",
+        "/controllers/plugins/digg.js",
+        "/controllers/plugins/github-repos.js",
+        "/controllers/plugins/github-users.js",
+        "/controllers/plugins/disqus.js",
         "/controllers/run_plugins.js"
       ],
       "matches": [

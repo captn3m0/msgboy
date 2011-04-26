@@ -69,7 +69,6 @@ function isFeedDocument() {
   return false;
 }
 
-
 /* Shamelessly stolen from the Official RSS Chrome extension */
 function containsFeed(doc) {
 
