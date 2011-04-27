@@ -25,7 +25,7 @@ Plugins.register(new function() {
 	},
 	
 	this.isUsing = function(callback) {
-		callback(true)
+		callback(false) // By default we won't show
 	}
 	
 });

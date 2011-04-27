@@ -49,6 +49,6 @@ Plugins.register(new function() {
 	
 	this.isUsing = function(callback) {
 		// This method calls back if the user is a logged-in user of the service for this plugin.
-		callback(true);
+		callback(false); // By default, it doesn't show as being actively used.
 	}
 });
