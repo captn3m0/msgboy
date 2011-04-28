@@ -55,6 +55,7 @@
         "/controllers/plugins/github-users.js",
         "/controllers/plugins/disqus.js",
         "/controllers/plugins/statusnet.js",
+        "/controllers/plugins/typepad.js",
         "/controllers/run_plugins.js"
       ],
       "matches": [
