@@ -48,6 +48,7 @@
         "/controllers/utils.js",
         "/controllers/site_plugins.js",
         "/controllers/plugins/tumblr.js",
+        "/controllers/plugins/posterous.js",
         "/controllers/plugins/google-reader.js",
         "/controllers/plugins/digg.js",
         "/controllers/plugins/github-repos.js",
