@@ -139,7 +139,6 @@ Strophe.addConnectionPlugin('pep', {
             if (content[i]) {
 
                 var c = content[i];
-				console.log(c)
 
                 if (this.isNode(c) || this.isElement) {
                     iq.c("item").cnode(c).up().up();
