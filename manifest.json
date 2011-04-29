@@ -56,6 +56,8 @@
         "/controllers/plugins/disqus.js",
         "/controllers/plugins/statusnet.js",
         "/controllers/plugins/typepad.js",
+        "/controllers/plugins/quora-people.js",
+        "/controllers/plugins/quora-topics.js",
         "/controllers/run_plugins.js"
       ],
       "matches": [

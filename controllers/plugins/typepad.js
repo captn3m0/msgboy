@@ -18,13 +18,13 @@ Plugins.register(new function() {
 				// Done
 			});
 			return false;
-		})
-	}
+		});
+	},
 
 	this.importSubscriptions = function() {
 		// This methods import subscription from the specific website for this plugin.
-		alert("Sorry we cannot import subscriptions from Typepad at this moment.")
-	}
+		alert("Sorry we cannot import subscriptions from Typepad at this moment.");
+	},
 
 	this.isUsing = function(callback) {
 		var that = this;
@@ -37,6 +37,6 @@ Plugins.register(new function() {
 				callback(true);
 			}
 		});
-	},
+	}
 
 });
