@@ -446,9 +446,9 @@
 						}
 					]
 					, function() {
-						console.log("Successfully shared");
+						log("Successfully shared");
 					}, function() {
-						console.log("Failed to share")
+						log("Failed to share")
 					});
 				connection.pep.publish("http://jabber.org/protocol/links", payload);
 				sendResponse({

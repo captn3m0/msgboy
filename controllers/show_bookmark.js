@@ -1,6 +1,5 @@
 // Show the bookmark
 function listenToConnectionStatus() {
-	console.log("Connected to background script.")
 	port = chrome.extension.connect({
 		name: "connection"
 	})
@@ -8,8 +7,10 @@ function listenToConnectionStatus() {
 		$('#connectionStatus').text(msg);
 	});
 	port.onDisconnect.addListener(function () {
-		console.log("Disconnected from background script.");
-		listenToConnectionStatus(); // We reconnect.
+		setTimeout(function () {
+			listenToConnectionStatus(); // We reconnect.
+        }, 3000);
+        
 	});
 }
 
