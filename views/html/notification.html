@@ -67,40 +67,31 @@
 			}
     
 	        if (this.message_count > 1) {
-				html += "<br /><small>You also have " + this.message_count + " other messages.</small>"
+				html += "<br /><small>You also have " + (this.message_count - 1) + " other messages.</small>"
 	        }
 	        $(this.el + " p").html(html)
     
 	    },
 
-	    openViewer: function () {
-	        if (this.message_count == 1) {
-	            // Open the message!
-	            this.model.set({
-	                "read": true
-	            });
-	            this.model.save();
-	            chrome.extension.sendRequest({
-	                "tab": {
-	                    url: this.model.toJSON().links.alternate["text/html"][0].href,
-	                    selected: false
-	                }
-	            }, function (response) {});
-	        } else {
-	            // Open the inbox
-	            chrome.extension.sendRequest({
-	                "tab": {
-	                    url: chrome.extension.getURL('/views/html/inbox.html'),
-	                    selected: true
-	                }
-	            }, function (response) {});
-	        }
-	        chrome.extension.sendRequest({
-	            close: true
-	        }, function (response) {
-	            window.close();
-	        });
-	    },
+		openViewer: function () {
+			// Open the message!
+			this.model.set({
+				"read": true
+			});
+			this.model.save();
+			chrome.extension.sendRequest({
+				"tab": {
+					url: this.model.toJSON().links.alternate["text/html"][0].href,
+					selected: false
+				}
+			}, function (response) {});
+			
+			chrome.extension.sendRequest({
+				close: true
+			}, function (response) {
+				window.close();
+			});
+		},
 
 	    add_message: function (message) {
 	        this.message_count++;
