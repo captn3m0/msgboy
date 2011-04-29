@@ -9,7 +9,6 @@ Plugins.register(new function() {
 	},
 
 	this.hijack = function(callback) {
-		console.log("HIJACK")
 		$('#posterous_required_header').hover(function(event) {
 			if(!this.hijacked) {
 				this.hijacked = true;

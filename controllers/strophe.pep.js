@@ -133,7 +133,6 @@ Strophe.addConnectionPlugin('pep', {
         }).c("publish", {
             node: node
         });
-		console.log(iq.tree())
 
         for (var i in content) {
 
