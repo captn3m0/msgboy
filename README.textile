@@ -1,0 +1,9 @@
+h2.TODO
+
+* Add unread count
+* Add per-site unread list
+* Add snooze
+
+h3. Plugins
+
+* Blogger
