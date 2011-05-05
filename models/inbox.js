@@ -11,9 +11,13 @@ var Inbox = Backbone.Model.extend({
   
   addMessage: function(msg, options) {
 	// Adds the message if the message isn't yet present
-	var message = new Message({'id': msg.id})
+	var message = new Message({
+		'id': msg.id,
+		'created_at': new Date().getTime(),
+		'read': false,
+		'starred': false
+	});
 	var that = this;
-	// Add any missing field...
 	
 	message.fetch({
 		error: function() {

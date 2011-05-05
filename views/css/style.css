@@ -23,6 +23,10 @@ html {
   margin-top: 80px;
 }
 
+span.time {
+	font-style: italic;
+}
+
 .read {
   color: #CCC;
 }

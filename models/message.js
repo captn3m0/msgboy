@@ -10,9 +10,7 @@ var Message = Backbone.Model.extend({
     "links":        {},
     "read":         false,
     "starred":      false,
-  },
-
-  initialize: function(content) {
+	"created_at": 	null
   },
 
   mark_as_read: function() {
