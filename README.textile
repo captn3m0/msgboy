@@ -3,6 +3,7 @@ h2.TODO
 * Add unread count
 * Add per-site unread list
 * Add snooze
+* Add support for ActivityStreams, and better excerpts (iframes + readability)
 
 h3. Plugins
 
