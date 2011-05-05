@@ -186,18 +186,19 @@ chrome.extension.sendRequest({
 
 	// Called when the bookmark has been moved.
 	$("#msgboy-bookmark").bind('drag', function (ev, dd) {
+		console.log("hahahaha")
 		$(this).css({
 			left: dd.offsetX
 		});
 	});
 
 	// Dragging is over.
-	$("#msgboy-bookmark").bind('dragend', function (ev, dd) {
-		chrome.extension.sendRequest({
-			"settings": {
-				"set": ["bookmarkPosition", dd.offsetX]
-			}
-		}, function (response) {});
-	});
+	// $("#msgboy-bookmark").bind('dragend', function (ev, dd) {
+	// 	chrome.extension.sendRequest({
+	// 		"settings": {
+	// 			"set": ["bookmarkPosition", dd.offsetX]
+	// 		}
+	// 	}, function (response) {});
+	// });
 
 });

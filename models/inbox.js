@@ -1,5 +1,6 @@
 var Inbox = Backbone.Model.extend({
   storeName: "inbox",
+	database: msgboyDatabase,
   
   initialize: function() {
     this.id = 1;
@@ -8,23 +9,31 @@ var Inbox = Backbone.Model.extend({
     this.messages.fetch();
   },
   
-  addMessage: function(msg) {
+  addMessage: function(msg, options) {
 	// Adds the message if the message isn't yet present
 	var message = new Message({'id': msg.id})
 	var that = this;
+	// Add any missing field...
+	
 	message.fetch({
 		error: function() {
 			// The message was not found, so we just have to create one!
-			message.set(msg) // And now set the attributes.
 			message.collection = this.messages;
-			message.save();
-			that.trigger("messages:added", message.id)
+			message.save(msg, {
+				success: function() {
+					that.trigger("messages:added", message.id)
+					options.success(message);
+				},
+				error: function(object, error) {
+					console.log("Could not save message")
+					console.log(error)
+				}
+			});
 		},
 		success: function() {
 			// Success, we should return null, as this message was not added, because it already existed!
 		}
 	});
-	return message;
   }
   
 });

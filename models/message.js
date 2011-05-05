@@ -1,5 +1,6 @@
 var Message = Backbone.Model.extend({
   storeName: "messages",
+  database: msgboyDatabase,
 
   defaults: {
     "title":        null,
