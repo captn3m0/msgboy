@@ -229,8 +229,8 @@
                 updated: date.toISOString(),
                 title: connection_jid + " wants to connect",
                 summary: "You will be able to share content with " + connection_jid + ", and " + connection_jid + " will be able to share content with you.",
-                read: true,
-                starred: false,
+                read_at: new Date().getTime(),
+                starred_at: 0,
                 content: null,
                 links: {
 					"alternate": {
@@ -357,8 +357,8 @@
 	                    atom_id: atom_id,
 	                    title: "Following " + request.subscribe.title,
 	                    summary: "You're now following " + request.subscribe.title,
-	                    read: true,
-	                    starred: false,
+	                    read_at: new Date().getTime(),
+	                    starred_at: 0,
 	                    content: null,
 	                    links: {},
 	                    source: null

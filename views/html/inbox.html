@@ -66,7 +66,7 @@
 
     <!-- Templates -->
     <script type="text/template" id="message-template">
-    <div class="message<%= read ? ' read' : ' unread' %> <%= starred ? ' starred' : '' %>">
+    <div class="message<%= read_at ? ' read' : ' unread' %> <%= starred_at ? ' starred' : '' %>">
         <h3><%= title %></h3>
 		<span class="time"><%= new Date(created_at).toRelativeTime() %></span>
         <% if(typeof(source) != "undefined" && source) { %>
@@ -94,8 +94,8 @@
 		        }
 			} %>
 			<a href="" class="destroy">Destroy</a>&nbsp;
-            <a href="" class="star"><%= starred ? 'Unstar' : 'Star' %> </a>&nbsp;
-            <a href="" class="unread"><%= read ? 'Mark as unread' : 'Mark as read' %> </a>
+            <a href="" class="star"><%= starred_at ? 'Unstar' : 'Star' %> </a>&nbsp;
+            <a href="" class="unread"><%= read_at ? 'Mark as unread' : 'Mark as read' %> </a>
         </div>
     </div>
     </script>
@@ -144,7 +144,7 @@
 	        try {
 	            $(this.el).html(_.template($('#message-template').html(), this.model.toJSON()));
 	        } catch (err) {
-	            logger.error("Couldn't display entry (" + err + "), deleting it : " + JSON.stringify(message.toJSON()));
+	            logger.error("Couldn't display entry (" + err + "), deleting it : " + JSON.stringify(this.model.toJSON()));
 	            message.destroy();
 	        }
 			// Also attach actions!
@@ -153,7 +153,7 @@
 				var action = this.model.toJSON().actions[callback]
 				$(this.el).find('a.' + callback).click(function(event){
 					this.model.save({
-			            "read": true
+			            read_at: new Date().getTime()
 			        });
 					this[$(event.target).attr("class")](action.params.jid);
 					return false;
@@ -175,7 +175,7 @@
 
 	    openViewer: function () {
 	        this.model.save({
-	            "read": true
+	            read_at: new Date().getTime()
 	        });
 	        var link = main_link(this.model.toJSON().links);
 	        if (link == "") {
@@ -193,7 +193,7 @@
 
 	    unsubscribeFeed: function () {
 	        this.model.save({
-	            "read": true
+	            read_at: new Date().getTime()
 	        });
 	        chrome.extension.sendRequest({
 	            unsubscribe: this.model.toJSON().source.url
@@ -216,12 +216,12 @@
 	        if (this.model.get("starred")) {
 	            _gaq.push(['_trackEvent', 'message-unstarred']);
 	            this.model.save({
-	                "starred": false
+		            starred_at: 0
 	            });
 	        } else {
 	            _gaq.push(['_trackEvent', 'message-starred']);
 	            this.model.save({
-	                "starred": true
+		            starred_at: new Date().getTime()
 	            });
 	        }
 	        return false;
@@ -231,12 +231,12 @@
 	        if (this.model.get("read")) {
 	            _gaq.push(['_trackEvent', 'message-marked-unread']);
 	            this.model.save({
-	                "read": false
+		            read_at: 0
 	            });
 	        } else {
 	            _gaq.push(['_trackEvent', 'message-marked-read']);
 	            this.model.save({
-	                "read": true
+		            read_at: new Date().getTime()
 	            });
 	        }
 	        return false;
@@ -314,7 +314,7 @@
 	        // We should also pre-emptively load more pages if the document is shorter than the page.
 	        if ($("#content").height() < $(window).height()) {
 	            $("#loader").show();
-				loadMore();
+				this.loadMore();
 	        } else {
 	            $("#loader").hide();
 	        }

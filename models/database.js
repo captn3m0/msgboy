@@ -18,5 +18,15 @@ var msgboyDatabase = {
 				next();
             }
         },
+		{
+            version: "0.0.3",
+            migrate: function(db, versionRequest, next) {
+				var store = versionRequest.transaction.objectStore("messages")
+				store.createIndex("readIndex", "read_at", { unique: false}); 
+				store.createIndex("starredIndex", "starred_at", { unique: false}); 
+				next();
+            }
+        },
+
     ]
 }

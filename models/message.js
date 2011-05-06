@@ -8,17 +8,21 @@ var Message = Backbone.Model.extend({
     "summary":      null,
     "content":      null,
     "links":        {},
-    "read":         false,
-    "starred":      false,
+    "read_at":      0,
+    "starred_at":   0,
 	"created_at": 	null
   },
 
   mark_as_read: function() {
-    this.save({read: true});
+    this.save({
+		read_at: new Date().getTime()
+	});
   },
 
   mark_as_starred: function() {
-    this.save({starred: true});
+    this.save({
+		starred_at: new Date().getTime()
+	});
   },
   
 });
