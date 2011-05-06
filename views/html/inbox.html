@@ -117,11 +117,6 @@
 	})();
 
 	//////////////////////////////////////////////////////////////////////////////////////
-	//                                Objects                                           //
-	//////////////////////////////////////////////////////////////////////////////////////
-	var archive = new Archive();
-
-	//////////////////////////////////////////////////////////////////////////////////////
 	//                                Views                                           //
 	//////////////////////////////////////////////////////////////////////////////////////
 	var MessageView = Backbone.View.extend({
@@ -153,7 +148,8 @@
 				var action = this.model.toJSON().actions[callback]
 				$(this.el).find('a.' + callback).click(function(event){
 					this.model.save({
-			            read_at: new Date().getTime()
+			            read_at: new Date().getTime(),
+						unread_at: 0
 			        });
 					this[$(event.target).attr("class")](action.params.jid);
 					return false;
@@ -175,7 +171,8 @@
 
 	    openViewer: function () {
 	        this.model.save({
-	            read_at: new Date().getTime()
+	            read_at: new Date().getTime(),
+				unread_at: 0
 	        });
 	        var link = main_link(this.model.toJSON().links);
 	        if (link == "") {
@@ -193,7 +190,8 @@
 
 	    unsubscribeFeed: function () {
 	        this.model.save({
-	            read_at: new Date().getTime()
+	            read_at: new Date().getTime(),
+				unread_at: 0
 	        });
 	        chrome.extension.sendRequest({
 	            unsubscribe: this.model.toJSON().source.url
@@ -213,7 +211,7 @@
 	    },
 
 	    toggleStarMessage: function () {
-	        if (this.model.get("starred")) {
+	        if (this.model.attributes.starred_at) {
 	            _gaq.push(['_trackEvent', 'message-unstarred']);
 	            this.model.save({
 		            starred_at: 0
@@ -228,15 +226,17 @@
 	    },
 
 	    toggleReadMessage: function () {
-	        if (this.model.get("read")) {
+	        if (this.model.attributes.read_at) {
 	            _gaq.push(['_trackEvent', 'message-marked-unread']);
 	            this.model.save({
-		            read_at: 0
+		            read_at: 0,
+					unread_at: new Date().getTime()
 	            });
 	        } else {
 	            _gaq.push(['_trackEvent', 'message-marked-read']);
 	            this.model.save({
-		            read_at: new Date().getTime()
+		            read_at: new Date().getTime(),
+					unread_at: 0
 	            });
 	        }
 	        return false;
@@ -254,8 +254,9 @@
 	    },
 
 	    initialize: function () {
-			this.loading = false
-			this.lower = 0 // # hour ago
+			this.current_filter  = "created_at";
+			this.loading = false;
+			this.lower = 0; 
 	        _.bindAll(this, 'scrolled', 'showSinglePage', 'render', 'filter', 'loadMore');
 	        $(document).scroll(this.scrolled) // Looks like we can't do it thru 'events' call. Is that a bug in Backbone?
 			this.loadMore();
@@ -278,23 +279,30 @@
 	        this.collection.delete_all();
 	    },
 
-	    loadMore: function () {
-			if(!this.loading) {
-				this.loading = true
-		        _gaq.push(['_trackEvent', 'messages-loaded-more']);
-		        this.collection.fetch({
-					conditions: {created_at: [new Date().getTime() - this.lower, new Date().getTime() - this.lower - 3600000]},
-					success: function() {
-						this.loading = false
-				        this.lower = this.lower + 3600000;
-						_.each(this.collection, function(message, index) {
-							this.showMessageAtBottom(this.collection.at(index));
-						}.bind(this))
-						this.completePage();
-					}.bind(this)
-				});
+		loadMore: function () {
+			if(new Date().getTime() - this.lower > inbox.attributes.epoch) {
+				if(!this.loading) {
+					this.loading = true
+					_gaq.push(['_trackEvent', 'messages-loaded-more']);
+					var conds = {}
+					conds[this.current_filter] =  [new Date().getTime() - this.lower, new Date().getTime() - this.lower - 3600000]
+					this.collection.fetch({
+						conditions: conds,
+						success: function() {
+							this.loading = false
+							this.lower = this.lower + 3600000;
+							_.each(this.collection, function(message, index) {
+								this.showMessageAtBottom(this.collection.at(index));
+							}.bind(this))
+							this.completePage();
+						}.bind(this)
+					});
+				}	
+			} else {
+				// No more to load. We want back to epoch!
+				$("#loader").hide();
 			}
-	    },
+		},
 
 	    showMessageOnTop: function (message) {
 	        var view = new MessageView({
@@ -328,17 +336,19 @@
 	        this.$(".message").hide();
 	        switch ($("#filters:checked").val()) {
 	        case "fetch":
-	            this.$(".message").css("display", "block");
+				this.current_filter = "created_at";
 	            break;
 	        case "unread":
-	            this.$(".unread").css("display", "block");
+				this.current_filter = "unread_at";
 	            break;
 	        case "starred":
-	            this.$(".starred").css("display", "block");
+				this.current_filter = "starred_at";
 	            break;
 	        default:
-	            this.$(".message").css("display", "block");
+				this.current_filter = "created_at";
 	        }
+			this.lower = 0; 
+			this.loadMore();
 	    }
 	});
 
@@ -356,13 +366,19 @@
 	    }
 	});
 
-	//////////////////////////////////////////////////////////////////////////////////////
-	//                                Main                                              //
-	//////////////////////////////////////////////////////////////////////////////////////
-	var archiveView = new ArchiveView({
-	    el: "#archive",
-	    collection: archive
-	});
+	
+	var archiveView = null;
+	var archive = null;
+	var inbox = new Inbox({id: "1"});
+	inbox.fetch({
+		success: function() {
+			archive = new Archive();
+			archiveView = new ArchiveView({
+			    el: "#archive",
+			    collection: archive
+			});
+		}
+	})
 
 	</script>
 </body>

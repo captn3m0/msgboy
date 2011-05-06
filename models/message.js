@@ -9,13 +9,15 @@ var Message = Backbone.Model.extend({
     "content":      null,
     "links":        {},
     "read_at":      0,
+    "unread_at":    0,
     "starred_at":   0,
 	"created_at": 	null
   },
 
   mark_as_read: function() {
     this.save({
-		read_at: new Date().getTime()
+		read_at: new Date().getTime(),
+		unread_at: 0
 	});
   },
 

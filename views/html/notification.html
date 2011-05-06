@@ -77,7 +77,8 @@
 		openViewer: function () {
 			// Open the message!
 			this.model.save({
-	            read_at: new Date().getTime()
+	            read_at: new Date().getTime(),
+	            unread_at: 0
 			});
 			chrome.extension.sendRequest({
 				"tab": {

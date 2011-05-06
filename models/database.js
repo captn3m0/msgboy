@@ -22,8 +22,9 @@ var msgboyDatabase = {
             version: "0.0.3",
             migrate: function(db, versionRequest, next) {
 				var store = versionRequest.transaction.objectStore("messages")
-				store.createIndex("readIndex", "read_at", { unique: false}); 
-				store.createIndex("starredIndex", "starred_at", { unique: false}); 
+				store.createIndex("readAtIndex", "read_at", { unique: false}); 
+				store.createIndex("unreadAtIndex", "unread_at", { unique: false}); 
+				store.createIndex("starredAtIndex", "starred_at", { unique: false}); 
 				next();
             }
         },

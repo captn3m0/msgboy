@@ -15,6 +15,7 @@ var Inbox = Backbone.Model.extend({
 		'id': msg.id,
 		'created_at': new Date().getTime(),
 		'read_at': 0,
+		'unread_at':  new Date().getTime(),
 		'starred_at': 0
 	});
 	var that = this;

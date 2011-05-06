@@ -8,7 +8,8 @@ var Archive = Backbone.Collection.extend({
 			model = this.at(index);
 			if(model) {
 				model.save({
-					read_at: new Date().getTime()
+					read_at: new Date().getTime(),
+					unread_at: 0
 				});
 			}
 		}, this)

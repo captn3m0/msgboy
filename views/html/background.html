@@ -128,8 +128,8 @@
     // Connects the XMPP Client
     function connect() {
         autoReconnect = true;
-        password = inbox.get("password");
-        jid = inbox.get("jid") + "@msgboy.com/extension";
+        password = inbox.attributes.password;
+        jid = inbox.attributes.jid + "@msgboy.com/extension";
 
         connection.connect(jid, password, onConnect);
     }
@@ -230,6 +230,7 @@
                 title: connection_jid + " wants to connect",
                 summary: "You will be able to share content with " + connection_jid + ", and " + connection_jid + " will be able to share content with you.",
                 read_at: new Date().getTime(),
+                unread_at: 0,
                 starred_at: 0,
                 content: null,
                 links: {
@@ -358,6 +359,7 @@
 	                    title: "Following " + request.subscribe.title,
 	                    summary: "You're now following " + request.subscribe.title,
 	                    read_at: new Date().getTime(),
+						unread_at: 0,
 	                    starred_at: 0,
 	                    content: null,
 	                    links: {},
@@ -474,18 +476,35 @@
 	    //////////////////////////////////////////////////////////////////////////////////////
 	    //                                        Main                                      //
 	    //////////////////////////////////////////////////////////////////////////////////////
+		inbox.bind("change", function() {
+			if (inbox.attributes.jid) { // If the settings are entered.
+		        _gaq.push(['_trackEvent', 'connection-initiated']);
+		        connect();
+		    } else {
+		        // We need the user to enter its settings
+		        chrome.tabs.create({
+		            url: chrome.extension.getURL('/views/html/options.html'),
+		            selected: true
+		        });
+		    }
+		})
+	
 		inbox.fetch({
 			success: function() {
-				if (inbox.attributes.jid) { // If the settings are entered.
-			        _gaq.push(['_trackEvent', 'connection-initiated']);
-			        connect();
-			    } else {
-			        // We need the user to enter its settings
-			        chrome.tabs.create({
-			            url: chrome.extension.getURL('/views/html/options.html'),
-			            selected: true
-			        });
-			    }
+				// Nothing to do. The change event should have been triggered
+			},
+			error: function() {
+				// Looks like there is no such inbox.
+				inbox.save({
+					epoch: new Date().getTime()
+				}, {
+					success: function() {
+						// Cool.
+					},
+					error: function() {
+						log("We could not create a database for msgboy.")
+					}
+				});
 			}
 		})
 	});
