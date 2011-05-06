@@ -193,12 +193,19 @@ chrome.extension.sendRequest({
 	});
 
 	// Dragging is over.
-	// $("#msgboy-bookmark").bind('dragend', function (ev, dd) {
-	// 	chrome.extension.sendRequest({
-	// 		"settings": {
-	// 			"set": ["bookmarkPosition", dd.offsetX]
-	// 		}
-	// 	}, function (response) {});
-	// });
+	$("#msgboy-bookmark").bind('dragend', function (ev, dd) {
+		chrome.extension.sendRequest({
+			"settings": {
+				"set": ["bookmarkPosition", dd.offsetX]
+			}
+		}, function (response) {});
+	});
+	
+	chrome.extension.sendRequest({
+		"unreadCount": true
+	}, function (response) {
+		console.log(response)
+		$("#msgboy-bookmark #inbox").text("Inbox (" + response.value + ")")
+	});
 
 });

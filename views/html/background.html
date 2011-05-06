@@ -485,6 +485,18 @@
 				sendResponse({
 					value: true
 	            });
+			} else if (request.unreadCount) {
+				archive = new Archive();
+				archive.fetch({
+					conditions: {
+						unread_at: [inbox.attributes.epoch, new Date().getTime()]
+					},
+					success: function() {
+						sendResponse({
+							value: archive.length
+			            });
+					}.bind(this)
+				});
 	        } else {
 	            log("Could not handle message : " + request)
 	        }
