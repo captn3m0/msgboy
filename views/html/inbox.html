@@ -246,6 +246,7 @@
 
 	// Our overall InboxView is the top-level piece of UI.
 	var ArchiveView = Backbone.View.extend({
+		
 	    events: {
 	        "click #delete_all": "delete_all",
 	        "click #mark_all_as_read": "mark_all_as_read",
@@ -253,17 +254,11 @@
 	    },
 
 	    initialize: function () {
+			this.loading = false
+			this.lower = 0 // # hour ago
 	        _.bindAll(this, 'scrolled', 'showSinglePage', 'render', 'filter', 'loadMore');
 	        $(document).scroll(this.scrolled) // Looks like we can't do it thru 'events' call. Is that a bug in Backbone?
-			that = this;
-	        this.collection.fetch({
-				conditions: {created_at: [new Date().getTime(), 0]},
-				success: function() {
-					// Cool. Now what?
-			        that.currentIndex = 0;
-			        that.loadMore();
-				}
-			});
+			this.loadMore();
 	    },
 
 	    scrolled: function () {
@@ -276,24 +271,29 @@
 	    mark_all_as_read: function () {
 	        _gaq.push(['_trackEvent', 'messages-marked-all-read']);
 	        this.collection.mark_all_as_read();
-	        this.filter();
 	    },
 
 	    delete_all: function () {
 	        _gaq.push(['_trackEvent', 'messages-deleted-all']);
 	        this.collection.delete_all();
-	        this.filter();
 	    },
 
 	    loadMore: function () {
-	        _gaq.push(['_trackEvent', 'messages-loaded-more']);
-	        message = this.collection.at(this.currentIndex);
-	        if (message) {
-	            this.currentIndex++;
-	            this.showMessageAtBottom(message);
-	        } else {
-	            $("#loader").hide();
-	        }
+			if(!this.loading) {
+				this.loading = true
+		        _gaq.push(['_trackEvent', 'messages-loaded-more']);
+		        this.collection.fetch({
+					conditions: {created_at: [new Date().getTime() - this.lower, new Date().getTime() - this.lower - 3600000]},
+					success: function() {
+						this.loading = false
+				        this.lower = this.lower + 3600000;
+						_.each(this.collection, function(message, index) {
+							this.showMessageAtBottom(this.collection.at(index));
+						}.bind(this))
+						this.completePage();
+					}.bind(this)
+				});
+			}
 	    },
 
 	    showMessageOnTop: function (message) {
@@ -301,7 +301,6 @@
 	            model: message
 	        });
 	        $("#content").prepend(view.render().el);
-	        this.filter();
 	    },
 
 	    showMessageAtBottom: function (message) {
@@ -309,14 +308,13 @@
 	            model: message
 	        });
 	        this.$("#content").append(view.render().el);
-	        this.filter();
 	    },
 
 	    completePage: function () {
 	        // We should also pre-emptively load more pages if the document is shorter than the page.
 	        if ($("#content").height() < $(window).height()) {
 	            $("#loader").show();
-	            setTimeout('archiveView.loadMore()', 1)
+				loadMore();
 	        } else {
 	            $("#loader").hide();
 	        }
@@ -341,7 +339,6 @@
 	        default:
 	            this.$(".message").css("display", "block");
 	        }
-	        this.completePage();
 	    }
 	});
 

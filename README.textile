@@ -4,6 +4,8 @@ h2.TODO
 * Add per-site unread list
 * Add snooze
 * Add support for ActivityStreams, and better excerpts (iframes + readability)
+* Add Learning features, based on clicks, shares... etc http://harthur.github.com/brain/
+
 
 h3. Plugins
 
