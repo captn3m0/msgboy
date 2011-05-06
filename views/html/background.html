@@ -343,10 +343,28 @@
 	        } else if (request.tab) { // Open tab
 	            _gaq.push(['_trackEvent', 'tab-opened']);
 	            log("Request : tab")
-	            chrome.tabs.create(request.tab);
-	            sendResponse({
-	                value: true
-	            });
+		
+				var active_window = null
+				
+				chrome.windows.getAll({}, function(windows) {
+					windows = _.select(windows, function(win) {
+						return win.type == "normal" && win.focused
+					}, this)
+					// If no window is focused and "normal"
+					if(windows.length == 0) {
+						window.open(request.tab.url); // Can't use Chrome's API as it's buggy :(
+					}
+					else {
+						// Just open an extra tab.
+						options = request.tab
+						options.windowId = windows[0].id
+						chrome.tabs.create(options, function() {
+							sendResponse({
+								value: true
+							});
+						});
+					}
+				})
 	        } else if (request.subscribe) { // Subscribes to more feeds
 	            log("Request : subscribe ")
 	            _gaq.push(['_trackEvent', 'subscription-requested']);
