@@ -46,11 +46,15 @@
 	})();
 
 	//////////////////////////////////////////////////////////////////////////////////////
+	//                                Hide Timer                                        //
+	//////////////////////////////////////////////////////////////////////////////////////
+	var hideTimer = null;
+
+	//////////////////////////////////////////////////////////////////////////////////////
 	//                                Views                                           //
 	//////////////////////////////////////////////////////////////////////////////////////
 	var MessageView = Backbone.View.extend({
 	    initialize: function () {
-	        this.message_count = 0;
 	        _.bindAll(this, "render", "openViewer");
 	        $('body').click(this.openViewer);
 	    },
@@ -68,9 +72,6 @@
 				html += "via <span>" + json.via + "</span>."
 			}
     
-	        if (this.message_count > 1) {
-				html += "<br /><small>You also have " + (this.message_count - 1) + " other messages.</small>"
-	        }
 	        this.$("p").html(html);
 	    },
 
@@ -92,24 +93,26 @@
 			}, function (response) {
 				window.close();
 			});
-		},
-
-	    add_message: function (message) {
-	        this.message_count++;
-	        this.model = message;
-	    }
+		}
 	});
 
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                                  Functions                                       //
 	//////////////////////////////////////////////////////////////////////////////////////
 	function showMessageForId(messageId) {
+		// if(hideTimer) {
+		// 	hideTimer.clearTimeout();
+		// }
+		// hideTimer = setTimeout( function() { 
+		// 	window.close();
+		// }, 10000);
+		
 	    message = new Message({
 	        'id': messageId
 	    })
 	    message.fetch({
 			success: function() {
-				view.add_message(message);
+				view.model = message;
 			    view.render();
 			    window.focus(); // Put this alert in front!
 			},
@@ -133,6 +136,6 @@
 	var view = new MessageView({
 	    el: "#message"
 	});
-
+	
     </script>
 </body>
