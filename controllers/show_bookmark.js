@@ -181,6 +181,7 @@ chrome.extension.sendRequest({
 			click: action.callback
 		}))
 	});
+	
 	// Makse sure we will listen to connection updates
 	listenToConnectionStatus();
 
@@ -201,11 +202,14 @@ chrome.extension.sendRequest({
 		}, function (response) {});
 	});
 	
+	var unread = 0;
+	// Show unread count
 	chrome.extension.sendRequest({
 		"unreadCount": true
 	}, function (response) {
-		console.log(response)
-		$("#msgboy-bookmark #inbox").text("Inbox (" + response.value + ")")
+		unread = parseInt(response.value)
+		$("#msgboy-bookmark #inbox").text("Inbox (" + unread + ")")
 	});
+	
 
 });
