@@ -48,7 +48,7 @@ Plugins.register(new function() {
 						chrome.extension.sendRequest({
 							subscribe: {
 								url: this.href+"/commits/master.atom",
-								title: this.title
+								title: $(this).text()
 							}
 						}, function(response) {
 							// Done
