@@ -147,10 +147,7 @@
 			for (var callback in this.model.toJSON().actions) {
 				var action = this.model.toJSON().actions[callback]
 				$(this.el).find('a.' + callback).click(function(event){
-					this.model.save({
-			            read_at: new Date().getTime(),
-						unread_at: 0
-			        });
+					this.mark_as_read()
 					this[$(event.target).attr("class")](action.params.jid);
 					return false;
 				}.bind(this));
@@ -170,10 +167,7 @@
 		},
 
 	    openViewer: function () {
-	        this.model.save({
-	            read_at: new Date().getTime(),
-				unread_at: 0
-	        });
+	        this.model.mark_as_read()
 	        var link = main_link(this.model.toJSON().links);
 	        if (link == "") {
 	            alert("Sorry, there is no valid link for this story.")
@@ -189,10 +183,7 @@
 	    },
 
 	    unsubscribeFeed: function () {
-	        this.model.save({
-	            read_at: new Date().getTime(),
-				unread_at: 0
-	        });
+	        this.model.mark_as_read()
 	        chrome.extension.sendRequest({
 	            unsubscribe: this.model.toJSON().source.url
 	        }, function (response) {});
@@ -211,34 +202,12 @@
 	    },
 
 	    toggleStarMessage: function () {
-	        if (this.model.attributes.starred_at) {
-	            _gaq.push(['_trackEvent', 'message-unstarred']);
-	            this.model.save({
-		            starred_at: 0
-	            });
-	        } else {
-	            _gaq.push(['_trackEvent', 'message-starred']);
-	            this.model.save({
-		            starred_at: new Date().getTime()
-	            });
-	        }
+			this.model.toggle_starred();
 	        return false;
 	    },
 
 	    toggleReadMessage: function () {
-	        if (this.model.attributes.read_at) {
-	            _gaq.push(['_trackEvent', 'message-marked-unread']);
-	            this.model.save({
-		            read_at: 0,
-					unread_at: new Date().getTime()
-	            });
-	        } else {
-	            _gaq.push(['_trackEvent', 'message-marked-read']);
-	            this.model.save({
-		            read_at: new Date().getTime(),
-					unread_at: 0
-	            });
-	        }
+			this.model.toggle_read();
 	        return false;
 	    },
 
@@ -272,12 +241,32 @@
 
 	    mark_all_as_read: function () {
 	        _gaq.push(['_trackEvent', 'messages-marked-all-read']);
-	        this.collection.mark_all_as_read();
+			$("#loader").show();
+	        this.collection.mark_all_as_read({
+				start: 1,
+				step: this.step,
+				callback: function() {
+					this.filter();
+					$("#loader").hide();
+				}.bind(this),
+				epoch: inbox.attributes.epoch
+			});
 	    },
 
 	    delete_all: function () {
-	        _gaq.push(['_trackEvent', 'messages-deleted-all']);
-	        this.collection.delete_all();
+			if(confirm("This may take a few seconds, and there is no way back. Are you sure?")) {
+				_gaq.push(['_trackEvent', 'messages-deleted-all']);
+				$("#loader").show();
+		        this.collection.delete_all({
+					start: 1,
+					step: this.step,
+					callback: function() {
+						this.filter();
+						$("#loader").hide();
+					}.bind(this),
+					epoch: inbox.attributes.epoch
+				});
+			}
 	    },
 
 		loadMore: function () {
@@ -285,20 +274,16 @@
 				if(!this.loading) {
 					this.loading = true
 					_gaq.push(['_trackEvent', 'messages-loaded-more']);
-					var conds = {}
-					conds[this.current_filter] =  [new Date().getTime() - this.lower, new Date().getTime() - this.lower - this.step]
-					this.collection.fetch({
-						conditions: conds,
-						success: function() {
-							this.loading = false
-							this.lower = this.lower + this.step;
-							_.each(this.collection, function(message, index) {
-								this.showMessageAtBottom(this.collection.at(index));
-							}.bind(this))
-							this.completePage();
-						}.bind(this)
-					});
-				}	
+					this.collection.fetch_more(this.current_filter, this.lower, this.step, function() {
+						this.loading = false
+						this.lower = this.lower + this.step;
+						_.each(this.collection, function(message, index) {
+							this.showMessageAtBottom(this.collection.at(index));
+						}.bind(this))
+						this.completePage();
+						this.scrolled(); // Let's call scrolled, just in case we're at the bottom of the page.
+					}.bind(this))
+				}
 			} else {
 				// No more to load. We want back to epoch!
 				$("#loader").hide();
