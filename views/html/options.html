@@ -63,9 +63,11 @@
     <div id="settings">
 		<span id="signup">Please <a href="http://msgboy.com/" target="_blank">sign up</a> first if you don't have an account just yet.</span>
         <h2>Account</h2>
-        Login : <input type="text" id="jid"><br />
-        Password : <input type="Password" id="password"><br />
-		<input id="reconnect" type="button" value="Connect!" />
+		<form id="credentials">
+        	Login : <input type="text" id="jid"><br />
+        	Password : <input type="Password" id="password"><br />
+			<input type="submit" value="Connect!" />
+		</form>
 		<p id="connectionStatus"></p>
         <div id="plugins" style="display:none">
 	        <h2>Plugins</h2>
@@ -76,7 +78,9 @@
 			<div class="passive"></div>
         </div>
         <span id="saved">Saved</span>
+<!--
 		<input id="reset" type="button" value="Reset" />
+-->
     </div>
     
     <script type="text/template" id="plugin-template">
@@ -125,7 +129,7 @@
 	    events: {
 	        "change #settings #jid": "jid",
 	        "change #settings #password": "password",
-	        "click #settings #reconnect": "reconnect",
+	        "submit #credentials": "reconnect",
 	        "click #settings #reset": "reset"
 	    },
 
@@ -179,10 +183,10 @@
 	    },
 
 	    reconnect: function () {
-	        chrome.extension.sendRequest({
-	            connect: true
-	        }, function (response) {});
-	    },
+			chrome.extension.sendRequest({
+				connect: true
+			}, function (response) {});
+		},
 
 	    reset: function () {
 	        if (confirm("Are you sure? There is no way back and all your data will be deleted!")) {
@@ -204,7 +208,7 @@
 					element = $(_.template($('#plugin-template').html(), plugin))
 					chrome.extension.sendRequest({
 						"settings": {
-							"get": ["plugins." + nameToId(plugin.name)]
+							"get": ["plugin-" + nameToId(plugin.name)]
 						}
 					}, function (response) {
 						$("#" + nameToId(plugin.name)).attr('checked', response.value);
@@ -214,18 +218,18 @@
 							// When clicked. We should just import the feeds in the back!
 							chrome.extension.sendRequest({
 								"settings": {
-									"set": ["plugins." + nameToId(plugin.name), true]
+									"set": ["plugin-" + nameToId(plugin.name), true]
 								}
 							}, function (response) {});
 							_gaq.push(['_trackEvent', 'plugin-import-' + nameToId(plugin.name)]);
 							plugin.importSubscriptions();
 						} else {
-							_gaq.push(['_trackEvent', 'plugin-stop-import-' + nameToId(plugin.name)]);
 							chrome.extension.sendRequest({
 								"settings": {
-									"set": ["plugins." + nameToId(plugin.name), false]
+									"set": ["plugin-" + nameToId(plugin.name), false]
 								}
 							}, function (response) {});
+							_gaq.push(['_trackEvent', 'plugin-stop-import-' + nameToId(plugin.name)]);
 						}
 					})
 					if(using) {

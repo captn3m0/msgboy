@@ -327,18 +327,21 @@
 	    chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
 	        if (request.settings) { // Settings
 	            if (request.settings.get) { // get them
-	                log("Request : settings.get")
+	                log("Request : settings.get " + JSON.stringify(request.settings.get));
 	                sendResponse({
 	                    value: inbox.get(request.settings.get[0])
 	                });
 	            } else if (request.settings.set) { // Set them
-	                log("Request : settings.set")
+	                log("Request : settings.set " + JSON.stringify(request.settings.set));
 	                attrs = {};
 	                attrs[request.settings.set[0]] = request.settings.set[1];
-	                inbox.save(attrs);
-	                sendResponse({
-	                    value: true
-	                });
+					inbox.save(attrs, {
+						success: function() {
+							sendResponse({
+								value: true
+							});
+						}
+					});
 	            }
 	        } else if (request.tab) { // Open tab
 	            _gaq.push(['_trackEvent', 'tab-opened']);
@@ -506,22 +509,19 @@
 	    //////////////////////////////////////////////////////////////////////////////////////
 	    //                                        Main                                      //
 	    //////////////////////////////////////////////////////////////////////////////////////
-		inbox.bind("change", function() {
-			if (inbox.attributes.jid) { // If the settings are entered.
-		        _gaq.push(['_trackEvent', 'connection-initiated']);
-		        connect();
-		    } else {
-		        // We need the user to enter its settings
-		        chrome.tabs.create({
-		            url: chrome.extension.getURL('/views/html/options.html'),
-		            selected: true
-		        });
-		    }
-		})
-	
 		inbox.fetch({
 			success: function() {
 				// Nothing to do. The change event should have been triggered
+				if (inbox.attributes.jid && inbox.attributes.jid != "" && inbox.attributes.password && inbox.attributes.password != "") { 
+			        _gaq.push(['_trackEvent', 'connection-initiated']);
+			        connect();
+			    } else {
+			        // We need the user to enter its settings
+			        chrome.tabs.create({
+			            url: chrome.extension.getURL('/views/html/options.html'),
+			            selected: true
+			        });
+			    }
 			},
 			error: function() {
 				// Looks like there is no such inbox.
@@ -529,7 +529,10 @@
 					epoch: new Date().getTime()
 				}, {
 					success: function() {
-						// Cool.
+				        chrome.tabs.create({
+				            url: chrome.extension.getURL('/views/html/options.html'),
+				            selected: true
+				        });
 					},
 					error: function() {
 						log("We could not create a database for msgboy.")

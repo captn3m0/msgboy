@@ -254,6 +254,7 @@
 	    },
 
 	    initialize: function () {
+			this.step = 60000, // 1 minute.
 			this.current_filter  = "created_at";
 			this.loading = false;
 			this.lower = 0; 
@@ -285,12 +286,12 @@
 					this.loading = true
 					_gaq.push(['_trackEvent', 'messages-loaded-more']);
 					var conds = {}
-					conds[this.current_filter] =  [new Date().getTime() - this.lower, new Date().getTime() - this.lower - 3600000]
+					conds[this.current_filter] =  [new Date().getTime() - this.lower, new Date().getTime() - this.lower - this.step]
 					this.collection.fetch({
 						conditions: conds,
 						success: function() {
 							this.loading = false
-							this.lower = this.lower + 3600000;
+							this.lower = this.lower + this.step;
 							_.each(this.collection, function(message, index) {
 								this.showMessageAtBottom(this.collection.at(index));
 							}.bind(this))
