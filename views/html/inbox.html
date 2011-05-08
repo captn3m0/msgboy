@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Inbox</title>
     <meta name="application-name" content="Msgboy"/>
-    <meta name="description" content="__MSG_app_description__"/>
     <link rel="shortcut icon" href="http://superfeedr.com/favicon.ico">
     <link rel="stylesheet" href="../css/style.css" />
 
@@ -66,7 +65,7 @@
 
     <!-- Templates -->
     <script type="text/template" id="message-template">
-    <div class="message<%= read_at ? ' read' : ' unread' %> <%= starred_at ? ' starred' : '' %>">
+    <div id="<%= id %>" class="message<%= read_at ? ' read' : ' unread' %> <%= starred_at ? ' starred' : '' %>">
         <h3><%= title %></h3>
 		<span class="time"><%= new Date(created_at).toRelativeTime() %></span>
         <% if(typeof(source) != "undefined" && source) { %>
@@ -76,10 +75,10 @@
         <p>Via : <%= via %></a></p>
         <% } %>
 
-        <p><%= truncate(strip(summary), 240)%> &nbsp;
+        <p><%= summary%> &nbsp;
         <% if(main_link(links) != "") {
             %>
-            <a href="<%= main_link(links) %>" target="_blank" class="more">read more</a>
+            <a href="<%= main_link(links) %>" target="_blank" class="more">read more</a> | <a href="" target="_blank" class="viz">viz</a>
             <%
         } %>
         </p>
@@ -122,6 +121,7 @@
 	var MessageView = Backbone.View.extend({
 	    events: {
 	        "click p a.more"		: "openViewer",
+	        "click p a.viz"		    : "openViz",
 	        "click a.unsubscribe"	: "unsubscribeFeed",
 	        "click a.destroy"		: "destroyMessage",
 	        "click a.star"			: "toggleStarMessage",
@@ -129,7 +129,7 @@
 	    },
 
 	    initialize: function () {
-	        _.bindAll(this, "render", "openViewer", "unsubscribeFeed", "destroyMessage", "toggleStarMessage", "toggleReadMessage", "acceptConnection", "declineConnection");
+	        _.bindAll(this, "render", "openViewer", "unsubscribeFeed", "destroyMessage", "toggleStarMessage", "toggleReadMessage", "acceptConnection", "declineConnection", "viz");
 	        this.model.bind('change', this.render);
 	        this.model.view = this;
 	        this.model.fetch();
@@ -181,6 +181,16 @@
 	        }
 	        return false;
 	    },
+	
+		openViz:function() {
+            chrome.extension.sendRequest({
+                "tab": {
+                    url: chrome.extension.getURL('/views/html/read.html'),
+                    selected: true
+                }
+            }, function (response) {});
+			return false
+		},
 
 	    unsubscribeFeed: function () {
 	        this.model.mark_as_read()

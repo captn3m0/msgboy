@@ -126,6 +126,7 @@ Strophe.addConnectionPlugin('superfeedr', {
 	        updated: Strophe.getText(atom.getElementsByTagName("updated")[0]),
 	        title: Strophe.getText(atom.getElementsByTagName("title")[0]),
 	        summary: Strophe.getText(atom.getElementsByTagName("summary")[0]),
+	        content: Strophe.getText(atom.getElementsByTagName("content")[0]),
 	        links: links,
 	    };
 	},
