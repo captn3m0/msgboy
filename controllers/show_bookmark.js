@@ -187,7 +187,6 @@ chrome.extension.sendRequest({
 
 	// Called when the bookmark has been moved.
 	$("#msgboy-bookmark").bind('drag', function (ev, dd) {
-		console.log("hahahaha")
 		$(this).css({
 			left: dd.offsetX
 		});

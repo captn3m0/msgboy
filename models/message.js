@@ -58,8 +58,8 @@ var Message = Backbone.Model.extend({
 
 	toggle_starred: function(callback) {
 		callback = typeof(callback) != 'undefined' ? callback : function() {};
-		var _starred_at = 0
-		if(this.attributes.starred_at) {
+		var _starred_at = 0;
+		if(!this.attributes.starred_at) {
 			_starred_at = new Date().getTime();
 		}
 

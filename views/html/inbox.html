@@ -6,6 +6,8 @@
     <meta name="application-name" content="Msgboy"/>
     <link rel="shortcut icon" href="http://superfeedr.com/favicon.ico">
     <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/readability.css" />
+    <link rel="stylesheet" href="../css/readability-print.css" />
 
     <!-- Lib includes -->
     <script src="../../lib/jquery/jquery.js" type="text/javascript"></script> 
@@ -13,6 +15,8 @@
     <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script> 
     <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script> 
     <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script> 
+    <script src="../../lib/readability/readability.js" type="text/javascript"></script> 
+
 
     <!-- Model includes -->
     <script src="../../models/database.js" type="text/javascript"></script> 
@@ -49,9 +53,9 @@
     <div id="archive">
 	    <img src="../icons/ajax-loader.gif" id="loader"/>
     
-        <input id="filters" type="radio" name="filters" value="fetch" checked="checked">All Messages</input>
-        <input id="filters" type="radio" name="filters" value="unread">Unread Messages</input>
-        <input id="filters" type="radio" name="filters" value="starred">Starred Messages</input>
+        <input id="filters" type="radio" name="filters" class="created_at" value="created_at" checked="checked">All Messages</input>
+        <input id="filters" type="radio" name="filters" class="unread_at" value="unread_at">Unread Messages</input>
+        <input id="filters" type="radio" name="filters" class="starred_at" value="starred_at">Starred Messages</input>
 
         <div class="title">
             <h1>Inbox</h1>
@@ -66,22 +70,17 @@
     <!-- Templates -->
     <script type="text/template" id="message-template">
     <div id="<%= id %>" class="message<%= read_at ? ' read' : ' unread' %> <%= starred_at ? ' starred' : '' %>">
-        <h3><%= title %></h3>
-		<span class="time"><%= new Date(created_at).toRelativeTime() %></span>
+		<h3><%= title %></h3>
+		<p><span class="time"><%= new Date(created_at).toRelativeTime() %></span>
         <% if(typeof(source) != "undefined" && source) { %>
-        <p>From : <a href="<%= source.url %>"><%= source.title %></a> (<a class="unsubscribe" href="">Unsubscribe</a>)</p>
+        , from : <a href="<%= source.url %>"><%= source.title %></a> (<a class="unsubscribe" href="">Unsubscribe</a>)
         <% } %>
         <% if(typeof(via) != "undefined" && via) { %>
-        <p>Via : <%= via %></a></p>
+        , via : <%= via %></a>
         <% } %>
-
-        <p><%= summary%> &nbsp;
-        <% if(main_link(links) != "") {
-            %>
-            <a href="<%= main_link(links) %>" target="_blank" class="more">read more</a> | <a href="" target="_blank" class="viz">viz</a>
-            <%
-        } %>
         </p>
+
+		<div class="readable-content"></div>
         <div class="actions">
 			<% if(typeof actions == "undefined" || actions == null) {
 			} else {
@@ -94,8 +93,14 @@
 			} %>
 			<a href="" class="destroy">Destroy</a>&nbsp;
             <a href="" class="star"><%= starred_at ? 'Unstar' : 'Star' %> </a>&nbsp;
-            <a href="" class="unread"><%= read_at ? 'Mark as unread' : 'Mark as read' %> </a>
+            <a href="" class="unread"><%= read_at ? 'Mark as unread' : 'Mark as read' %></a>
+			<% if(main_link(links) != "") {
+			%>
+				&nbsp;<a href="<%= main_link(links) %>" target="_blank" class="more">Read More</a>
+			<% } 
+			%>
         </div>
+
     </div>
     </script>
 
@@ -115,13 +120,18 @@
 	    s.parentNode.insertBefore(ga, s);
 	})();
 
+	// Readability
+	var readStyle = 'style-newspaper'; // style-newspaper, style-novel, style-ebook, style-terminal
+    var readSize = 'size-small'; // size-small, size-medium, size-large, size-x-large
+    var readMargin = 'margin-narrow'; // margin-narrow, margin-medium, margin-wide, margin-x-wide
+
+
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                                Views                                           //
 	//////////////////////////////////////////////////////////////////////////////////////
 	var MessageView = Backbone.View.extend({
 	    events: {
 	        "click p a.more"		: "openViewer",
-	        "click p a.viz"		    : "openViz",
 	        "click a.unsubscribe"	: "unsubscribeFeed",
 	        "click a.destroy"		: "destroyMessage",
 	        "click a.star"			: "toggleStarMessage",
@@ -129,7 +139,7 @@
 	    },
 
 	    initialize: function () {
-	        _.bindAll(this, "render", "openViewer", "unsubscribeFeed", "destroyMessage", "toggleStarMessage", "toggleReadMessage", "acceptConnection", "declineConnection", "viz");
+	        _.bindAll(this, "render", "openViewer", "unsubscribeFeed", "destroyMessage", "toggleStarMessage", "toggleReadMessage", "acceptConnection", "declineConnection");
 	        this.model.bind('change', this.render);
 	        this.model.view = this;
 	        this.model.fetch();
@@ -152,6 +162,17 @@
 					return false;
 				}.bind(this));
 	        }
+	
+			// And put the readable content in place!
+			var content = null;
+			if(!this.model.attributes.content || $.trim(this.model.attributes.content) == "") {
+				elem = readability.prepDocumentFromString(this.model.attributes.summary)
+				content = readability.grabArticleFromElement(elem, true)
+			} else {
+				elem = readability.prepDocumentFromString(this.model.attributes.content)
+				content = readability.grabArticleFromElement(elem, true);
+			}
+			this.$('.readable-content').html($(content).html());
 	        _gaq.push(['_trackEvent', 'message-shown']);
 	        return this;
 	    },
@@ -181,16 +202,6 @@
 	        }
 	        return false;
 	    },
-	
-		openViz:function() {
-            chrome.extension.sendRequest({
-                "tab": {
-                    url: chrome.extension.getURL('/views/html/read.html'),
-                    selected: true
-                }
-            }, function (response) {});
-			return false
-		},
 
 	    unsubscribeFeed: function () {
 	        this.model.mark_as_read()
@@ -235,11 +246,12 @@
 	    initialize: function () {
 			this.step = 60000, // 1 minute.
 			this.current_filter  = "created_at";
+			
 			this.loading = false;
 			this.lower = 0; 
 	        _.bindAll(this, 'scrolled', 'showSinglePage', 'render', 'filter', 'loadMore');
 	        $(document).scroll(this.scrolled) // Looks like we can't do it thru 'events' call. Is that a bug in Backbone?
-			this.loadMore();
+			this.render();
 	    },
 
 	    scrolled: function () {
@@ -301,17 +313,21 @@
 		},
 
 	    showMessageOnTop: function (message) {
-	        var view = new MessageView({
-	            model: message
-	        });
-	        $("#content").prepend(view.render().el);
+			if(message.attributes[this.current_filter]) {
+		        var view = new MessageView({
+		            model: message
+		        });
+		        $("#content").prepend(view.render().el);
+			}
 	    },
 
 	    showMessageAtBottom: function (message) {
-	        var view = new MessageView({
-	            model: message
-	        });
-	        this.$("#content").append(view.render().el);
+			if(message.attributes[this.current_filter]) {		
+	        	var view = new MessageView({
+	            	model: message
+	        	});
+	        	this.$("#content").append(view.render().el);
+			}
 	    },
 
 	    completePage: function () {
@@ -325,24 +341,13 @@
 	    },
 
 	    render: function () {
+			$('#filters.'+this.current_filter).attr('checked','checked')
 	        this.loadMore();
 	    },
 
 	    filter: function () {
 	        this.$(".message").hide();
-	        switch ($("#filters:checked").val()) {
-	        case "fetch":
-				this.current_filter = "created_at";
-	            break;
-	        case "unread":
-				this.current_filter = "unread_at";
-	            break;
-	        case "starred":
-				this.current_filter = "starred_at";
-	            break;
-	        default:
-				this.current_filter = "created_at";
-	        }
+			this.current_filter = $("#filters:checked").val();
 			this.lower = 0; 
 			this.loadMore();
 	    }

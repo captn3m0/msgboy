@@ -25,12 +25,24 @@
 </head>
 <body>
 
+	<h1></h1>
     <div id="wrapper">
 	    
     </div>
 
     <script>
 
+	function getUrlVars() { // Read a page's GET URL variables and return them as an associative array.
+	    var vars = [],
+	        hash;
+	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	    for (var i = 0; i < hashes.length; i++) {
+	        hash = hashes[i].split('=');
+	        vars.push(hash[0]);
+	        vars[hash[0]] = hash[1];
+	    }
+	    return vars;
+	}
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                                Views                                           //
 	//////////////////////////////////////////////////////////////////////////////////////
@@ -47,22 +59,31 @@
 	    },
 
 	    render: function () {
-			$("#wrapper").html(this.model.attributes.summary);
+			if(!this.model.attributes.content || $.trim(this.model.attributes.content) == "") {
+				$("#wrapper").html(readability.grabArticleFromElement(readability.prepDocumentFromString(this.model.attributes.summary), true));
+				
+			} else {
+				$("#wrapper").html(readability.grabArticleFromElement(readability.prepDocumentFromString(this.model.attributes.content), true));
+			}
+			$("h1").html(this.model.attributes.title)
 			document.title = this.model.attributes.title
-		    readability.init();
+			// readability.init(true); // We want preserveUnlikelyCandidates
+			
 	        return this;
 	    }
 	
 	});
 
-	var readStyle = 'style-ebook'; // style-newspaper, style-novel, style-ebook, style-terminal
+	var readStyle = 'style-newspaper'; // style-newspaper, style-novel, style-ebook, style-terminal
     var readSize = 'size-small'; // size-small, size-medium, size-large, size-x-large
     var readMargin = 'margin-narrow'; // margin-narrow, margin-medium, margin-wide, margin-x-wide
-	var message = new Message({id: "ffc7ee4e9240a132f5074ff4e6ca68da"});
+	
+	var messageId = getUrlVars().message;
+	var message = new Message({id: messageId});
 	var view = new MessageView({
-        model: message
-    });
-
+		model: message
+	});
+	
 	</script>
 </body>
 </html>

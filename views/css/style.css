@@ -2,9 +2,11 @@ body,
 html {
   margin:0;
   padding:0;
-  background-color: #FBFBFB;
-  font-family: Georgia,"Times New Roman", Times, serif;
+	font-family: sans-serif;
+	background-color: #FDFDFD;
+	color: #434343;
 }
+
 
 #nav {
   margin : 0px 0px 30px 0px;
@@ -23,6 +25,18 @@ html {
   margin-top: 80px;
 }
 
+.message {
+	margin: 30px 20px 30px 20px;
+}
+
+.message h3 {
+	text-transform:capitalize;
+	display: block;
+	width: 100%;
+	border-bottom: 1px solid #333;
+	font-size: 1.2em;	
+}
+
 span.time {
 	font-style: italic;
 }
@@ -35,6 +49,8 @@ span.time {
   background-color: #FF6;
 }
 
+.read a {color: rgba(51, 51, 51, 0.18);}
+
 .read a:visited {color: #CCADE5;}
 .read a:active {color: #00E;}
 
@@ -46,4 +62,8 @@ span.time {
 	margin-right: auto;
 	margin-left: auto;
 	display:block;
+}
+
+.actions {
+	clear: both;
 }

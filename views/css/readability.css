@@ -1,75 +1,38 @@
 @charset "utf-8";
 /* CSS Document */
 
-/*
-#readOverlay  {
-	background-image: none;
-	background: #eee;
-	font-family:Georgia,"Century Schoolbook","Times New Roman",Times,serif;
-
-}
-*/
-#readOverlay {
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-}
-#readInner {
+.readable-content {
 	line-height: 1.4em;
-	margin: 1em auto;
+	margin: 20px;
 	max-width: 800px;
 }
-#readInner a {
+.readable-content a {
 	color:#003399;
 	text-decoration:none;
 }
-#readInner a:hover {
+.readable-content a:hover {
 	text-decoration:underline;
 }
-#readInner * {
-	margin-bottom: 16px;
-	border: none;
-	background: none;
-}
-#readInner img {
+
+.readable-content img {
 	float: left;
 	margin-right: 12px;
 	margin-bottom: 12px;
+	max-width: 50%;
 }
-#readInner h1 {
+
+.readable-content h1 {
 	display: block;
 	width: 100%;
 	border-bottom: 1px solid #333;
 	font-size: 1.2em;
 }
-#readInner blockquote {
+
+.readable-content blockquote {
+	border-left: 6px solid #999;
+	padding-left: 1em;
 	margin-left: 3em;
 	margin-right: 3em;
-}
-#readFooter {
-	display: block;
-	border-top: 1px solid #333;
-	text-align: center;
-	clear: both;
-}
-div.footer-right {
-	float: right;
-	line-height: 1;
-	text-align: right;
-	font-size: .75em;
-	margin-top: 18px
-}
-a.footer-twitterLink {
-	clear: both;
-	float: left;
-	font-size: 11px;
-	margin-left: 228px;
-	margin-top: -32px;
-}
-span.version {
-	display: none;
 }
 
 /* Article Tools */
@@ -148,15 +111,17 @@ span.version {
 	color: #222;
 }
 .style-newspaper h1 {
-	text-transform:capitalize;
+	display: none;
+/*	text-transform:capitalize;
 	font-family: Georgia, "Times New Roman", Times, serif;
+*/
 }
 .style-terminal {
 	font-family: "Lucida Console", Monaco, monospace;
 	background: #1D4E2C;
 	color: #C6FFC6;
 }
-.style-terminal #readInner a {
+.style-terminal .readable-content a {
 	color: #009933;
 }
 
@@ -169,7 +134,7 @@ span.version {
 	color: #434343;
 }
 
-.style-classy #readInner a {
+.style-classy .readable-content a {
 	color: #8F674B;
 	text-decoration: none;
 }
@@ -219,37 +184,4 @@ span.version {
 }
 .bug-blue {
 	background: #BFDFFF;
-}
-
-/* ---------------- EMAIL POP UP --------------------- */
-
-#email-container{
-    position: fixed;
-    top: 60px;
-    left: 50%;
-    margin: 0 0 0 -240px;
-    padding: 0;
-    width: 500px;
-    height: 490px;
-    border: solid 3px #666;
-    background-color: #fff;
-    z-index: 100 !important;
-    overflow: hidden;
-}
-
-
-/* ---------------- KINDLE POP UP --------------------- */
-
-#kindle-container{
-    position: fixed;
-    top: 60px;
-    left: 50%;
-    margin: 0 0 0 -240px;
-    padding: 0;
-    width: 500px;
-    height: 490px;
-    border: solid 3px #666;
-    background-color: #fff;
-    z-index: 100 !important;
-    overflow: hidden;
 }
