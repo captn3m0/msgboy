@@ -147,8 +147,6 @@
 
 
 	inbox.bind("messages:added", function(id) {
-		_gaq.push(['_trackEvent', 'notification-showed']);
-		log("Showing notification for " + id)
 		// Open a notification window if needed!
 		if (!currentNotification) {
 			url = chrome.extension.getURL('/views/html/notification.html');
@@ -188,7 +186,6 @@
 	    //////////////////////////////////////////////////////////////////////////////////////
 	    $(document).bind('roster_changed', function (ev, contacts) {
 	        log("roster_changed");
-	        _gaq.push(['_trackEvent', 'roster-changed']);
 	        roster.contacts = contacts
 	        roster.trigger("change", contacts);
 	    });
@@ -199,7 +196,6 @@
 	    //////////////////////////////////////////////////////////////////////////////////////
 	    $(document).bind('notification_received', function (ev, notification) {
 		    log("message-received");
-	        _gaq.push(['_trackEvent', 'message-received']);
 			msg = connection.superfeedr.convertAtomToJson(notification.payload);
 			if(notification.source && !msg.source) {
 				msg.source = notification.source
@@ -219,7 +215,6 @@
 	    //////////////////////////////////////////////////////////////////////////////////////
 	    $(document).bind('connection_requested', function (ev, connection_jid) {
 	        log("connection_requested");
-	        _gaq.push(['_trackEvent', 'connection_requested']);
 			date = new Date();
 			var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/connections/" + escape(connection_jid);
 			msg = {
@@ -344,7 +339,6 @@
 					});
 	            }
 	        } else if (request.tab) { // Open tab
-	            _gaq.push(['_trackEvent', 'tab-opened']);
 	            log("Request : tab")
 		
 				var active_window = null
@@ -370,9 +364,7 @@
 				})
 	        } else if (request.subscribe) { // Subscribes to more feeds
 	            log("Request : subscribe ")
-	            _gaq.push(['_trackEvent', 'subscription-requested']);
 	            connection.superfeedr.subscribe(request.subscribe.url, function (result) {
-	                _gaq.push(['_trackEvent', 'feed-subscribed']);
 	                var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe.url);
 	                var msg = {
 	                    id: MD5.hexdigest(atom_id + Math.random() * 11),
@@ -398,22 +390,18 @@
 	            })
 	        } else if (request.unsubscribe) { // Unsubscribes from feeds
 	            log("Request : unsubscribe")
-	            _gaq.push(['_trackEvent', 'unsubscription-requested']);
 	            connection.superfeedr.unsubscribe(request.unsubscribe, function (result) {
-	                _gaq.push(['_trackEvent', 'feed-unsubscribed']);
 	                sendResponse({
 	                    value: result
 	                });
 	            })
 	        } else if (request.connect) {
-	            _gaq.push(['_trackEvent', 'connection-initiated']);
 	            log("Request : connect")
 	            reconnect();
 	            sendResponse({
 	                value: true
 	            });
 	        } else if (request.reset) {
-	            _gaq.push(['_trackEvent', 'reset-requested']);
 	            log("Request : reset")
 	            // First, disconnect
 	            autoReconnect = false; // Let's make sure we don't the autoReconnect.
@@ -428,28 +416,24 @@
 	                value: true
 	            });
 	        } else if (request.close) {
-	            _gaq.push(['_trackEvent', 'notification-closed']);
 	            log("Request : close")
 	            currentNotification = null;
 	            sendResponse({
 	                value: true
 	            });
 	        } else if (request.addConnection) {
-	            _gaq.push(['_trackEvent', 'connection-requested']);
 	            log("Request : addConnection");
 	            connection.roster.subscribe(request.addConnection);
 	            sendResponse({
 	                value: true
 	            });
 	        } else if (request.removeConnection) {
-	            _gaq.push(['_trackEvent', 'connection-removed']);
 	            log("Request : removeConnection");
 	            connection.roster.unsubscribe(request.removeConnection);
 	            sendResponse({
 	                value: true
 	            });
 	        } else if (request.acceptConnection) {
-	            _gaq.push(['_trackEvent', 'connection-accepted']);
 	            log("Request : acceptConnection");
 	            connection.roster.approve(request.acceptConnection);
 	            connection.roster.subscribe(request.acceptConnection);
@@ -457,7 +441,6 @@
 	                value: true
 	            });
 	        } else if (request.refuseConnection) {
-	            _gaq.push(['_trackEvent', 'connection-refused']);
 	            log("Request : refuseConnection");
 	            connection.roster.decline(request.acceptConnection);
 	            connection.roster.unsubscribe(request.refuseConnection);
@@ -465,7 +448,6 @@
 	                value: true
 	            });
 			} else if (request.share) {
-	            _gaq.push(['_trackEvent', 'item-shared']);
 	            log("Request : share");
 				// And now we need to share stuff!
 				payload = connection.superfeedr.buildAtomFromJson(
@@ -513,7 +495,6 @@
 			success: function() {
 				// Nothing to do. The change event should have been triggered
 				if (inbox.attributes.jid && inbox.attributes.jid != "" && inbox.attributes.password && inbox.attributes.password != "") { 
-			        _gaq.push(['_trackEvent', 'connection-initiated']);
 			        connect();
 			    } else {
 			        // We need the user to enter its settings

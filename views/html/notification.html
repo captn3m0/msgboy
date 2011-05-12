@@ -47,7 +47,8 @@
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                                Hide Timer                                        //
 	//////////////////////////////////////////////////////////////////////////////////////
-	var hideTimer = null;
+	var started = false;
+	var messages = [];
 
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                                Views                                           //
@@ -98,24 +99,26 @@
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                                  Functions                                       //
 	//////////////////////////////////////////////////////////////////////////////////////
-	function showMessageForId(messageId) {
-		if(hideTimer) {
-			hideTimer.clearTimeout();
-		}
-		hideTimer = setTimeout( function() { 
+	function showNextMessage() {
+		messageId = messages.pop();
+		if(!messageId) {
 			window.close();
-		}, 5000);
-		
-	    message = new Message({
-	        'id': messageId
-	    })
-	    message.fetch({
-			success: function() {
-				view.model = message;
-			    view.render();
-			    window.focus(); // Put this alert in front!
-			},
-		});
+		}
+		else {
+			message = new Message({
+				'id': messageId
+			})
+			message.fetch({
+				success: function() {
+					view.model = message;
+					view.render();
+					window.focus(); // Put this alert in front!
+					window.setTimeout( function() {  
+						showNextMessage() // After 5 seconds, show the next message.
+					}, 5000);
+				},
+			});
+		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +127,11 @@
 	$(document).ready(function () {
 	    chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
 	        if (request.notify && request.notify.message) {
-	            showMessageForId(request.notify.message);
+				messages.push(request.notify.message);
+				if(!started) {
+					started = true // Initiate the loop.
+					showNextMessage();
+				}
 	        }
 	    });
 	});
