@@ -196,7 +196,7 @@ chrome.extension.sendRequest({
 	$("#msgboy-bookmark").bind('dragend', function (ev, dd) {
 		chrome.extension.sendRequest({
 			"settings": {
-				"set": ["bookmarkPosition", dd.offsetX]
+				"set": ["bookmarkPosition", parseInt(dd.offsetX)]
 			}
 		}, function (response) {});
 	});
