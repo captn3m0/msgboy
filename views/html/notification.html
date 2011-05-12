@@ -99,12 +99,12 @@
 	//                                  Functions                                       //
 	//////////////////////////////////////////////////////////////////////////////////////
 	function showMessageForId(messageId) {
-		// if(hideTimer) {
-		// 	hideTimer.clearTimeout();
-		// }
-		// hideTimer = setTimeout( function() { 
-		// 	window.close();
-		// }, 10000);
+		if(hideTimer) {
+			hideTimer.clearTimeout();
+		}
+		hideTimer = setTimeout( function() { 
+			window.close();
+		}, 5000);
 		
 	    message = new Message({
 	        'id': messageId
