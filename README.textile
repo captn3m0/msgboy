@@ -1,11 +1,14 @@
 h2.TODO
 
+* Add support for shortcuts (lots of shortcuts!)
+* Hide bookmark abaility (but shodtcut support!)
 * Add unread count
 * Add per-site unread list
 * Add snooze
-* Add support for ActivityStreams, and better excerpts (iframes + readability)
+* Add support for ActivityStreams, 
+* And better excerpts (iframes + readability)
 * Add Learning features, based on clicks, shares... etc http://harthur.github.com/brain/
-
+* Add ability to track the number of times a given feed was seen.
 
 h3. Plugins
 
