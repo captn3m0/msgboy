@@ -70,7 +70,7 @@
     <!-- Templates -->
     <script type="text/template" id="message-template">
     <div id="<%= id %>" class="message<%= read_at ? ' read' : ' unread' %> <%= starred_at ? ' starred' : '' %>">
-		<h3><%= title %></h3>
+		<h3><%= strip(title) %></h3>
 		<p><span class="time"><%= new Date(created_at).toRelativeTime() %></span>
         <% if(typeof(source) != "undefined" && source) { %>
         , from : <a href="<%= source.url %>"><%= source.title %></a> (<a class="unsubscribe" href="">Unsubscribe</a>)
