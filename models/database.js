@@ -28,6 +28,14 @@ var msgboyDatabase = {
 				next();
             }
         },
-
+		// {
+		// 	version: "0.0.4",
+		// 	migrate: function(db, versionRequest, next) {
+		// 		var store = versionRequest.transaction.objectStore("messages")
+		// 		store.createIndex("hostIndex", "host", { unique: false}); 
+		// 		store.createIndex("sourceIndex", "source", { unique: false}); 
+		// 		next();
+		// 	}
+		// }
     ]
 }
