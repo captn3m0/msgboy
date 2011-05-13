@@ -83,13 +83,17 @@ Strophe.addConnectionPlugin('superfeedr', {
     },
 
     // called when connection status is changed
+	// we set up the handler. If it was previously set, we just unset it, and delete it.
     statusChanged: function (status) {
-        if (status === Strophe.Status.CONNECTED && !this._handler) {
-            this._handler = this._connection.addHandler(this.notificationReceived.bind(this), null, 'message', null, null, null);
+        if (this._handler) {
+			this._connection.deleteHandler(this._handler);
+			this._handler = null;
         }
+    	this._handler = this._connection.addHandler(this.notificationReceived.bind(this), null, 'message', null, null, null);
     },
 
     notificationReceived: function (msg) {
+		Strophe.log("Notification received")
         if (msg.getAttribute('from') == "firehoser.superfeedr.com") {
             var entries = msg.getElementsByTagName("entry");
             var status = msg.getElementsByTagName("status")[0];
