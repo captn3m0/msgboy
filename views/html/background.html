@@ -381,13 +381,14 @@
 				})
 	        } else if (request.subscribe) { // Subscribes to more feeds
 	            log("Request : subscribe ")
-	            connection.superfeedr.subscribe(request.subscribe.url, function (result) {
+	            connection.superfeedr.subscribe(request.subscribe.url, function (result, feed) {
 	                var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe.url);
-	                var msg = {
+	                var title = feed.title || request.subscribe.title
+					var msg = {
 	                    id: MD5.hexdigest(atom_id + Math.random() * 11),
 	                    atom_id: atom_id,
-	                    title: "Following " + request.subscribe.title,
-	                    summary: "You're now following " + request.subscribe.title,
+	                    title: "Following " + title,
+	                    summary: "You're now following " + title,
 	                    read_at: new Date().getTime(),
 						unread_at: 0,
 	                    starred_at: 0,

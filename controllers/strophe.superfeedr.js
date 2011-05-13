@@ -26,7 +26,7 @@ Strophe.addConnectionPlugin('superfeedr', {
             node: feed
         });
         this._connection.addHandler(function (response) {
-            callback(response.getAttribute("type") == "result");
+            callback(response.getAttribute("type") == "result", {title: Strophe.getText(response.getElementsByTagName("title")[0])});
             return false;
         }, null, 'iq', null, stanza_id, null);
         this._connection.send(sub.tree());

@@ -69,7 +69,7 @@
                     })
                 })
                 // Tests subscription
-                connection.superfeedr.subscribe("http://blog.superfeedr.com/atom.xml", function(result) {
+                connection.superfeedr.subscribe("http://blog.superfeedr.com/atom.xml", function(result, feed) {
                     test("Test subscription", function() {
                         if(result) {
                             ok( true, "Subscribed successfully");
@@ -79,13 +79,13 @@
                                     if(result) {
                                         ok( true, "Unsubscribed successfully");
                                         // Tests List
-                                        connection.superfeedr.subscribe("http://blog.superfeedr.com/atom.xml", function(result) {
-                                            connection.superfeedr.subscribe("https://github.com/superfeedr.atom", function(result) {
+                                        connection.superfeedr.subscribe("http://blog.superfeedr.com/atom.xml", function(result, feed) {
+                                            connection.superfeedr.subscribe("https://github.com/superfeedr.atom", function(result, feed) {
                                                 connection.superfeedr.list(1, function(result) {
                                                     test("Test Subscription listing", function() {
                                                         ok(_.include(result, "https://github.com/superfeedr.atom"), "Includes subscription to https://github.com/superfeedr.atom");
                                                         ok(_.include(result, "http://blog.superfeedr.com/atom.xml"), "Includes subscription to http://blog.superfeedr.com/atom.xml");
-                                                        connection.superfeedr.subscribe("http://superfeedr.com/track/music", function(result) {
+                                                        connection.superfeedr.subscribe("http://superfeedr.com/track/music", function(result, feed) {
                                                             // Nothing to do here.
                                                         });
                                                         
