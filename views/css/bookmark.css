@@ -20,6 +20,7 @@
 	line-height: 1;
 	list-style: none;
 	background-attachment: scroll;	
+	width: 100px;
 }
 
 #msgboy-bookmark li {

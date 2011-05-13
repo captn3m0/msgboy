@@ -168,7 +168,7 @@ chrome.extension.sendRequest({
 	$("<ul>", {
 		id: "msgboy-bookmark"
 	}).appendTo("body");
-	var left = Math.min(Math.max(response.value, 0), $(window).width() - $("#msgboy-bookmark").width());
+	var left = Math.min(Math.max(parseInt(response.value), 0), $(window).width() - 100); // 100 is the size of the bookmark!
 	$("#msgboy-bookmark").css("left", left);
 	
 	// Add each of the actions in the bookmark
