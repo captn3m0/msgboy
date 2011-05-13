@@ -61,6 +61,11 @@ function nameToId(name) {
     return name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '-')
 }
 
+function fibonacci(n){
+    var o;
+    return n < 2 ? n : n % 2 ? (o = fibonacci(n = -(-n >> 1))) * o + (o = fibonacci(n - 1)) * o : (fibonacci(n >>= 1) + 2 * fibonacci(n - 1)) * fibonacci(n);
+};
+
 Log = function(level) {
 	this.level = level;
 }
@@ -96,4 +101,3 @@ Log.prototype = {
 }
 
 logger = new Log(Log.levels.error)    
-    

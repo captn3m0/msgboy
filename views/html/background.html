@@ -62,11 +62,13 @@
 	connection.max_stanzas_per_second = 3; // We limit to 3 stanzas per second.
 	var password = "";
 	var jid = "";
-	var autoReconnect = true;
+	var autoReconnect = false;
 	var connectionWatchers = [];
 	var rosterWatchers = []
 	var currentNotification = null;
 	var roster = {};
+	var connection_timeout = null;
+	var reconnectDelay = 0;
 
 	connection.rawInput = function (data) {
 	    log('RECV: ' + data);
@@ -98,45 +100,60 @@
         } else if (status == Strophe.Status.CONNFAIL) {
             msg = 'Msgboy failed to connect.';
             setTimeout(function () {
-                if (autoReconnect) connect
-            }, 5000);
+                if (autoReconnect) {
+					reconnectDelay += 1;
+					connect();
+				}
+            }, fibonacci(reconnectDelay) * 1000);
+			if(connection_timeout) clearTimeout(connection_timeout);
         } else if (status == Strophe.Status.AUTHFAIL) {
             msg = 'Msgboy couldn\'t authenticate. Please check your credentials';
-            autoReconnect = false
-            // We need to open the settings tab
+            autoReconnect = false // We need to open the settings tab
             chrome.tabs.create({
                 url: chrome.extension.getURL('/views/html/options.html'),
                 selected: true
             });
+			if(connection_timeout) clearTimeout(connection_timeout);
         } else if (status == Strophe.Status.DISCONNECTING) {
-            msg = 'Msgboy is disconnecting.';
+            msg = 'Msgboy is disconnecting.'; // We may want to time this out.
         } else if (status == Strophe.Status.DISCONNECTED) {
             msg = 'Msgboy is disconnected. ';
             setTimeout(function () {
-                if (autoReconnect) connect
-            }, 5000);
+                if (autoReconnect) {
+					reconnectDelay += 1;
+					connect();
+				}
+            }, fibonacci(reconnectDelay) * 1000);
+			if(connection_timeout) clearTimeout(connection_timeout);
         } else if (status == Strophe.Status.CONNECTED) {
+			reconnectDelay = 0
             autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
             msg = 'Msgboy is connected.';
 			connection.caps.sendPresenceWithCaps(); // Send presence! 
+			if(connection_timeout) clearTimeout(connection_timeout);
         }
+
         currentConnectionStatus['msg'] = msg;
         currentConnectionStatus.trigger("change", msg);
         log(msg);
     } // function onConnect
 
     // Connects the XMPP Client
+	// It also includes a timeout that tries to reconnect when we could not connect in less than 1 minute.
     function connect() {
-        autoReconnect = true;
+		connection_timeout = setTimeout(function() {
+			// We add a 60 secinds reconnect when trying to connect.
+			// If connection failed. We just try again.
+			connect();
+		}, 60*1000)
         password = inbox.attributes.password;
         jid = inbox.attributes.jid + "@msgboy.com/extension";
-
+		
         connection.connect(jid, password, onConnect);
     }
 
     // Disconnects to reconnect.
     function reconnect() {
-        autoReconnect = true; // Let's make sure we have the autoReconnect.
         if (connection.status == Strophe.Status.CONNECTING || connection.status == Strophe.Status.CONNECTED || connection.status == Strophe.Status.DISCONNECTING) {
             connection.disconnect(); // Disconnect...
         } else if (
