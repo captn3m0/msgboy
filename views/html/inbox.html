@@ -302,6 +302,13 @@
 						_.each(this.collection, function(message, index) {
 							this.showMessageAtBottom(this.collection.at(index));
 						}.bind(this))
+						if(this.collection.length == 0) {
+							// We couldn't fetch any, but we're not yet at the lower limit. Looks like we don't fetch a wide enough range.
+							this.step = this.step * this.step
+						} else {
+							// Cool, we fetched a wide enough range.
+							this.step = 60*1000 // Back to 1 minute.
+						}
 						this.completePage();
 						this.scrolled(); // Let's call scrolled, just in case we're at the bottom of the page.
 					}.bind(this))
