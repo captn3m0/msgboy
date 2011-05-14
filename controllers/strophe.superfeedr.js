@@ -26,6 +26,7 @@ Strophe.addConnectionPlugin('superfeedr', {
             node: feed
         });
         this._connection.addHandler(function (response) {
+			Strophe.log("Subscription response")
             callback(response.getAttribute("type") == "result", {title: Strophe.getText(response.getElementsByTagName("title")[0])});
             return false;
         }, null, 'iq', null, stanza_id, null);
@@ -48,6 +49,7 @@ Strophe.addConnectionPlugin('superfeedr', {
             node: feed
         });
         this._connection.addHandler(function (response) {
+			Strophe.log("Unsubscription response")
             callback(response.getAttribute("type") == "result");
             return false;
         }, null, 'iq', null, stanza_id, null);
@@ -93,8 +95,8 @@ Strophe.addConnectionPlugin('superfeedr', {
     },
 
     notificationReceived: function (msg) {
-		Strophe.log("Notification received")
         if (msg.getAttribute('from') == "firehoser.superfeedr.com") {
+			Strophe.log("Notification received")
             var entries = msg.getElementsByTagName("entry");
             var status = msg.getElementsByTagName("status")[0];
             var source = {

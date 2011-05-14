@@ -68,6 +68,13 @@
 			<input type="submit" value="Connect!" />
 		</form>
 		<p id="connectionStatus"></p>
+		<div id="options" style="display:none">
+			<h2>Options</h2>
+	        <span class="option" >
+		        <input type="checkbox" name="hide-bookmark" id="hide-bookmark" /> Hide Bookmark (<small><em>Shortcuts</em> : <code>$$f</code> for follow, <code>$$i</code> for inbox</small>)
+		    </span>
+		    
+		</div>
         <div id="plugins" style="display:none">
 	        <h2>Plugins</h2>
 			<p>We're loading the services that you seem to be using the most often, so you can import subscriptions you've made there. The msgboy will keep them sync'ed for you if you check their boxes!</p>
@@ -115,9 +122,11 @@
 	        // Good, we can show the plugins.
 	        $("#plugins").show();
 	        $("#signup").hide();
+	        $("#options").show();
 	    } else {
 	        // Bad, we can't show the plugins... but let's allow the user to reconnect!
 	        $("#plugins").hide();
+	        $("#options").hide();
 	    }
 	});
 
@@ -128,12 +137,13 @@
 	    events: {
 	        "change #settings #jid": "jid",
 	        "change #settings #password": "password",
+	        "change #options .option": "update_option",
 	        "submit #credentials": "reconnect",
 	        "click #settings #reset": "reset"
 	    },
 
 	    initialize: function () {
-	        _.bindAll(this, 'render');
+	        _.bindAll(this, 'render', 'update_option', 'jid', 'password', 'reconnect', 'reset');
 	        this.render();
 	    },
 
@@ -151,6 +161,13 @@
 	            }
 	        }, function (response) {
 	            $("#password").val(response.value);
+	        });
+	        chrome.extension.sendRequest({
+	            "settings": {
+	                "get": ["hide-bookmark"]
+	            }
+	        }, function (response) {
+	            $("#hide-bookmark").attr('checked', response.value);
 	        });
 
 	    },
@@ -197,7 +214,16 @@
 	                window.close();
 	            });
 	        }
-	    }
+	    },
+	
+		update_option: function(el) {
+			chrome.extension.sendRequest({
+				"settings": {
+					"set": [el.target.id, $(el.target).is(':checked')]
+				}
+			}, function (response) {});
+		}
+	
 	});
 
 	var PluginView = Backbone.View.extend({

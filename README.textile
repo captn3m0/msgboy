@@ -1,15 +1,21 @@
 h2.TODO
 
-* Add support for shortcuts (lots of shortcuts!)
-* Hide bookmark abaility (but shodtcut support!)
-* Add unread count
+* -Add support for shortcuts (lots of shortcuts!)-
+* -Hide bookmark abaility (but shortcut support!)-
+* -Add unread count-
+* show unread count as a progress bar, or as a heat indication, rather then the actual number.
 * Add per-site unread list
 * Add snooze
 * Add support for ActivityStreams, 
-* And better excerpts (iframes + readability)
+* -Add better excerpts (readability)-
 * Add Learning features, based on clicks, shares... etc http://harthur.github.com/brain/
 * Add ability to track the number of times a given feed was seen.
+* When subscribing to a feed on a page, check for rel="me" links and suggest corresponding feeds if they apply.
+* Allow for auth with google : http://code.google.com/chrome/webstore/docs/identify_user.html
+
 
 h3. Plugins
 
 * Blogger
+* Buzz
+

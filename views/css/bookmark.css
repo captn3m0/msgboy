@@ -57,3 +57,11 @@
 #connectionStatus {
 	display: none;
 }
+
+#msgboy-icon {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	z-index: 999999999999;
+	opacity: 0.50;
+}
