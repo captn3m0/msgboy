@@ -12,6 +12,7 @@ h2.TODO
 * Add ability to track the number of times a given feed was seen.
 * When subscribing to a feed on a page, check for rel="me" links and suggest corresponding feeds if they apply.
 * Allow for auth with google : http://code.google.com/chrome/webstore/docs/identify_user.html
+* When subscribing to a feed on a page, check for rel="me" links and maybe subscribe to these as well.
 
 
 h3. Plugins
