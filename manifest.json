@@ -71,6 +71,5 @@
       "all_frames": true
     }
   ],
-  "background_page": "/views/html/background.html",
-  "update_url": "http://sup.ee/update-msgboy"
+  "background_page": "/views/html/background.html"
 }
