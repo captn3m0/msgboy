@@ -235,7 +235,7 @@
 		$(document).ready(function() {
 			$("<img>", {
 				id: "msgboy-icon",
-				src: chrome.extension.getURL('/views/icons/16-grey.png'),
+				src: chrome.extension.getURL('/views/icons/icon16-grey.png'),
 			}).appendTo("body");
 		});
 	}
@@ -263,48 +263,48 @@
 			// follow
 			actions["follow"].callback()
 			$("#msgboy-icon").css("opacity", "0.50");
-			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/16-grey.png'));
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16-grey.png'));
 			string = ""
 		break;
 		case "$$i":
 			// inbox
 			actions["inbox"].callback()
 			$("#msgboy-icon").css("opacity", "0.50");
-			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/16-grey.png'));
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16-grey.png'));
 			string = ""
 		break;
 		case "$$u":
 			// inbox (like gmail)
 			actions["inbox"].callback()
 			$("#msgboy-icon").css("opacity", "0.50");
-			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/16-grey.png'));
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16-grey.png'));
 			string = ""
 		break;
 		case "$$x":
 			// settings 
 			actions["options"].callback()
 			$("#msgboy-icon").css("opacity", "0.50");
-			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/16-grey.png'));
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16-grey.png'));
 			string = ""
 		break;
 		case "$$o":
 			// Opens the current notification
 			actions["open"].callback()
 			$("#msgboy-icon").css("opacity", "0.50");
-			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/16-grey.png'));
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16-grey.png'));
 			string = ""
 		break;
 		case "$$b":
 			// show bookmark
 			showBookmark();
 			$("#msgboy-icon").css("opacity", "0.50");
-			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/16-grey.png'));
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16-grey.png'));
 			string = ""
 		break;
 		default:
 			if(string != "$" && string != "$$") {
 				$("#msgboy-icon").css("opacity", "0.50");
-				$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/16-grey.png'));
+				$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16-grey.png'));
 				string = ""
 			}
 			else if(string == "$") {
@@ -313,7 +313,7 @@
 			}
 			else if(string == "$$") {
 				// Light up the icon a lot!
-				$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/16.png'))
+				$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16.png'))
 			}
 		}
 		if(keystrokeTimeout) {
@@ -321,7 +321,7 @@
 		}
 		keystrokeTimeout = setTimeout(function() {
 			$("#msgboy-icon").css("opacity", "0.50");
-			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/16-grey.png'));
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16-grey.png'));
 			string = ""
 		}, 3000)
 	})
