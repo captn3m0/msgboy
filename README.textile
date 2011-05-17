@@ -13,7 +13,7 @@ h2.TODO
 * When subscribing to a feed on a page, check for rel="me" links and suggest corresponding feeds if they apply.
 * Allow for auth with google : http://code.google.com/chrome/webstore/docs/identify_user.html
 * When subscribing to a feed on a page, check for rel="me" links and maybe subscribe to these as well.
-
+* Rewrite the about:blank page with inbox.
 
 h3. Plugins
 
