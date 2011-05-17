@@ -27,8 +27,6 @@
     <!-- Controller includes -->
 	<script src="../../controllers/strophe.caps.js" type="text/javascript" ></script>
     <script src="../../controllers/strophe.superfeedr.js" type="text/javascript"></script> 
-    <script src="../../controllers/strophe.pep.js" type="text/javascript"></script> 
-    <script src="../../controllers/strophe.roster.js" type="text/javascript"></script> 
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     
 </head>
@@ -64,9 +62,7 @@
 	var jid = "";
 	var autoReconnect = false;
 	var connectionWatchers = [];
-	var rosterWatchers = []
 	var currentNotification = null;
-	var roster = {};
 	var connection_timeout = null;
 	var reconnectDelay = 0;
 
@@ -198,14 +194,6 @@
 	    connection.caps.addDiscoFeature("http://jabber.org/protocol/disco#info");
 	    connection.caps.addDiscoFeature("http://jabber.org/protocol/disco#items");
 
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    //                   Roster Changed Handler                                  	    //
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    $(document).bind('roster_changed', function (ev, contacts) {
-	        log("roster_changed");
-	        roster.contacts = contacts
-	        roster.trigger("change", contacts);
-	    });
 	
 	
 	    //////////////////////////////////////////////////////////////////////////////////////
@@ -228,56 +216,6 @@
 		});
 
 	    //////////////////////////////////////////////////////////////////////////////////////
-	    //                   Connection Requested Handler                                  	//
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    $(document).bind('connection_requested', function (ev, connection_jid) {
-	        log("connection_requested");
-			date = new Date();
-			var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/connections/" + escape(connection_jid);
-			msg = {
-                id: MD5.hexdigest(atom_id + Math.random() * 11),
-                atom_id: atom_id,
-                published: date.toISOString(),
-                updated: date.toISOString(),
-                title: connection_jid + " wants to connect",
-                summary: "You will be able to share content with " + connection_jid + ", and " + connection_jid + " will be able to share content with you.",
-                read_at: new Date().getTime(),
-                unread_at: 0,
-                starred_at: 0,
-                content: null,
-                links: {
-					"alternate": {
-						"text/html": [
-							{
-								rel: "alternate",
-								type: "text/html",
-								title: connection_jid + " wants to connect",
-								href: chrome.extension.getURL('/views/html/inbox.html')
-							}
-						]
-					}
-				},
-				actions: { 
-					'acceptConnection': {
-						'name': 'Accept',
-						'params': {'jid' : connection_jid}
-					}, 
-					'declineConnection': {
-						'name': 'Decline',
-						'params': {'jid' : connection_jid}
-					}
-				},
-                source: null
-            }
-            message = inbox.addMessage(msg, {
-				success: function() {
-					// Cool, message saved!
-				}
-			});
-	        // connection.roster.approve(connection_jid);
-	    });
-
-	    //////////////////////////////////////////////////////////////////////////////////////
 	    //                   Connection Status                                              //
 	    //////////////////////////////////////////////////////////////////////////////////////
 	    currentConnectionStatus['msg'] = 'Msgboy is disconnected. ';
@@ -286,20 +224,6 @@
 	        $.each(connectionWatchers, function (index, port) {
 	            try {
 	                port.postMessage(msg);
-	            } catch (error) {
-	                log("Could not post message to port : " + error)
-	            }
-	        })
-	    });
-
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    //                   Roster			                                                //
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    _.extend(roster, Backbone.Events);
-	    roster.bind("change", function (roster) {
-	        $.each(rosterWatchers, function (index, port) {
-	            try {
-	                port.postMessage(roster);
 	            } catch (error) {
 	                log("Could not post message to port : " + error)
 	            }
@@ -322,17 +246,7 @@
 	            });
 	            port.postMessage(currentConnectionStatus.msg);
 	            connectionWatchers.push(port);
-	        } else if (port.name == "roster") {
-	            port.onDisconnect.addListener(function () {
-	                log("This port was disconnected : " + port.tab.id)
-	                idx = rosterWatchers.indexOf(port);
-	                if (idx != -1) {
-	                    rosterWatchers.splice(idx, 1);
-	                }
-	            });
-	            port.postMessage(roster.contacts);
-	            rosterWatchers.push(port);
-	        }
+	        } 
 	    });
 
 	    // Handler for messages
@@ -438,55 +352,6 @@
 	            currentNotification = null;
 	            sendResponse({
 	                value: true
-	            });
-	        } else if (request.addConnection) {
-	            log("Request : addConnection");
-	            connection.roster.subscribe(request.addConnection);
-	            sendResponse({
-	                value: true
-	            });
-	        } else if (request.removeConnection) {
-	            log("Request : removeConnection");
-	            connection.roster.unsubscribe(request.removeConnection);
-	            sendResponse({
-	                value: true
-	            });
-	        } else if (request.acceptConnection) {
-	            log("Request : acceptConnection");
-	            connection.roster.approve(request.acceptConnection);
-	            connection.roster.subscribe(request.acceptConnection);
-	            sendResponse({
-	                value: true
-	            });
-	        } else if (request.refuseConnection) {
-	            log("Request : refuseConnection");
-	            connection.roster.decline(request.acceptConnection);
-	            connection.roster.unsubscribe(request.refuseConnection);
-	            sendResponse({
-	                value: true
-	            });
-			} else if (request.share) {
-	            log("Request : share");
-				// And now we need to share stuff!
-				payload = connection.superfeedr.buildAtomFromJson(
-					request.share.title,
-					request.share.selection,
-					[
-						{
-							"rel": "alternate",
-							"type": "text/html",
-							"title": request.share.title,
-							"href": request.share.location
-						}
-					]
-					, function() {
-						log("Successfully shared");
-					}, function() {
-						log("Failed to share")
-					});
-				connection.pep.publish("http://jabber.org/protocol/links", payload);
-				sendResponse({
-					value: true
 	            });
 			} else if (request.unreadCount) {
 				archive = new Archive();

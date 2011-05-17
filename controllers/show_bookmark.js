@@ -106,19 +106,6 @@
 	            });
 	        }
 	    },
-	    share: {
-	        name: "Share",
-	        callback: function () {
-	            chrome.extension.sendRequest({
-	                share: {
-	                    location: window.location.toString(),
-	                    selection: window.getSelection().toString(),
-	                    title: document.title || "Untitled",
-	                }
-	            }, function (response) {});
-	            return false;
-	        }
-	    },
 	    inbox: {
 	        name: "Inbox",
 	        callback: function () {
@@ -243,13 +230,6 @@
 			$("#msgboy-icon").css("opacity", "0.50");
 			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/24-grey.png'));
 			string = ""
-		break;
-		case "$$s":
-			actions["share"].callback()
-			$("#msgboy-icon").css("opacity", "0.50");
-			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/24-grey.png'));
-			string = ""
-			// share
 		break;
 		case "$$i":
 			// inbox
