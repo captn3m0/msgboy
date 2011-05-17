@@ -4,9 +4,9 @@
   "minimum_chrome_version": "11.0.0.0",
   "description": "Grownme makes Chrome more useful and smarter!",
   "icons": {
-    "16": "/views/icons/icon16.png",
-    "48": "/views/icons/icon48.png",
-    "128": "/views/icons/icon128.png"
+    "16": "views/icons/icon16.png",
+    "48": "views/icons/icon48.png",
+    "128": "views/icons/icon128.png"
   },
   "options_page": "/views/html/options.html",
   "app": {
@@ -70,6 +70,5 @@
       "all_frames": true
     }
   ],
-  "background_page": "/views/html/background.html",
-  "update_url": "http://sup.ee/update-msgboy"
+  "background_page": "/views/html/background.html"
 }
