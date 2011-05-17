@@ -1,6 +1,7 @@
 {
   "name": "Msgboy",
-  "version": "0.0.14",
+  "version": "0.0.15",
+  "minimum_chrome_version": "11.0.0.0"
   "description": "Grownme makes Chrome more useful and smarter!",
   "icons": {
     "24": "/views/icons/24.png",
