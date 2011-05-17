@@ -245,12 +245,6 @@
 			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/24-grey.png'));
 			string = ""
 		break;
-		case "$$m":
-			// Mute
-			$("#msgboy-icon").css("opacity", "0.50");
-			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/24-grey.png'));
-			string = ""
-		break;
 		default:
 			if(string != "$" && string != "$$") {
 				$("#msgboy-icon").css("opacity", "0.50");
