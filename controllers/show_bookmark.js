@@ -4,6 +4,7 @@
 	var actions = {
 	    follow: {
 	        name: "Follow",
+			show: true,
 	        callback: function () {
 	            extractFeedLinks(function (links) {
 	                switch (links.length) {
@@ -108,6 +109,7 @@
 	    },
 	    inbox: {
 	        name: "Inbox",
+			show: true,
 	        callback: function () {
 	            chrome.extension.sendRequest({
 	                "tab": {
@@ -117,8 +119,32 @@
 	            }, function (response) {});
 	        }
 	    },
+		options: {
+			name: "Options",
+			show: false,
+			callback: function() {
+	            chrome.extension.sendRequest({
+	                "tab": {
+	                    url: chrome.extension.getURL('/views/html/options.html'),
+	                    selected: true
+	                }
+	            }, function (response) {});
+			}
+		},
+		open: {
+			name: "Open",
+			show: false,
+			callback: function() {
+	            chrome.extension.sendRequest({
+	                "open": {
+	                    selected: true
+	                }
+	            }, function (response) {});
+			}
+		},
 	    connectionStatus: {
 	        name: "",
+			show: true,
 	        callback: function () {
 	            chrome.extension.sendRequest({
 	                connect: true
@@ -143,13 +169,8 @@
 		});
 	}
 
-	// Show the bookmark
-	chrome.extension.sendRequest({
-		"settings": {
-			"get": ["hide-bookmark"]
-		}
-	}, function (response) {
-		if(!response.value) {
+	function showBookmark() {
+		if($("#msgboy-bookmark").length == 0) {
 			// Gets the bookmarkPosition
 			chrome.extension.sendRequest({
 				"settings": {
@@ -167,13 +188,15 @@
 					// Add each of the actions in the bookmark
 					for (var id in actions) {
 						var action = actions[id];
-						$("#msgboy-bookmark").append(
-						$("<li>", {
-							id: id,
-							text: action.name,
-							class: 'action',
-							click: action.callback
-						}))
+						if(action.show) {
+							$("#msgboy-bookmark").append(
+							$("<li>", {
+								id: id,
+								text: action.name,
+								class: 'action',
+								click: action.callback
+							}))							
+						}
 					}
 
 					// Makes sure we will listen to connection updates
@@ -205,16 +228,28 @@
 					});
 				})
 			});
-		} else {
-			$(document).ready(function() {
-				$("<img>", {
-					id: "msgboy-icon",
-					src: chrome.extension.getURL('/views/icons/24-grey.png'),
-				}).appendTo("body");
-			});
 		}
-		
-		
+	}
+
+	function showIcon() {
+		$(document).ready(function() {
+			$("<img>", {
+				id: "msgboy-icon",
+				src: chrome.extension.getURL('/views/icons/24-grey.png'),
+			}).appendTo("body");
+		});
+	}
+	
+	chrome.extension.sendRequest({
+		"settings": {
+			"get": ["hide-bookmark"]
+		}
+	}, function (response) {
+		if(!response.value) {
+			showBookmark();
+		} else {
+			showIcon();
+		}
 	});
 	
 	
@@ -241,6 +276,27 @@
 		case "$$u":
 			// inbox (like gmail)
 			actions["inbox"].callback()
+			$("#msgboy-icon").css("opacity", "0.50");
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/24-grey.png'));
+			string = ""
+		break;
+		case "$$x":
+			// settings 
+			actions["options"].callback()
+			$("#msgboy-icon").css("opacity", "0.50");
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/24-grey.png'));
+			string = ""
+		break;
+		case "$$o":
+			// Opens the current notification
+			actions["open"].callback()
+			$("#msgboy-icon").css("opacity", "0.50");
+			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/24-grey.png'));
+			string = ""
+		break;
+		case "$$b":
+			// show bookmark
+			showBookmark();
 			$("#msgboy-icon").css("opacity", "0.50");
 			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/24-grey.png'));
 			string = ""

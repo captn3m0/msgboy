@@ -245,7 +245,7 @@
 
 	    // Handler for messages
 	    chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-	        if (request.settings) { // Settings
+	        if (request.settings) { // Options
 	            if (request.settings.get) { // get them
 	                log("Request : settings.get " + JSON.stringify(request.settings.get));
 	                sendResponse({
