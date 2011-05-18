@@ -97,7 +97,7 @@
                 <% 
                 if(main_link(links) != "") {
                 %>
-                    &nbsp;<a href="<%= main_link(links) %>" target="_blank" class="more">Read More</a> 
+                    &nbsp;<a href="" target="_blank" class="more">Read More</a> 
                 <%
                 } 
                 %></div>
@@ -128,7 +128,7 @@
             //////////////////////////////////////////////////////////////////////////////////////
             var MessageView = Backbone.View.extend({
                 events: {
-                    "click p a.more": "openViewer",
+                    "click a.more": "openViewer",
                     "click a.unsubscribe": "unsubscribeFeed",
                     "click a.destroy": "destroyMessage",
                     "click a.star": "toggleStarMessage",
