@@ -1,52 +1,54 @@
 body,
 html {
-  margin:0;
-  padding:0;
-	font-family: sans-serif;
-	background-color: #FDFDFD;
-	color: #434343;
+    margin:0;
+    padding:0;
+    font-family: sans-serif;
+    background-color: #FDFDFD;
+    color: #434343;
 }
 
 
 #nav {
-  margin : 0px 0px 30px 0px;
-  padding: 0px;
+    text-align:right;
+    margin : 0px 0px 0px 0px;
+    padding: 0px;
 }
+
 #nav span {
-  padding: 10px;
+    padding: 10px;
 }
 
 #inbox, #settings {
-  float:left;
-  padding:10px;
+    float:left;
+    padding:10px;
 }
 
 #inbox h2 {
-  margin-top: 80px;
+    margin-top: 80px;
 }
 
 .message {
-	margin: 30px 20px 30px 20px;
+    margin: 30px 20px 30px 20px;
 }
 
 .message h3 {
-	text-transform:capitalize;
-	display: block;
-	width: 100%;
-	border-bottom: 1px solid #333;
-	font-size: 1.2em;	
+    text-transform:capitalize;
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid #333;
+    font-size: 1.2em;	
 }
 
 span.time {
-	font-style: italic;
+    font-style: italic;
 }
 
 .read {
-  color: #CCC;
+    color: #CCC;
 }
 
 .starred {
-  background-color: #FF6;
+    background-color: #FF6;
 }
 
 .read a {color: rgba(51, 51, 51, 0.18);}
@@ -55,19 +57,24 @@ span.time {
 .read a:active {color: #00E;}
 
 #settings #saved {
-  display:none;
+    display:none;
+}
+
+#loader_frame {
+    display: block;
+    height: 12px;
 }
 
 #loader {
-	margin-right: auto;
-	margin-left: auto;
-	display:block;
+    margin-right: auto;
+    margin-left: auto;
+    display:block;
 }
 
 .actions {
-	clear: both;
+    clear: both;
 }
 
 #credentials {
-	display:none;
+    display:none;
 }
