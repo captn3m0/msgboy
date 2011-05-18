@@ -67,3 +67,7 @@ span.time {
 .actions {
 	clear: both;
 }
+
+#credentials {
+	display:none;
+}

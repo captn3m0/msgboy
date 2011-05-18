@@ -376,7 +376,7 @@
 			    } else {
 			        // We need the user to enter its settings
 			        chrome.tabs.create({
-			            url: chrome.extension.getURL('/views/html/options.html'),
+			            url: chrome.extension.getURL('/views/html/signup.html'),
 			            selected: true
 			        });
 			    }
@@ -388,7 +388,7 @@
 				}, {
 					success: function() {
 				        chrome.tabs.create({
-				            url: chrome.extension.getURL('/views/html/options.html'),
+				            url: chrome.extension.getURL('/views/html/signup.html'),
 				            selected: true
 				        });
 					},

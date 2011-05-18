@@ -59,26 +59,28 @@
     </script>
 
     <div id="settings">
-		<span id="signup">Please <a href="http://msgboy.com/" target="_blank">sign up</a> first if you don't have an account just yet.</span>
-        <h2>Account</h2>
+		<p id="connectionStatus"></p>
+	
 		<form id="credentials">
+	        <h1>Account</h1>
+			<span id="signup">Please <a href="http://msgboy.com/" target="_blank">sign up</a> first if you don't have an account just yet.</span>
         	Login : <input type="text" id="jid"><br />
         	Password : <input type="Password" id="password"><br />
 			<input type="submit" value="Connect!" />
 		</form>
-		<p id="connectionStatus"></p>
+		
 		<div id="options" style="display:none">
-			<h2>Options</h2>
+			<h1>Options</h1>
 	        <span class="option" >
 		        <input type="checkbox" name="hide-bookmark" id="hide-bookmark" /> Hide Bookmark (<small><em>Shortcuts</em> : <code>$$f</code> for follow, <code>$$i</code> for inbox, <code>$$x</code> for settings, <code>$$o</code> to open the current notification</small>)
 		    </span>
 		    
 		</div>
         <div id="plugins" style="display:none">
-	        <h2>Plugins</h2>
+	        <h1>Plugins</h1>
 			<p>We're loading the services that you seem to be using the most often, so you can import subscriptions you've made there. The msgboy will keep them sync'ed for you if you check their boxes!</p>
 			<div class="active"></div>
-			<h3>Others</h3>
+			<h2>Others</h2>
 			<small>Looks like we couldn't verify that you use these services, please make sure you're logged in on them before activating them.</small>
 			<div class="passive"></div>
         </div>
@@ -95,6 +97,11 @@
     </script>
     
     <script>
+
+	$("#signup").click(function() {
+		window.location = chrome.extension.getURL('/views/html/signup.html');
+        return false;
+	})
 
 	// Google Analytics
 	var _gaq = _gaq || [];
@@ -122,10 +129,12 @@
 	        $("#plugins").show();
 	        $("#signup").hide();
 	        $("#options").show();
+	        $("#credentials").hide();
 	    } else {
 	        // Bad, we can't show the plugins... but let's allow the user to reconnect!
 	        $("#plugins").hide();
 	        $("#options").hide();
+	        $("#credentials").show();
 	    }
 	});
 
