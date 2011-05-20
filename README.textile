@@ -18,6 +18,8 @@ h2.TODO
 * Make sure we use absolute hrefs and srcs
 * Make sure we show the actual page to the feed link in "From".
 * Add custom msgboy JS events when users subscribe.
+* Change the "inbox" analogy into something less stressful, as inbox feels too much like a TODO. Stream?
+
 
 h3. Plugins
 
