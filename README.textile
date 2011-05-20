@@ -17,6 +17,7 @@ h2.TODO
 * Put images in lightbox
 * Make sure we use absolute hrefs and srcs
 * Make sure we show the actual page to the feed link in "From".
+* Add custom msgboy JS events when users subscribe.
 
 
 h3. Plugins
