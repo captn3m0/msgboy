@@ -3,3 +3,4 @@ Rakefile
 updates.xml
 *.pem
 build/
+manifest.json

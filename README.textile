@@ -19,7 +19,6 @@ h2.TODO
 * Make sure we show the actual page to the feed link in "From".
 * Add custom msgboy JS events when users subscribe.
 
-
 h3. Plugins
 
 * Blogger

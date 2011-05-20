@@ -78,12 +78,7 @@
                         }).onMessage.addListener(function (msg) {
                             if (msg == "Msgboy is connected.") {
                                 // Cool, we're connected...
-                                $('#connectionStatus').text("Connected... You can resume browsing!");
-                                setTimeout(function() {
-                                    window.open('', '_self', '');
-                                    window.close();
-                                    return false;
-                                }, 5000)
+                                window.location = chrome.extension.getURL('/views/html/plugins.html') // We redirect the user 
                             } else {
                                 // We should show this to the user!
                                 $('#connectionStatus').text(msg);
