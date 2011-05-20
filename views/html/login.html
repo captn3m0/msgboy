@@ -40,6 +40,7 @@
         <div class="actions"> 
             <input id="user_submit" name="commit" type="submit" value="Log in" /> &nbsp; <a href="http://msgboy.com/passwords/new">Forgot password?</a>
         </div> 
+        <p id="connectionStatus"></p>
     </form>
 
     <script>
@@ -72,19 +73,34 @@
                     chrome.extension.sendRequest({
                         connect: true
                     }, function (response) {
-                        window.location = chrome.extension.getURL('/views/html/options.html')
+                        chrome.extension.connect({
+                            name: "connection"
+                        }).onMessage.addListener(function (msg) {
+                            if (msg == "Msgboy is connected.") {
+                                // Cool, we're connected...
+                                $('#connectionStatus').text("Connected... You can resume browsing!");
+                                setTimeout(function() {
+                                    window.open('', '_self', '');
+                                    window.close();
+                                    return false;
+                                }, 5000)
+                            } else {
+                                // We should show this to the user!
+                                $('#connectionStatus').text(msg);
+                            }
+                        });
                     }.bind(this));
                 }.bind(this));
             }.bind(this));
             return false
         }
-        
+
     });
 
     var view = new NewUserFormView({
         el: "#new_session"
     });
-    
+
     </script>
 </body>
 </html>

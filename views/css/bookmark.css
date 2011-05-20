@@ -1,67 +1,67 @@
 #msgboy-bookmark {
-	font-family: DroidSerifRegular, Georgia, serif;
-	text-shadow: white 0 1px 0;
-	text-align:left;
-	position: fixed;
-	top:0px;
-	z-index:999997;
-	color: #333;
-	font-size: 16px;
-	font-style: normal;
-	cursor:pointer;
-	background-color:#ccc;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-	display: block;
-	line-height: 1;
-	list-style: none;
-	background-attachment: scroll;	
-	width: 100px;
+    font-family: DroidSerifRegular, Georgia, serif;
+    text-shadow: white 0 1px 0;
+    text-align:left;
+    position: fixed;
+    top:0px;
+    z-index:999997;
+    color: #333;
+    font-size: 16px;
+    font-style: normal;
+    cursor:pointer;
+    background-color:#ccc;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    display: block;
+    line-height: 1;
+    list-style: none;
+    background-attachment: scroll;	
+    width: 100px;
 }
 
 #msgboy-bookmark li {
-	list-style:none;
-	margin: 0px;
-	padding: 10px;
+    list-style:none;
+    margin: 0px;
+    padding: 10px;
 }
 
 #msgboy-bookmark-dialog {
-	font-family: DroidSerifRegular, Georgia, serif;
-	text-align:left;
-	position:absolute;
-	z-index:999999;
-	color: #333;
-	font-size: 16px;
-	line-height: normal;
-	font-style: normal;
-	cursor:pointer;
-	background-color:#ccc;
-	padding: 20px;
-	border: 1px solid black;
-	overflow: scroll;
-	height: 200px;
+    font-family: DroidSerifRegular, Georgia, serif;
+    text-align:left;
+    position:absolute;
+    z-index:999999;
+    color: #333;
+    font-size: 16px;
+    line-height: normal;
+    font-style: normal;
+    cursor:pointer;
+    background-color:#ccc;
+    padding: 20px;
+    border: 1px solid black;
+    overflow: scroll;
+    height: 200px;
 }
 
 #link-list {
-	padding-left: 20px;
+    padding-left: 20px;
 }
 
 #link-list li {
-	list-style-type: disc;
-},
+    list-style-type: disc;
+}
 
 #connectionStatus {
-	display: none;
+    display: none;
 }
 
 #msgboy-icon {
-	position: fixed;
-	bottom: 10px;
-	right: 10px;
-	z-index: 999999999999;
-	opacity: 0.50;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 999999999999;
+    opacity: 0.50;
 }
