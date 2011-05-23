@@ -163,13 +163,30 @@
                     var content = null;
                     
                     if (!this.model.attributes.content || $.trim(this.model.attributes.content) == "") {
-                        elem = readability.prepDocumentFromString(this.model.attributes.summary)
-                        content = readability.grabArticleFromElement(elem)
+                        content = readability.grabArticleFromElement(readability.prepDocumentFromString(this.model.attributes.summary));
                     } else {
-                        elem = readability.prepDocumentFromString(this.model.attributes.content)
-                        content = readability.grabArticleFromElement(elem);
+                        content = readability.grabArticleFromElement(readability.prepDocumentFromString(this.model.attributes.content));
                     }
-                    this.$('.readable-content').html($(content).html());
+                    content = $($(content).html());
+                    
+                    // Now makes sure that all srcs and hrefs are absolute!
+                    $.each(content.find("img"), function(idx, img) {
+                        try {
+                            if(parseUri($(img).attr("src")).relative == $(img).attr("src")) {
+                                abs             = parseUri(this.model.attributes.links.alternate["text/html"][0].href)
+                                abs.path        = $(img).attr("src")
+                                abs.file        = "";
+                                abs.query       = "";
+                                abs.queryKey    = {};
+                                abs.relative    = $(img).attr("src");
+                                $(img).attr("src", abs.toString());
+                            }
+                        }
+                        catch(e) {
+                            // Forget it.
+                        }
+                    }.bind(this))
+                    this.$('.readable-content').html(content);
                     _gaq.push(['_trackEvent', 'message-shown']);
                     return this;
                 },

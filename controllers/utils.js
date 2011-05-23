@@ -1,7 +1,27 @@
+Uri = function() {
+    // and URI object
+};
+
+Uri.prototype = {
+    toString: function() {
+        str = ''
+        if(this.protocol) {
+            str += this.protocol + "://"
+        }
+        if(this.authority) {
+            str += this.authority
+        }
+        if(this.relative) {
+            str += this.relative
+        }
+        return str;
+    }
+}
+
 function parseUri (str) {
   var	o   = parseUri.options,
   m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
-  uri = {},
+  uri = new Uri(),
   i   = 14;
 
   while (i--) uri[o.key[i]] = m[i] || "";
@@ -27,6 +47,7 @@ parseUri.options = {
   }
 };
 
+
 function truncate(text, len) {
     if (text.length > len) {
         text = text.substring(0, len);
@@ -34,13 +55,13 @@ function truncate(text, len) {
         text  = text + "&hellip;"
     }
     return text;
-}
+};
 
 function strip(html) {
     var tmp = document.createElement("DIV");
     tmp.innerHTML = html;
     return tmp.textContent||tmp.innerText;
-}
+};
 
 function main_link(links) {
     if(links["alternate"]) {
@@ -55,11 +76,11 @@ function main_link(links) {
     else {
         return "";
     }
-}
+};
 
 function nameToId(name) {
     return name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '-')
-}
+};
 
 function fibonacci(n){
     var o;
@@ -68,7 +89,7 @@ function fibonacci(n){
 
 Log = function(level) {
 	this.level = level;
-}
+};
 
 Log.levels 			= {};
 Log.levels.debug 	= 100;
@@ -98,6 +119,6 @@ Log.prototype = {
 	fatal: function(message) {
 		this.print(Log.levels.fatal, message)
 	}
-}
+};
 
-logger = new Log(Log.levels.error)    
+logger = new Log(Log.levels.error);
