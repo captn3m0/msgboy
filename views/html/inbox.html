@@ -161,12 +161,13 @@
 
                     // And put the readable content in place!
                     var content = null;
+                    
                     if (!this.model.attributes.content || $.trim(this.model.attributes.content) == "") {
                         elem = readability.prepDocumentFromString(this.model.attributes.summary)
-                        content = readability.grabArticleFromElement(elem, true)
+                        content = readability.grabArticleFromElement(elem)
                     } else {
                         elem = readability.prepDocumentFromString(this.model.attributes.content)
-                        content = readability.grabArticleFromElement(elem, true);
+                        content = readability.grabArticleFromElement(elem);
                     }
                     this.$('.readable-content').html($(content).html());
                     _gaq.push(['_trackEvent', 'message-shown']);
