@@ -1,6 +1,5 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
-    
     <head>
         <meta charset="UTF-8">
         <title>
@@ -186,6 +185,27 @@
                             // Forget it.
                         }
                     }.bind(this))
+                    
+                    // Now makes sure all links are absolute.
+                    $.each(content.find("a"), function(idx, a) {
+                        try {
+                            if(parseUri($(a).attr("href")).relative == $(a).attr("href")) {
+                                abs             = parseUri(this.model.attributes.links.alternate["text/html"][0].href)
+                                abs.path        = $(a).attr("href")
+                                abs.file        = "";
+                                abs.query       = "";
+                                abs.queryKey    = {};
+                                abs.relative    = $(a).attr("href");
+                                $(a).attr("href", abs.toString());
+                                $(a).attr("target", "_blank");
+                            }
+                        }
+                        catch(e) {
+                            // Forget it.
+                        }
+                    }.bind(this))
+                    
+                    
                     this.$('.readable-content').html(content);
                     _gaq.push(['_trackEvent', 'message-shown']);
                     return this;
@@ -249,7 +269,7 @@
 
                 initialize: function() {
                     this.step = 60000, // 1 minute.
-                    this.current_filter = "created_at";
+                    this.current_filter = "starred_at";
 
                     this.loading = false;
                     this.lower = 0;
