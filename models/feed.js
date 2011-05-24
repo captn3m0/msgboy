@@ -47,9 +47,6 @@ var Feed = Backbone.Model.extend({
             for(var i=0; i < this.attributes.seen_at.length - 2; i++) {
                 diffs[i] =  this.attributes.seen_at[i+1] - this.attributes.seen_at[i];
             }
-            console.log(diffs)
-            console.log(normalizedDeviation(diffs))
-            console.log(diffs.length)
             if(normalizedDeviation(diffs) < 1 && diffs.length >= 3) {
                 return true
             }
