@@ -1,20 +1,17 @@
 #msgboy-bookmark {
-    font-family: DroidSerifRegular, Georgia, serif;
-    text-shadow: white 0 1px 0;
+    font-family: LucidaGrande, Helvetica, Arial, sans-serif;
     text-align:left;
     position: fixed;
     top:0px;
-    z-index:999997;
+    z-index:99999999;
     color: #333;
-    font-size: 16px;
+    font-size: 13px;
     font-style: normal;
     cursor:pointer;
     background-color:#ccc;
     margin: 0;
     padding: 0;
     border: 0;
-    font-size: 100%;
-    font: inherit;
     vertical-align: baseline;
     display: block;
     line-height: 1;
@@ -30,12 +27,12 @@
 }
 
 #msgboy-bookmark-dialog {
-    font-family: DroidSerifRegular, Georgia, serif;
+    font-family: LucidaGrande, Helvetica, Arial, sans-serif;
     text-align:left;
     position:absolute;
-    z-index:999999;
+    z-index:999999999;
     color: #333;
-    font-size: 16px;
+    font-size: 13px;
     line-height: normal;
     font-style: normal;
     cursor:pointer;
@@ -62,6 +59,55 @@
     position: fixed;
     bottom: 10px;
     right: 10px;
-    z-index: 999999999999;
+    z-index:999999999;
     opacity: 0.50;
+}
+
+#msgboy-bar {
+    text-align:left;
+    z-index:999999999;
+    margin: 0px;
+    padding: 0px;
+    font-size: 13px;
+    font-family: LucidaGrande, Helvetica, Arial, sans-serif;
+    position: absolute;
+    top:0px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #FCECA4;
+    border-bottom: 1px solid #7B7B7B;
+    width: 100%;
+}
+
+#msgboy-bar img {
+    display:inline;
+    float:left;
+    width: 20px; 
+    margin-left: 5px; 
+    margin-top: 5px;
+}
+
+#msgboy-bar-message {
+    font-size: 13px;
+    font-family: LucidaGrande, Helvetica, Arial, sans-serif;
+    background-color: #FCECA4;
+    height: 30px;
+    line-height: 30px;
+    display: inline;
+    margin-left: 10px;
+}
+
+.msgboy-button {
+    font-size: 10px;
+    font-family: Helvetica, Arial, sans-serif;
+    line-height: 10px;
+    margin: 5px 6px 7px 0px;
+    width: 20px;
+    text-align: center;
+    float:right;
+    padding: 3px 5px 3px 5px;
+    border-radius: 10px;
+    border: 1px #B3B3B3 solid;
+    background-color:#E6E6E6;
+    cursor: pointer;
 }

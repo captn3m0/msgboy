@@ -154,6 +154,7 @@
 	    }
 	};
 	
+	// Listens to the Connect status
 	function listenToConnectionStatus() {
 		port = chrome.extension.connect({
 			name: "connection"
@@ -169,6 +170,7 @@
 		});
 	}
 
+    // Shows the full bookmark
 	function showBookmark() {
 		if($("#msgboy-bookmark").length == 0) {
 			// Gets the bookmarkPosition
@@ -231,6 +233,7 @@
 		}
 	}
 
+    // shows the icon (usually if the bookmark is not displayed)
 	function showIcon() {
 		$(document).ready(function() {
 			$("<img>", {
@@ -240,6 +243,8 @@
 		});
 	}
 	
+	
+	// Shows the bookmark if needed
 	chrome.extension.sendRequest({
 		"settings": {
 			"get": ["hide-bookmark"]
@@ -326,4 +331,74 @@
 		}, 3000)
 	})
 	
+	// Keeps track of all feeds seen.
+	$(document).ready(function() {
+        extractFeedLinks(function (links) {
+            $.each(links, function(index, link) {
+                chrome.extension.sendRequest({
+                    "feedSpotted": link.href
+                }, function (response) {
+                    if(response.value) {
+                        var feed = response.value;
+                        $("body").prepend($("<div>", {
+                            id: "msgboy-bar"
+                        }));
+                        var margin_top_offset = parseInt($("body").css("margin-top")) + 25 
+                        $("body").css("margin-top", margin_top_offset + "px");
+                        var margin_left_offset = -(parseInt($("body").css("margin-left")) + parseInt($("body").css("padding-left")));
+                        $("#msgboy-bar").css("margin-left", margin_left_offset + "px")
+                        var width = parseInt($("#msgboy-bar").css("width")); //+ margin_left_offset
+                        $("#msgboy-bar").css("width", width)
+                        $("<img>", {
+                            src: chrome.extension.getURL('/views/icons/icon48.png'),
+                        }).appendTo($("#msgboy-bar"));
+                        $("<span>", {
+                            id: "msgboy-bar-message",
+                            text: "Do you want to subscribe to " + link.title + "?"
+                        }).appendTo($("#msgboy-bar"));
+                        $("<span>", {
+                            id: "msgboy-bar-no",
+                            class: "msgboy-button",
+                            text: "No",
+                            click: function() {
+                                // We just need to hide the message and restore the right body, as well as send that info to the background.
+                                var margin_top_offset = parseInt($("body").css("margin-top")) - 25 
+                                $("body").css("margin-top", margin_top_offset + "px");
+                                $("#msgboy-bar").hide();
+                                chrome.extension.sendRequest({
+                                    "suggestedFeedSkipped": feed.id
+                                }, function (response) {
+                                    // Cool.
+                                });
+                            }
+                        }).appendTo($("#msgboy-bar"));
+                        $("<span>", {
+                            id: "msgboy-bar-yes",
+                            class: "msgboy-button",
+                            text: "Yes",
+                            click: function() {
+                                // We just need to hide the message and restore the right body, as well as send that info to the background.
+                                var margin_top_offset = parseInt($("body").css("margin-top")) - 25 
+                                $("body").css("margin-top", margin_top_offset + "px");
+                                $("#msgboy-bar").hide();
+                                chrome.extension.sendRequest({
+                                    "suggestedFeedSubscribed": feed.id
+                                }, function (response) {
+                                    // Cool.
+                                });
+                                chrome.extension.sendRequest({
+	                                subscribe: {
+	                                    url: feed.url,
+	                                    title: feed.url
+	                                }
+	                            }, function (response) {
+	                                // Cool, we're subscribed
+	                            });
+                            }
+                        }).appendTo($("#msgboy-bar"));
+                    }
+                });
+            });
+        })
+    });
 })();

@@ -87,6 +87,36 @@ function fibonacci(n){
     return n < 2 ? n : n % 2 ? (o = fibonacci(n = -(-n >> 1))) * o + (o = fibonacci(n - 1)) * o : (fibonacci(n >>= 1) + 2 * fibonacci(n - 1)) * fibonacci(n);
 };
 
+
+function arrayAverage(array){
+    var count = array.length;
+    var i = count - 1;
+    var sum = 0;
+    while(i >= 0){
+        sum += array[i];
+        i = i - 1;
+    }
+    return sum/count;
+}
+
+function arrayDeviation(array){
+    var avg = arrayAverage(array); 
+    var count = array.length;
+    var i = count - 1;
+    var v = 0;
+
+    while(i >= 0) {
+        v += Math.pow((array[ i ] - avg),2);
+        i = i - 1;
+    }
+    return Math.sqrt(v/count);
+}
+
+function normalizedDeviation(array) {
+    return arrayDeviation(array)/arrayAverage(array);
+}
+
+
 Log = function(level) {
 	this.level = level;
 };
