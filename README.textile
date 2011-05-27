@@ -9,11 +9,12 @@ h2.TODO
 * Add support for ActivityStreams, 
 * -Add better excerpts (readability)-
 * Add Learning features, based on clicks, shares... etc http://harthur.github.com/brain/
-* Add ability to track the number of times a given feed was seen.
+* -Add ability to track the number of times a given feed was seen.-
 * When subscribing to a feed on a page, check for rel="me" links and suggest corresponding feeds if they apply.
-* Allow for auth with google : http://code.google.com/chrome/webstore/docs/identify_user.html
+* -Allow for auth with google : http://code.google.com/chrome/webstore/docs/identify_user.html- [Nope. We don't need that.]
 * When subscribing to a feed on a page, check for rel="me" links and maybe subscribe to these as well.
 * Rewrite the about:blank page with inbox.
+* Rewrite the msgboy.com page with inbox.
 * Put images in lightbox
 * Make sure we use absolute hrefs -and srcs-
 * Make sure we show the actual page to the feed link in "From".
@@ -24,4 +25,5 @@ h3. Plugins
 
 * Blogger
 * Buzz
+* Add Facebook notification feed.
 
