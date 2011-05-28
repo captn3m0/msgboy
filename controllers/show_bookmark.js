@@ -1,5 +1,71 @@
 (function(){
 	
+	function recolor(unread) {
+        var r = 255;
+    	var g = 255;
+    	var b = 0;
+        if(unread > 0.5) {
+            r = 255;
+            g = parseInt((255 - unread * 255)*2);
+        }
+        else {
+            g = 255;
+            r = parseInt(255 - ((1-unread) * 255)) + 128
+        }
+    	b = parseInt(0);
+        return([r,g,b]);
+    };
+	
+	function hideModalBox() {
+	    $('#msgboy-mask').fadeOut(400, function() {
+            $("#msgboy-mask").remove();
+        });    
+        $('#msgboy-dialog').fadeOut(400, function() {
+            $("#msgboy-dialog").remove();
+        });
+	}
+	
+	function showModalBox(content) {
+	    if($("#msgboy-dialog").length == 0) {
+    	    // The mask
+    	    $("<div>", {
+    	        id: "msgboy-mask"
+    	    }).appendTo("body");
+
+    	    // The box
+    	    $("<div>", {
+                id: "msgboy-dialog",
+            }).appendTo("body");
+
+            // The close link
+    	    $("<a>", {
+                text: "close",
+                id: "msgboy-dialog-close",
+                click: function () {
+                    hideModalBox();
+                }
+            }).appendTo($("#msgboy-dialog"));
+            
+            content.appendTo($("#msgboy-dialog"));
+        } 
+        $('#msgboy-mask').css({'width':$(window).width(),'height':$(document).height()});
+        
+        //transition effect     
+        $('#msgboy-mask').fadeIn(400);    
+     
+        //Get the window height and width
+        var winH = $(window).height();
+        var winW = $(window).width();
+
+        //Set the popup window to center
+        $("#msgboy-dialog").css('top',  winH/3-$("#msgboy-dialog").height()/2);
+        $("#msgboy-dialog").css('left', winW/2-$("#msgboy-dialog").width()/2);
+
+        //transition effect
+        $("#msgboy-dialog").fadeIn(400);
+ 
+    }
+	
 	// The actions.
 	var actions = {
 	    follow: {
@@ -9,23 +75,8 @@
 	            extractFeedLinks(function (links) {
 	                switch (links.length) {
 	                case 0:
-	                    $("<div>", {
-	                        id: "msgboy-bookmark-dialog"
-	                    }).appendTo("body");
-	                    $("<h4>", {
-	                        text: "Sorry, there is nothing to subscribe to on this page, but you can type a feed url below :"
-	                    }).appendTo($("#msgboy-bookmark-dialog"));
-	                    var maskHeight = $(document).height();
-	                    var maskWidth = $(window).width();
-	                    //Get the window height and width
-	                    var winH = $(window).height();
-	                    var winW = $(window).width();
-	                    //Set the popup window to center
-	                    $("#msgboy-bookmark-dialog").height(winH);
-	                    $("#msgboy-bookmark-dialog").css('top', winH / 2 - $("#msgboy-bookmark-dialog").height() / 4);
-	                    $("#msgboy-bookmark-dialog").css('left', winW / 2 - $("#msgboy-bookmark-dialog").width() / 2);
-	                    $("<form>", {
-	                        id: "msgboy-bookmark-form",
+	                    var form = $("<form>", {
+	                        id: "msgboy-form",
 	                        submit: function () {
 	                            url = $("#msgboy-feed-url").val();
 	                            chrome.extension.sendRequest({
@@ -34,26 +85,40 @@
 	                                    title: url
 	                                }
 	                            }, function (response) {
-	                                $("#msgboy-bookmark-dialog").remove();
+	                                hideModalBox();
 	                            });
 	                            return false;
 	                        }
-	                    }).appendTo($("#msgboy-bookmark-dialog"));
+	                    })
+	                    
+	                    $("<p>", {
+	                        text: "This page doesn't seem to contain anything to which you could subscribe."
+	                    }).appendTo(form)
+	                    
+	                    var field = $("<div>", {});
+	                    
+	                    $("<label>", {
+	                        for: "url",
+	                        text: "Please type in a feed url, if you found one: "
+	                    }).appendTo(field);
+	                    
+	                    $("<br>").appendTo(field);
+                         
 	                    $("<input>", {
 	                        type: "text",
 	                        name: "feed-url",
 	                        id: "msgboy-feed-url",
-	                        size: "72"
-	                    }).appendTo($("#msgboy-bookmark-form"));
+	                        size: "64"
+	                    }).appendTo(field);
+
 	                    $("<input>", {
 	                        type: "submit"
-	                    }).appendTo($("#msgboy-bookmark-form"));
-	                    $("<a>", {
-	                        text: "close",
-	                        click: function () {
-	                            $("#msgboy-bookmark-dialog").remove();
-	                        }
-	                    }).appendTo($("#msgboy-bookmark-dialog"));
+	                    }).appendTo(field);
+
+	                    field.appendTo(form);
+	                    
+	                    
+	                    showModalBox(form);
 	                    break;
 	                case 1:
 	                    chrome.extension.sendRequest({
@@ -64,44 +129,34 @@
 	                    }, function (response) {});
 	                    break;
 	                default:
-	                    $("<div>", {
-	                        id: "msgboy-bookmark-dialog"
-	                    }).appendTo("body");
-	                    $("<h4>", {
-	                        text: "Please chose which resource you want to subscribe to"
-	                    }).appendTo($("#msgboy-bookmark-dialog"));
-	                    var maskHeight = $(document).height();
-	                    var maskWidth = $(window).width();
-	                    //Get the window height and width
-	                    var winH = $(window).height();
-	                    var winW = $(window).width();
-	                    //Set the popup window to center
-	                    $("#msgboy-bookmark-dialog").css('top', winH / 2 - $("#msgboy-bookmark-dialog").height() / 2);
-	                    $("#msgboy-bookmark-dialog").css('left', winW / 2 - $("#msgboy-bookmark-dialog").width() / 2);
-	                    $("<ul>", {
+	                    var content = $("<div>", {});
+	                    
+	                    $("<p>", {
+	                        text: "There are several topics to which you could subscribe; please, pick one : "
+	                    }).appendTo(content);
+	                    
+	                    var link_list = $("<div>", {
 	                        id: "link-list"
-	                    }).appendTo($("#msgboy-bookmark-dialog"));
+	                    });
 	                    $.each(links, function (count, link) {
-	                        $("#link-list").append(
-	                        $("<li>", {
+	                        link_list.append(
+	                        $("<div>", {
 	                            text: link.title || link.href,
 	                            click: function () {
-	                                this.style.color = "#E6E6E6";
 	                                chrome.extension.sendRequest({
 	                                    subscribe: {
 	                                        url: link.href,
 	                                        title: document.title
 	                                    }
-	                                }, function (response) {});
+	                                }, function (response) {
+	                                    hideModalBox();
+	                                });
 	                            }
 	                        }))
 	                    })
-	                    $("<a>", {
-	                        text: "close",
-	                        click: function () {
-	                            $("#msgboy-bookmark-dialog").remove();
-	                        }
-	                    }).appendTo($("#msgboy-bookmark-dialog"));
+	                    
+	                    link_list.appendTo(content);
+	                    showModalBox(content);
 	                    break;
 	                }
 	            });
@@ -141,34 +196,8 @@
 	                }
 	            }, function (response) {});
 			}
-		},
-	    connectionStatus: {
-	        name: "",
-			show: true,
-	        callback: function () {
-	            chrome.extension.sendRequest({
-	                connect: true
-	            }, function (response) {});
-	            return false;
-	        }
-	    }
+		}
 	};
-	
-	// Listens to the Connect status
-	function listenToConnectionStatus() {
-		port = chrome.extension.connect({
-			name: "connection"
-		})
-		port.onMessage.addListener(function (msg) {
-			$('#connectionStatus').text(msg);
-		});
-		port.onDisconnect.addListener(function () {
-			setTimeout(function () {
-				listenToConnectionStatus(); // We reconnect.
-	        }, 3000);
-
-		});
-	}
 
     // Shows the full bookmark
 	function showBookmark() {
@@ -181,7 +210,7 @@
 			}, function (response) {
 				$(document).ready(function() {
 					// Add the bookmark now.
-					$("<ul>", {
+					$("<div>", {
 						id: "msgboy-bookmark"
 					}).appendTo("body");
 					var left = Math.min(Math.max(parseInt(response.value), 0), $(window).width() - 100); // 100 is the size of the bookmark!
@@ -192,7 +221,7 @@
 						var action = actions[id];
 						if(action.show) {
 							$("#msgboy-bookmark").append(
-							$("<li>", {
+							$("<span>", {
 								id: id,
 								text: action.name,
 								class: 'action',
@@ -200,9 +229,6 @@
 							}))							
 						}
 					}
-
-					// Makes sure we will listen to connection updates
-					listenToConnectionStatus();
 
 					// Called when the bookmark has been moved.
 					$("#msgboy-bookmark").bind('drag', function (ev, dd) {
@@ -225,8 +251,8 @@
 					chrome.extension.sendRequest({
 						"unreadCount": true
 					}, function (response) {
-						unread = parseInt(response.value)
-						$("#msgboy-bookmark #inbox").text("Inbox (" + unread + ")")
+						var color = recolor(parseFloat(response.value))
+						$("#msgboy-bookmark #inbox").css("color", "rgba(" + color.join(",") + ", 1)") // We want to apply a different styling based on the max unread count
 					});
 				})
 			});
@@ -242,7 +268,6 @@
 			}).appendTo("body");
 		});
 	}
-	
 	
 	// Shows the bookmark if needed
 	chrome.extension.sendRequest({

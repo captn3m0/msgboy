@@ -356,9 +356,22 @@
 						unread_at: [inbox.attributes.epoch, new Date().getTime()]
 					},
 					success: function() {
-						sendResponse({
-							value: archive.length
-			            });
+					    if(!inbox.attributes.max_unread || inbox.attributes.max_unread < archive.length) {
+					        inbox.save({
+					            max_unread: archive.length
+					        }, {
+					            success: function() {
+					                sendResponse({
+					                    value: archive.length/inbox.attributes.max_unread
+            			            });
+					            }
+					        });
+					    }
+					    else {
+    						sendResponse({
+    							value: archive.length/inbox.attributes.max_unread
+    			            });
+					    }
 					}.bind(this)
 				});
 			} else if (request.feedSpotted) {
