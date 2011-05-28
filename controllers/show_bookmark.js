@@ -1,9 +1,10 @@
 (function(){
-	
-	function recolor(unread) {
+
+    // Colors the inbox bookmark based on the %age of unread stories compared to the max unread.
+    function recolor(unread) {
         var r = 255;
-    	var g = 255;
-    	var b = 0;
+        var g = 255;
+        var b = 0;
         if(unread > 0.5) {
             r = 255;
             g = parseInt((255 - unread * 255)*2);
@@ -12,19 +13,21 @@
             g = 255;
             r = parseInt(255 - ((1-unread) * 255)) + 128
         }
-    	b = parseInt(0);
+        b = parseInt(0);
         return([r,g,b]);
     };
-	
-	function hideModalBox() {
-	    $('#msgboy-mask').fadeOut(400, function() {
+
+    // hides the modal box
+    function hideModalBox() {
+        $('#msgboy-mask').fadeOut(400, function() {
             $("#msgboy-mask").remove();
         });    
         $('#msgboy-dialog').fadeOut(400, function() {
             $("#msgboy-dialog").remove();
         });
-	}
-	
+    }
+
+	// shows the modal box for subscriptions
 	function showModalBox(content) {
 	    if($("#msgboy-dialog").length == 0) {
     	    // The mask
@@ -65,6 +68,76 @@
         $("#msgboy-dialog").fadeIn(400);
  
     }
+	
+    // Shows the full bookmark
+	function showBookmark() {
+		if($("#msgboy-bookmark").length == 0) {
+			// Gets the bookmarkPosition
+			chrome.extension.sendRequest({
+				"settings": {
+					"get": ["bookmarkPosition"]
+				}
+			}, function (response) {
+				$(document).ready(function() {
+					// Add the bookmark now.
+					$("<div>", {
+						id: "msgboy-bookmark"
+					}).appendTo("body");
+					var left = Math.min(Math.max(parseInt(response.value), 0), $(window).width() - 100); // 100 is the size of the bookmark!
+					$("#msgboy-bookmark").css("left", left);
+
+					// Add each of the actions in the bookmark
+					for (var id in actions) {
+						var action = actions[id];
+						if(action.show) {
+							$("#msgboy-bookmark").append(
+							$("<span>", {
+								id: id,
+								text: action.name,
+								class: 'action',
+								click: action.callback
+							}))							
+						}
+					}
+
+					// Called when the bookmark has been moved.
+					$("#msgboy-bookmark").bind('drag', function (ev, dd) {
+						$(this).css({
+							left: dd.offsetX
+						});
+					});
+
+					// Dragging is over.
+					$("#msgboy-bookmark").bind('dragend', function (ev, dd) {
+						chrome.extension.sendRequest({
+							"settings": {
+								"set": ["bookmarkPosition", parseInt(dd.offsetX)]
+							}
+						}, function (response) {});
+					});
+
+					var unread = 0;
+					// Show unread count
+					chrome.extension.sendRequest({
+						"unreadCount": true
+					}, function (response) {
+						var color = recolor(parseFloat(response.value))
+						$("#msgboy-bookmark #inbox").css("color", "rgba(" + color.join(",") + ", 1)") // We want to apply a different styling based on the max unread count
+					});
+				})
+			});
+		}
+	}
+
+    // shows the icon (usually if the bookmark is not displayed)
+	function showIcon() {
+		$(document).ready(function() {
+			$("<img>", {
+				id: "msgboy-icon",
+				src: chrome.extension.getURL('/views/icons/icon16-grey.png'),
+			}).appendTo("body");
+		});
+	}
 	
 	// The actions.
 	var actions = {
@@ -198,76 +271,6 @@
 			}
 		}
 	};
-
-    // Shows the full bookmark
-	function showBookmark() {
-		if($("#msgboy-bookmark").length == 0) {
-			// Gets the bookmarkPosition
-			chrome.extension.sendRequest({
-				"settings": {
-					"get": ["bookmarkPosition"]
-				}
-			}, function (response) {
-				$(document).ready(function() {
-					// Add the bookmark now.
-					$("<div>", {
-						id: "msgboy-bookmark"
-					}).appendTo("body");
-					var left = Math.min(Math.max(parseInt(response.value), 0), $(window).width() - 100); // 100 is the size of the bookmark!
-					$("#msgboy-bookmark").css("left", left);
-
-					// Add each of the actions in the bookmark
-					for (var id in actions) {
-						var action = actions[id];
-						if(action.show) {
-							$("#msgboy-bookmark").append(
-							$("<span>", {
-								id: id,
-								text: action.name,
-								class: 'action',
-								click: action.callback
-							}))							
-						}
-					}
-
-					// Called when the bookmark has been moved.
-					$("#msgboy-bookmark").bind('drag', function (ev, dd) {
-						$(this).css({
-							left: dd.offsetX
-						});
-					});
-
-					// Dragging is over.
-					$("#msgboy-bookmark").bind('dragend', function (ev, dd) {
-						chrome.extension.sendRequest({
-							"settings": {
-								"set": ["bookmarkPosition", parseInt(dd.offsetX)]
-							}
-						}, function (response) {});
-					});
-
-					var unread = 0;
-					// Show unread count
-					chrome.extension.sendRequest({
-						"unreadCount": true
-					}, function (response) {
-						var color = recolor(parseFloat(response.value))
-						$("#msgboy-bookmark #inbox").css("color", "rgba(" + color.join(",") + ", 1)") // We want to apply a different styling based on the max unread count
-					});
-				})
-			});
-		}
-	}
-
-    // shows the icon (usually if the bookmark is not displayed)
-	function showIcon() {
-		$(document).ready(function() {
-			$("<img>", {
-				id: "msgboy-icon",
-				src: chrome.extension.getURL('/views/icons/icon16-grey.png'),
-			}).appendTo("body");
-		});
-	}
 	
 	// Shows the bookmark if needed
 	chrome.extension.sendRequest({
@@ -281,7 +284,6 @@
 			showIcon();
 		}
 	});
-	
 	
 	// Listen to Keyboard events...
 	var string = ""
