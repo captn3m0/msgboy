@@ -87,7 +87,6 @@ function fibonacci(n){
     return n < 2 ? n : n % 2 ? (o = fibonacci(n = -(-n >> 1))) * o + (o = fibonacci(n - 1)) * o : (fibonacci(n >>= 1) + 2 * fibonacci(n - 1)) * fibonacci(n);
 };
 
-
 function arrayAverage(array){
     var count = array.length;
     var i = count - 1;
@@ -115,7 +114,6 @@ function arrayDeviation(array){
 function normalizedDeviation(array) {
     return arrayDeviation(array)/arrayAverage(array);
 }
-
 
 Log = function(level) {
 	this.level = level;
@@ -152,3 +150,19 @@ Log.prototype = {
 };
 
 logger = new Log(Log.levels.error);
+
+MsgboyHelper = function() {
+    
+}
+
+MsgboyHelper.events = function() {
+    
+}
+
+MsgboyHelper.events.trigger = function(ev, object) {
+    object = typeof(object) != 'undefined' ? object : {};
+    var customEvent = document.createEvent('Event');
+    customEvent.initEvent(ev, true, false);
+    document.body.dispatchEvent(customEvent);
+    return customEvent;
+}

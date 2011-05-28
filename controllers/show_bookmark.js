@@ -79,6 +79,7 @@
 				}
 			}, function (response) {
 				$(document).ready(function() {
+				    MsgboyHelper.events.trigger("msgboy-bookmark-loaded");
 					// Add the bookmark now.
 					$("<div>", {
 						id: "msgboy-bookmark"
@@ -136,7 +137,21 @@
 				id: "msgboy-icon",
 				src: chrome.extension.getURL('/views/icons/icon16-grey.png'),
 			}).appendTo("body");
+			MsgboyHelper.events.trigger("msgboy-bookmark-loaded");
 		});
+	}
+	
+	// Subscribes to the feed url with the title. Callback on success.
+	function followFeed(url, title, callback) {
+	    chrome.extension.sendRequest({
+            subscribe: {
+                url: url,
+                title: title
+            }
+        }, function (response) {
+            MsgboyHelper.events.trigger("msgboy-subscribed", {url: url});
+            callback()
+        });
 	}
 	
 	// The actions.
@@ -152,12 +167,7 @@
 	                        id: "msgboy-form",
 	                        submit: function () {
 	                            url = $("#msgboy-feed-url").val();
-	                            chrome.extension.sendRequest({
-	                                subscribe: {
-	                                    url: url,
-	                                    title: url
-	                                }
-	                            }, function (response) {
+	                            followFeed(url, url, function() {
 	                                hideModalBox();
 	                            });
 	                            return false;
@@ -194,12 +204,9 @@
 	                    showModalBox(form);
 	                    break;
 	                case 1:
-	                    chrome.extension.sendRequest({
-	                        subscribe: {
-	                            url: links[0].href,
-	                            title: links[0].title || document.title
-	                        }
-	                    }, function (response) {});
+	                    followFeed(links[0].href, links[0].title || document.title, function() {
+	                        // Nothing.
+                        });
 	                    break;
 	                default:
 	                    var content = $("<div>", {});
@@ -216,12 +223,7 @@
 	                        $("<div>", {
 	                            text: link.title || link.href,
 	                            click: function () {
-	                                chrome.extension.sendRequest({
-	                                    subscribe: {
-	                                        url: link.href,
-	                                        title: document.title
-	                                    }
-	                                }, function (response) {
+	                                followFeed(link.href, document.title, function() {
 	                                    hideModalBox();
 	                                });
 	                            }
@@ -407,20 +409,14 @@
                                 // We just need to hide the message and restore the right body, as well as send that info to the background.
                                 var margin_top_offset = parseInt($("body").css("margin-top")) - 25 
                                 $("body").css("margin-top", margin_top_offset + "px");
-                                $("#msgboy-bar").hide();
                                 chrome.extension.sendRequest({
                                     "suggestedFeedSubscribed": feed.id
                                 }, function (response) {
                                     // Cool.
                                 });
-                                chrome.extension.sendRequest({
-	                                subscribe: {
-	                                    url: feed.url,
-	                                    title: feed.url
-	                                }
-	                            }, function (response) {
-	                                // Cool, we're subscribed
-	                            });
+                                followFeed(feed.url, feed.url, function() {
+                                    $("#msgboy-bar").hide();
+                                });
                             }
                         }).appendTo($("#msgboy-bar"));
                     }
