@@ -3,25 +3,25 @@ h2.TODO
 * -Add support for shortcuts (lots of shortcuts!)-
 * -Hide bookmark abaility (but shortcut support!)-
 * -Add unread count-
-* show unread count as a progress bar, or as a heat indication, rather then the actual number.
+* -Add better excerpts (readability)-
+* -Add ability to track the number of times a given feed was seen.-
+* -Allow for auth with google : http://code.google.com/chrome/webstore/docs/identify_user.html- [Nope. We don't need that.]
+* -show unread count as a progress bar, or as a heat indication, rather then the actual number-.
+* -Add custom msgboy JS events when users subscribe-.
 * Add per-site unread list
 * Add snooze
 * Add support for ActivityStreams, 
-* -Add better excerpts (readability)-
-* Add Learning features, based on clicks, shares... etc http://harthur.github.com/brain/
-* -Add ability to track the number of times a given feed was seen.-
+* Add learning features, based on clicks, shares... etc http://harthur.github.com/brain/
 * When subscribing to a feed on a page, check for rel="me" links and suggest corresponding feeds if they apply.
-* -Allow for auth with google : http://code.google.com/chrome/webstore/docs/identify_user.html- [Nope. We don't need that.]
-* When subscribing to a feed on a page, check for rel="me" links and maybe subscribe to these as well.
 * Rewrite the about:blank page with inbox.
 * Rewrite the msgboy.com page with inbox.
 * Put images in lightbox
 * Make sure we use absolute hrefs -and srcs-
 * Make sure we show the actual page to the feed link in "From".
-* Add custom msgboy JS events when users subscribe.
 * Change the "inbox" analogy into something less stressful, as inbox feels too much like a TODO. Stream?
 * Make sure the readability script does not output any tag that conflicts with inbox tags, like h1.
 * Add support for any type of url added (feed or other, then, do discovery)
+* Rename "import" into suggestions.
 
 h3. Plugins
 
