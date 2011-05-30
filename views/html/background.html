@@ -197,9 +197,7 @@
 	    $(document).bind('notification_received', function (ev, notification) {
 		    log("message-received");
 			msg = connection.superfeedr.convertAtomToJson(notification.payload);
-			if(notification.source && !msg.source) {
-				msg.source = notification.source
-			}
+			msg.source = notification.source
 			if(notification.via) {
 				msg.via = notification.via
 			}

@@ -101,7 +101,8 @@ Strophe.addConnectionPlugin('superfeedr', {
             var status = msg.getElementsByTagName("status")[0];
             var source = {
                 title: Strophe.getText(status.getElementsByTagName("title")[0]),
-                url: status.getAttribute("feed")
+                url: status.getAttribute("feed"),
+                links: this.atomLinksToJson(status.getElementsByTagName("link"))
             }
             for (i = 0; i < entries.length; i++) {
 	            $(document).trigger('notification_received', {payload: entries[i], source: source});
@@ -110,10 +111,9 @@ Strophe.addConnectionPlugin('superfeedr', {
         return true; // We must return true to keep the handler active!
     },
 
-	convertAtomToJson: function (atom) {
-	    var links = {};
-	    var atom_links = atom.getElementsByTagName("link");
-	    for (j = 0; j < atom_links.length; j++) {
+    atomLinksToJson: function(atom_links) {
+        var links = {};
+        for (j = 0; j < atom_links.length; j++) {
 	        var link = atom_links[j];
 	        l = {
 	            href: link.getAttribute("href"),
@@ -125,6 +125,12 @@ Strophe.addConnectionPlugin('superfeedr', {
 	        links[link.getAttribute("rel")][link.getAttribute("type")] = (links[link.getAttribute("rel")][link.getAttribute("type")] ? links[link.getAttribute("rel")][link.getAttribute("type")] : []);
 	        links[link.getAttribute("rel")][link.getAttribute("type")].push(l);
 	    }
+	    return links;
+    },
+
+	convertAtomToJson: function (atom) {
+	    var atom_links = atom.getElementsByTagName("link");
+	    var links = this.atomLinksToJson(atom_links);
 	    return {
 	        id: MD5.hexdigest(Strophe.getText(atom.getElementsByTagName("id")[0])),
 	        atom_id: Strophe.getText(atom.getElementsByTagName("id")[0]),

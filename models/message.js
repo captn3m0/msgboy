@@ -17,6 +17,9 @@ var Message = Backbone.Model.extend({
 		"alternate":    ""
 	},
 	
+	initialize: function(attributes) {
+	},
+	
 	toggle_read: function(callback) {
 		callback = typeof(callback) != 'undefined' ? callback : function() {};
 		var _read_at = 0

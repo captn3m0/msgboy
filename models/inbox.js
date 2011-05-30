@@ -5,8 +5,7 @@ var Inbox = Backbone.Model.extend({
   initialize: function() {
     this.id = 1;
     this.fetch();
-    this.messages = new Archive()
-    this.messages.fetch();
+    this.messages = new Archive();
   },
   
   addMessage: function(msg, options) {
@@ -17,6 +16,11 @@ var Inbox = Backbone.Model.extend({
 	    'unread_at':  new Date().getTime()
 	});
 	var that = this;
+	
+    if(msg.source && msg.source.links && msg.source.links.alternate["text/html"] && msg.source.links.alternate["text/html"][0]) {
+         msg.alternate = msg.source.links.alternate["text/html"][0].href;
+         msg.host = parseUri(msg.source.links.alternate["text/html"][0].href).host;
+    }
 	
 	message.fetch({
 		error: function() {

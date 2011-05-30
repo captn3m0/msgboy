@@ -74,7 +74,7 @@
                     <span class="time"><%= new Date(created_at).toRelativeTime() %></span> 
                     <% 
                     if (typeof(source) != "undefined" && source) { 
-                    %>, from: <a href="<%= source.url %>"> <%= source.title %> </a> (<a class="unsubscribe" href="">Unsubscribe</a> ) 
+                    %>, from: <a href="<%= alternate || source.url %>" target="_blank"> <%= source.title %> </a> (<a class="unsubscribe" href="">Unsubscribe</a> ) 
                     <%
                     } 
                     %>
