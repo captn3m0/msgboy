@@ -1,4 +1,17 @@
 var msgboyDatabase = {
+    functions: {
+        eachBlock: function(a, i, d) {
+            var e = a.pop();
+            if(e) {
+                i(e, function() {
+                    msgboyDatabase.functions.eachBlock(a, i, d);
+                });
+            }
+            else {
+                d();
+            }
+        }
+    },
     id: "msgboy-database",
     description: "The database for the msgboy",
     migrations : [
@@ -35,5 +48,56 @@ var msgboyDatabase = {
             store.createIndex("urlIndex", "url", { unique: false}); 
             next();
         }
-    }]
+    },
+    {
+        version: "0.0.5",
+        migrate: function(db, versionRequest, next) {
+            var store = versionRequest.transaction.objectStore("messages")
+            store.createIndex("alternateIndex", "alternate", { unique: false}); 
+            store.createIndex("hostIndex", "host", { unique: false}); 
+            next();
+        },
+        before: function(db, next) {
+            var indexedDB      = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
+            var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction; // No prefix in moz
+            var IDBKeyRange    = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
+
+            // We need to add the missing fields, on the host, and the feed's alternate url.
+            var transaction = db.transaction(["messages"], IDBTransaction.READ_ONLY);
+            var store = transaction.objectStore("messages")
+            var cursor = store.openCursor();
+            var messages_to_save = [];
+            cursor.onsuccess = function ( e ) {
+                cursor = e.target.result;
+                if(cursor) {
+                    if(typeof(cursor.value.host) == "undefined" || typeof(cursor.value.alternate) == "undefined" || cursor.value.host == null || cursor.value.alternate == null) {
+                        messages_to_save.push(cursor.value);
+                    }
+                    cursor.continue();
+                }
+                else {
+                    // Fine, we have all the elements
+                }
+            };
+            transaction.oncomplete = function() {
+                msgboyDatabase.functions.eachBlock(messages_to_save, function(message, next) {
+                    var writeTransaction = db.transaction(["messages"], IDBTransaction.READ_WRITE);
+                    var store = writeTransaction.objectStore("messages");
+                    message.host = "";
+                    message.alternate = "";
+                    var writeRequest = store.put(message, message.id);
+                    writeRequest.onerror = function ( e ) {
+                        console.log("There was an error. Migration will fail. Plese reload browser.")
+                        next();
+                    };
+                    writeRequest.onsuccess = function ( e ) {
+                        next();
+                    };
+                }, function() {
+                    next();
+                });
+            }
+        }
+    }
+    ]
 }

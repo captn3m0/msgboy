@@ -12,11 +12,9 @@ var Inbox = Backbone.Model.extend({
   addMessage: function(msg, options) {
 	// Adds the message if the message isn't yet present
 	var message = new Message({
-		'id': msg.id,
+	    'id': msg.id,
 		'created_at': new Date().getTime(),
-		'read_at': 0,
-		'unread_at':  new Date().getTime(),
-		'starred_at': 0
+	    'unread_at':  new Date().getTime()
 	});
 	var that = this;
 	
@@ -31,6 +29,7 @@ var Inbox = Backbone.Model.extend({
 				},
 				error: function(object, error) {
 					console.log("Could not save message")
+				    console.log(message)
 					console.log(error)
 				}
 			});

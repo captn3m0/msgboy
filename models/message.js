@@ -1,7 +1,7 @@
 var Message = Backbone.Model.extend({
 	storeName: "messages",
 	database: msgboyDatabase,
-
+	
 	defaults: {
 		"title":        null,
 		"atom_id":      null,
@@ -11,9 +11,12 @@ var Message = Backbone.Model.extend({
 		"read_at":      0,
 		"unread_at":    0,
 		"starred_at":   0,
-		"created_at": 	null
+		"created_at":   null,
+		"source":       {},
+		"host":         "",
+		"alternate":    ""
 	},
-
+	
 	toggle_read: function(callback) {
 		callback = typeof(callback) != 'undefined' ? callback : function() {};
 		var _read_at = 0
