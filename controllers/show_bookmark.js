@@ -238,7 +238,7 @@
 	        }
 	    },
 	    inbox: {
-	        name: "Inbox",
+	        name: "Stream",
 			show: true,
 	        callback: function () {
 	            chrome.extension.sendRequest({
