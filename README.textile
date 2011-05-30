@@ -28,6 +28,7 @@ h3. Plugins
 * Blogger
 * Buzz
 * Add Facebook notification feed.
+* Google Groups
 
 h2. Publishers
 
