@@ -26,6 +26,8 @@ h3. TODO
 * Rename "import" into suggestions.
 * Use the delay@stamp for created_at of offline messages.
 * Run continuous testing before running rake tasks.
+* Add support for microformats for "actionable" elements/susbcribe
+* Add support for events from the page to the extension, to auto-susbcribe upon user actions.
 
 h3. Plugins
 
