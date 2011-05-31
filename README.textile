@@ -1,4 +1,6 @@
-h2.TODO
+h2.Developers
+
+h3. TODO
 
 * -Add support for shortcuts (lots of shortcuts!)-
 * -Hide bookmark abaility (but shortcut support!)-
@@ -23,6 +25,7 @@ h2.TODO
 * Add support for any type of url added (feed or other, then, do discovery)
 * Rename "import" into suggestions.
 * Use the delay@stamp for created_at of offline messages.
+* Run continuous testing before running rake tasks.
 
 h3. Plugins
 
