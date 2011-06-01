@@ -146,6 +146,7 @@
                     } catch (err) {
                         logger.error("Couldn't display entry (" + err + "), deleting it : " + JSON.stringify(this.model.toJSON()));
                     }
+                    
                     // Also attach actions!
                     that = this;
                     for (var callback in this.model.toJSON().actions) {

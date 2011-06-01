@@ -14,7 +14,8 @@ var Message = Backbone.Model.extend({
 		"created_at":   null,
 		"source":       {},
 		"host":         "",
-		"alternate":    ""
+		"alternate":    "",
+		"alternate_new":""
 	},
 	
 	initialize: function(attributes) {
@@ -24,15 +25,18 @@ var Message = Backbone.Model.extend({
 		callback = typeof(callback) != 'undefined' ? callback : function() {};
 		var _read_at = 0
 		var _unread_at = 0
+		var _alternate_new = this.attributes.alternate_new;
 		
 		if(this.attributes.unread_at || !this.attributes.read_at) {
 			_read_at = new Date().getTime();
+			_alternate_new = ""; // Not new anymore for that alternate!
 		}
 		else {
 			_unread_at = new Date().getTime();
 		}
 
 		this.save({
+		    alternate_new: _alternate_new,
 			read_at: _read_at,
 			unread_at: _unread_at
 		}, {
@@ -49,6 +53,7 @@ var Message = Backbone.Model.extend({
 	mark_as_read: function(callback) {
 		callback = typeof(callback) != 'undefined' ? callback : function() {};
 		this.save({
+		    alternate_new: "",
 			read_at: new Date().getTime(),
 			unread_at: 0
 		}, {

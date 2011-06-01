@@ -20,6 +20,7 @@ var Inbox = Backbone.Model.extend({
         if(msg.source && msg.source.links && msg.source.links.alternate && msg.source.links.alternate["text/html"] && msg.source.links.alternate["text/html"][0]) {
             msg.alternate = msg.source.links.alternate["text/html"][0].href;
             msg.host = parseUri(msg.source.links.alternate["text/html"][0].href).host;
+            msg.alternate_new = msg.alternate;
         }
 
         message.fetch({
@@ -37,7 +38,7 @@ var Inbox = Backbone.Model.extend({
                 });
             },
             success: function() {
-                options.success();
+                options.error();
                 // Success, we should yield null, as this message was not added, because it already existed!
             }
         });

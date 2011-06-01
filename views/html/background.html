@@ -203,6 +203,9 @@
 	        message = inbox.addMessage(msg, {
 				success: function() {
 					// Cool, message saved!
+				},
+				error: function() {
+				    // Message was not saved... probably a dupe
 				}
 			});
 		});
@@ -305,6 +308,9 @@
 	                message = inbox.addMessage(msg, {
 						success: function() {
 							// Cool, message saved!
+						},
+						error: function() {
+						    // Probably a dupe.
 						}
 					});
 	                sendResponse({
