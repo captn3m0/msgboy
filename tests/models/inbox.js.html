@@ -279,12 +279,13 @@
         asyncTest("it should trigger messages:added", function() {
             var inbox = new Inbox({id: 1});
             var msg = {
+                id: 12345,
                 title: "hello"
             };
             
             inbox.bind("messages:added", function(message) {
                 start();
-                equal(message.attributes.title, msg.title, "");
+                equal(message, msg.id, "");
             });
             
             inbox.addMessage(msg, {
