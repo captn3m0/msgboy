@@ -82,7 +82,7 @@
 			});
 			chrome.extension.sendRequest({
 				"tab": {
-					url: this.model.toJSON().links.alternate["text/html"][0].href,
+					url: this.model.attributes.links.alternate["text/html"][0].href,
 					selected: true
 				}
 			}, function (response) {});

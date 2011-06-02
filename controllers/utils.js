@@ -52,7 +52,7 @@ function truncate(text, len) {
     if (text.length > len) {
         text = text.substring(0, len);
         text = text.replace(/\w+$/, '');
-        text  = text + "&hellip;"
+        text  = text + "..."
     }
     return text;
 };

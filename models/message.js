@@ -60,7 +60,7 @@ var Message = Backbone.Model.extend({
 			success: function() {
 				callback(true)
 			},
-			error: function() {
+			error: function(object, error) {
 				callback(false)
 			}
 		});

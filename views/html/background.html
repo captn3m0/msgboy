@@ -431,7 +431,7 @@
                     }
                 }); 
             } else if(request.suggestedFeedSubscribed) {
-                log("Request : suggestedFeedSubscribed")
+                log("Request : suggestedFeedSubscribed");
                 var feed = new Feed({id: request.suggestedFeedSubscribed});
                 feed.fetch({
                     success: function() {
@@ -450,7 +450,46 @@
                         log("Subscribed a feed that was never actually send. This is odd")
                     }
                 }); 
-	        } else {
+            } else if(request.alternateNew) {
+                log("Request : alternateNew " + request.alternateNew);
+                // We need to find all feeds that match this alternate_new url!
+                var archive = new Archive();
+                archive.fetch({
+                    conditions: {
+                        alternate_new: request.alternateNew
+                    },
+                    success: function() {
+                        sendResponse({
+                            value: archive.models
+                        });
+                    },
+                    error: function() {
+                        sendResponse({
+                            value: []
+                        });
+                    }
+                });
+	        } else if(request.markAsRead) {
+                log("Request : markAsRead " + request.markAsRead);
+                var message = new Message({id: request.markAsRead});
+                message.fetch({
+                    success: function() {
+                        message.mark_as_read(function(result) {
+                            sendResponse({
+                                value: result
+                            });
+                        });
+                    },
+                    error: function() {
+                        message.mark_as_read(function(result) {
+                            sendResponse({
+                                value: false
+                            });
+                        });
+                    }
+                })
+            }
+	        else {
 	            log("Could not handle message : " +  JSON.stringify(request))
 	        }
 	    });
