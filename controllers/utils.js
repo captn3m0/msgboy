@@ -14,6 +14,9 @@ Uri.prototype = {
         if(this.relative) {
             str += this.relative
         }
+        if(this.relative == "") {
+            str += "/"
+        }
         return str;
     }
 }
