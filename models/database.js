@@ -52,7 +52,7 @@ var msgboyDatabase = {
     {
         version: "0.0.5",
         migrate: function(db, versionRequest, next) {
-            var store = versionRequest.transaction.objectStore("messages")
+            var store = versionRequest.transaction.objectStore("messages");
             store.createIndex("alternateIndex", "alternate", { unique: false}); 
             store.createIndex("hostIndex", "host", { unique: false}); 
             next();
@@ -87,7 +87,7 @@ var msgboyDatabase = {
                     message.alternate = "";
                     var writeRequest = store.put(message, message.id);
                     writeRequest.onerror = function ( e ) {
-                        console.log("There was an error. Migration will fail. Plese reload browser.")
+                        console.log("There was an error. Migration will fail. Plese reload browser.");
                         next();
                     };
                     writeRequest.onsuccess = function ( e ) {
@@ -102,7 +102,7 @@ var msgboyDatabase = {
     {
         version: "0.0.6",
         migrate: function(db, versionRequest, next) {
-            var store = versionRequest.transaction.objectStore("messages")
+            var store = versionRequest.transaction.objectStore("messages");
             store.createIndex("alternateNewIndex", "alternate_new", { unique: false}); 
             next();
         },
@@ -113,7 +113,7 @@ var msgboyDatabase = {
 
             // We need to add the missing fields, on the host, and the feed's alternate url.
             var transaction = db.transaction(["messages"], IDBTransaction.READ_ONLY);
-            var store = transaction.objectStore("messages")
+            var store = transaction.objectStore("messages");
             var cursor = store.openCursor();
             var messages_to_save = [];
             cursor.onsuccess = function ( e ) {
@@ -135,7 +135,7 @@ var msgboyDatabase = {
                     message.alternate_new = "";
                     var writeRequest = store.put(message, message.id);
                     writeRequest.onerror = function ( e ) {
-                        console.log("There was an error. Migration will fail. Plese reload browser.")
+                        console.log("There was an error. Migration will fail. Plese reload browser.");
                         next();
                     };
                     writeRequest.onsuccess = function ( e ) {
@@ -148,4 +148,4 @@ var msgboyDatabase = {
         }
     }
     ]
-}
+};

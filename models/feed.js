@@ -11,8 +11,8 @@ var Feed = Backbone.Model.extend({
     
     // Marks the feed as seen and makes sure we delete all elements older than 1 week
     mark_as_seen: function(options) {
-        this.attributes.seen_at.push(new Date().getTime())
-        this.attributes.seen_at = (this.attributes.seen_at).splice(-10) // We only keep the last 10 visits.
+        this.attributes.seen_at.push(new Date().getTime());
+        this.attributes.seen_at = (this.attributes.seen_at).splice(-10); // We only keep the last 10 visits.
         this.save({}, options);
     },
     
@@ -43,17 +43,16 @@ var Feed = Backbone.Model.extend({
             // We should look at the seen_at array to determine if we should ask the user.
             // We want to offer the ability to subscribe of the user has seen the feed "regularly"
             // To do that we compute the variance
-            diffs = []
+            diffs = [];
             for(var i=0; i < this.attributes.seen_at.length - 2; i++) {
                 diffs[i] =  this.attributes.seen_at[i+1] - this.attributes.seen_at[i];
             }
             if(normalizedDeviation(diffs) < 1 && diffs.length >= 3) {
-                return true
+                return true;
             }
             else {
-                return false
+                return false;
             }
         }
     }
-
 });
