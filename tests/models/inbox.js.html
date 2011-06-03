@@ -92,6 +92,54 @@
             });
         });
         
+        asyncTest("it should set the alternate_new attribute to msg.source.links.alternate['text/html'][0].href", function() {
+            var inbox = new Inbox({id: 1});
+            var url = "http://blog.superfeedr.com/atom.xml";
+            var msg = {
+            };
+            msg.source = {};
+            msg.source.links = {};
+            msg.source.links.alternate = {};
+            msg.source.links.alternate['text/html'] = [];
+            msg.source.links.alternate['text/html'][0] = {
+                href: url,
+                title: "title",
+                rel:'alternate'
+            };
+            
+            inbox.addMessage(msg, {
+                success: function(message) {
+                    start();
+                    equal(message.attributes.alternate_new, url, "");
+                    message.destroy();
+                }
+            });
+        });
+        
+        asyncTest("it should set the alternate_new attribute to a normalized msg.source.links.alternate['text/html'][0].href", function() {
+            var inbox = new Inbox({id: 1});
+            var url = "http://blog.superfeedr.com";
+            var msg = {
+            };
+            msg.source = {};
+            msg.source.links = {};
+            msg.source.links.alternate = {};
+            msg.source.links.alternate['text/html'] = [];
+            msg.source.links.alternate['text/html'][0] = {
+                href: url,
+                title: "title",
+                rel:'alternate'
+            };
+            
+            inbox.addMessage(msg, {
+                success: function(message) {
+                    start();
+                    equal(message.attributes.alternate_new, url + "/", "");
+                    message.destroy();
+                }
+            });
+        });
+        
         asyncTest("it should not fail to set the alternate attribute if  msg.source.links.alternate['text/html'][0] is missing", function() {
             var inbox = new Inbox({id: 1});
             var msg = {
@@ -194,14 +242,14 @@
                                 }, 
                                 error: function() {
                                     start();
-                                    ok(false, "it should be able to save the 2nd message");
+                                    ok(false, "it should be able to save the message");
                                 }
                             });
                         },
                         error: function() {
                             // Dang!
                             start();
-                            ok(false, "it should be able to save the first message");
+                            ok(false, "it should be able to save the message");
                         }
                     });
                 },
@@ -219,14 +267,14 @@
                                 }, 
                                 error: function() {
                                     start();
-                                    ok(false, "it should be able to save the 2nd message");
+                                    ok(false, "it should be able to save the message");
                                 }
                             });
                         },
                         error: function() {
                             // Dang!
                             start();
-                            ok(false, "it should be able to save the first message");
+                            ok(false, "it should be able to save the message");
                         }
                     });
                 }
