@@ -44,7 +44,7 @@ var Archive = Backbone.Collection.extend({
                         error: function() {
                             // Couldn't delete. Let's continue. It will retry.
                             this.delete_all(opts);
-                        }.bind(this);
+                        }.bind(this)
                     });
                 }
                 else {
