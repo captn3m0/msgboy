@@ -20,7 +20,7 @@ var Inbox = Backbone.Model.extend({
         if(msg.source && msg.source.links && msg.source.links.alternate && msg.source.links.alternate["text/html"] && msg.source.links.alternate["text/html"][0]) {
             msg.alternate = msg.source.links.alternate["text/html"][0].href;
             msg.host = parseUri(msg.source.links.alternate["text/html"][0].href).host;
-            msg.alternate_new = msg.alternate;
+            msg.alternate_new = parseUri(msg.alternate).toString();
         }
 
         message.fetch({
