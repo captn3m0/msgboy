@@ -328,7 +328,7 @@
 
                 loadMore: function() {
                     if (new Date().getTime() - this.lower > inbox.attributes.epoch) {
-                        if (!this.loading) {
+                        if (!this.loading && !this.no_more) {
                             var condition = {}
                             var key = $(".filters input:checked").attr("class");
                             var value = JSON.parse($(".filters input:checked").val());
@@ -336,15 +336,23 @@
                             this.show_loader();
                             this.collection.fetch_more(condition, function() {
                                 this.hide_loader();
-                                this.lower = this.lower + this.step;
-                                value = [value[1], value[1] - this.lower]
-                                $(".filters input:checked").val(JSON.stringify(value)); // Update the radio button's value
                                 
                                 _.each(this.collection, function(message, index) {
                                     this.showMessageAtBottom(this.collection.at(index));
                                 }.bind(this));
                                 
-                                this.completePage();
+                                if(_.isArray(value)) {
+                                    this.no_more = false; //  There is probably more!
+                                    this.lower = this.lower + this.step;
+                                    value = [value[1], value[1] - this.lower]
+                                    $(".filters input:checked").val(JSON.stringify(value)); // Update the radio button's value
+                                    this.completePage();
+                                }
+                                else {
+                                    // No need to load further. Let's just castrate the value
+                                    this.no_more = true;
+                                }
+                                
                             }.bind(this));
                         }
                     } else {
@@ -400,6 +408,7 @@
                     this.step  = 1000 * 60 * 10, // 10 minutes.
                     this.lower = 0;
                     this.showRadioButtons(this.defaultButtons, $(".filters input:checked").attr("class") || this.defaultButtons[0].class);
+                    this.no_more = false;
                     this.loadMore();
                 },
                 
