@@ -140,11 +140,11 @@
                 },
 
                 render: function() {
-                    // try {
+                    try {
                         $(this.el).html(_.template($('#message-template').html(), this.model.toJSON()));
-                    // } catch (err) {
-                    //     logger.error("Couldn't display entry (" + err + "), deleting it : " + JSON.stringify(this.model.toJSON()));
-                    // }
+                    } catch (err) {
+                        logger.error("Couldn't display entry (" + err + "), : " + JSON.stringify(this.model.toJSON()));
+                    }
                     
                     // Also attach actions!
                     that = this;
