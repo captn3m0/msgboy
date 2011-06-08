@@ -31,34 +31,40 @@ var Archive = Backbone.Collection.extend({
         }
     },
 
-    delete_all: function(opts) {
-        opts = typeof(opts) != 'undefined' ? opts : {};
-        opts.lower = opts.lower || 1;
-        opts.step = opts.step || 60000;
-        opts.callback = opts.callback || function() {};
-        opts.epoch = opts.epoch || 1304200800000;
-
-        if(new Date().getTime() - opts.lower > opts.epoch) {
-            this.fetch_more("created_at", function() {
-                if(this.models.length > 0) {
-                    this.models[0].destroy({
+    delete_all: function(condition, done) {
+        this.fetch({
+            conditions: condition,
+            limit: 1, // We always delete 1 by 1 to make things faster!
+            success: function() {
+                if(this.length > 0) {
+                    this.models[0].destroy( {
                         success: function() {
-                            this.delete_all(opts);
-                        }.bind(this), 
+                            this.delete_all(condition, done);
+                        }.bind(this),
                         error: function() {
-                            // Couldn't delete. Let's continue. It will retry.
-                            this.delete_all(opts);
+                            this.delete_all(condition, done);
                         }.bind(this)
-                    });
+                    })
+                } else {
+                    done();
                 }
-                else {
-                    opts.lower = opts.lower + opts.step;
-                    this.delete_all(opts);
-                }
-            }.bind(this), opts);
-        } else {
-            opts.callback();
-        }
+            }.bind(this),
+            error: function() {
+                done();
+            }
+        });
+    },
+    
+    fetch_all: function(condition, done) {
+        this.fetch({
+            conditions: condition,
+            success: function() {
+                done();
+            }.bind(this),
+            error: function() {
+                done();
+            }
+        });
     },
 
     fetch_more: function(conds, done, opts) {

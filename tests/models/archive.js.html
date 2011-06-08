@@ -38,22 +38,103 @@
     <div id="log" style=""></div>
     
     <script>
-    
-        module("mark_all_as_read");
+        var messages = [
+            {
+                created_at: new Date().getTime(),
+                unread_at: new Date().getTime(),
+                read_at: 0,
+                starred_at: 0,
+                alternate: "http://blog.superfeedr.com",
+                host: "blog.superfeedr.com",
+                alternate_new: "http://blog.superfeedr.com"
+            },
+            {
+                created_at: new Date().getTime(),
+                unread_at: new Date().getTime(),
+                read_at: 0,
+                starred_at: 0,
+                alternate: "http://blog.superfeedr.com",
+                host: "blog.superfeedr.com",
+                alternate_new: "http://blog.superfeedr.com"
+            },
+            {
+                created_at: new Date().getTime(),
+                unread_at: new Date().getTime(),
+                read_at: 0,
+                starred_at: 0,
+                alternate: "http://blog.superfeedr.com",
+                host: "blog.superfeedr.com",
+                alternate_new: "http://blog.superfeedr.com"
+            }
+        ]
         
-        asyncTest("it should test", function() {
-        });
+        function addFixtures(messages, done) {
+            var message = messages.shift();
+            if(message) {
+                var msg = new Message();
+                msg.save(message, {
+                    success: function(obj, err) {
+                        addFixtures(messages, done);
+                    },
+                    error: function(obj, err) {
+                        addFixtures(messages, done);
+                    }
+                });
+            }
+            else {
+                done();
+            }
+        }
+    
+        // module("mark_all_as_read");
+        // 
+        // asyncTest("it should mark all as read", function() {
+        // });
         
         module("delete_all");
 
-        asyncTest("it should test", function() {
+        asyncTest("it should delete all the messages that match the criteria submitted", function() {
+            addFixtures(messages, function() {
+                // Let's now fetch all elements matching the alternate index
+                var archive = new Archive();
+                archive.fetch_all( {alternate: "http://blog.superfeedr.com"}, function() {
+                    start();
+                    ok(archive.length == 3, "There should be 3 items in the array matching this criteria");
+                    archive.delete_all({alternate: "http://blog.superfeedr.com"}, function() {
+                        archive.fetch_all( {alternate: "http://blog.superfeedr.com"}, function() {
+                            start();
+                            ok(archive.length == 0, "There should be no more items in the array matching this criteria");
+                            // We should make sure other items are still there as well....
+                        });
+                    });
+                });
+            });
         });
-        
-        
-        module("fetch_more");
 
-        asyncTest("it should test", function() {
+        asyncTest("it should delete all the messages if there is no criteria", function() {
+            addFixtures(messages, function() {
+                // Let's now fetch all elements matching the alternate index
+                var archive = new Archive();
+                archive.fetch_all(function() {
+                    start();
+                    ok(archive.length == 5, "There should be 5 items in the array of messages");
+                    archive.delete_all(function() {
+                        archive.fetch_all(function() {
+                            start();
+                            ok(archive.length == 0, "There should be no more items in the array matching this criteria");
+                            // We should make sure other items are still there as well....
+                        });
+                    });
+                });
+            });
+            
         });
+        
+        // 
+        // module("fetch_more");
+        // 
+        // asyncTest("it should get more of the messages matching that criteria", function() {
+        // });
 
     </script>
     

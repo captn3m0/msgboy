@@ -1,0 +1,30 @@
+#msgboy-mask {
+  position:absolute;
+  z-index:99999998;
+  background-color:rgba(0,0,0,0.8);
+  display:none;
+  margin:0px;
+  top: 0px;
+  left: 0px;
+}
+
+#msgboy-dialog {
+    font-family: LucidaGrande, Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    position:absolute;
+    display:none;
+    z-index:99999999;
+    padding:10px 20px 10px 20px;
+    background-color:rgba(255,255,255,1);
+    border-radius: 5px;
+    color: #191919;
+}
+
+#msgboy-dialog-close {
+    display:block;
+    float: right;
+}
+
+#msgboy-dialog form {
+    margin:0px;
+}
