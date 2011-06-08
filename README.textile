@@ -35,6 +35,7 @@ h3. Plugins
 * Buzz
 * Add Facebook notification feed.
 * Google Groups
+* Soup.io plugin
 
 h2. Publishers
 

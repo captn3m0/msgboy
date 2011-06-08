@@ -50,6 +50,11 @@ parseUri.options = {
   }
 };
 
+function getIconUrl(url, done) {
+    
+    // return "http://www.blogsmithmedia.com/www.engadget.com/media/apple-touch-icon.png";
+    done(parseUri(url).source + "/favicon.ico");
+}
 
 function truncate(text, len) {
     if (text.length > len) {

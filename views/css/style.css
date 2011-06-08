@@ -3,15 +3,17 @@ html {
     margin:0;
     padding:0;
     font-family: sans-serif;
-    background-color: #FDFDFD;
-    color: #434343;
+    background-color: #F0F4F6;
+    color: #006989;
 }
 
 
 #nav {
+    background-color: #000;
+    color: #E6E6E6;
     text-align:right;
     margin : 0px 0px 0px 0px;
-    padding: 0px;
+    padding: 5px;
 }
 
 #nav span {
@@ -23,38 +25,13 @@ html {
     padding:10px;
 }
 
-#inbox h2 {
-    margin-top: 80px;
-}
-
 .message {
     margin: 30px 20px 30px 20px;
-}
-
-.message h3 {
-    text-transform:capitalize;
-    display: block;
-    width: 100%;
-    border-bottom: 1px solid #333;
-    font-size: 1.2em;	
 }
 
 span.time {
     font-style: italic;
 }
-
-.read {
-    color: #CCC;
-}
-
-.starred {
-    background-color: #FF6;
-}
-
-.read a {color: rgba(51, 51, 51, 0.18);}
-
-.read a:visited {color: #CCADE5;}
-.read a:active {color: #00E;}
 
 #settings #saved {
     display:none;
@@ -68,13 +45,121 @@ span.time {
 #loader {
     margin-right: auto;
     margin-left: auto;
-    display:block;
+    display: block;
 }
 
-.actions {
-    clear: both;
-}
+
 
 #credentials {
     display:none;
 }
+
+.filters {
+    margin: 10px;
+}
+
+#archive {
+    margin: 0px 20% 0px 20%;
+}
+
+.message {
+    padding: 10px 15px 10px 15px;
+    border-radius: 10px;
+    margin: 10px 0px 20px 0px;
+    clear:both;
+}
+
+.message.read {
+    color: #333;
+    background: -webkit-gradient(linear, 0 0, 0 60%, from(rgba(220,230,234,0.3)), to(rgba(240,244,246,1.0)));
+}
+
+.message.read:hover {
+    background: rgba(220,230,234,0.3);
+}
+
+.message.unread {
+    color: #333;
+    background: -webkit-gradient(linear, 0 0, 0 60%, from(rgba(236,236,236,1.0)), to(rgba(240,244,246,1.0)));
+}
+
+.message.unread:hover {
+    background: rgba(236,236,236,1.0);
+}
+
+.message.starred {
+    background: -webkit-gradient(linear, 0 0, 0 60%, from(rgba(220,230,214,0.3)), to(rgba(240,244,246,1.0)));
+}
+
+.message.starred:hover {
+    background: rgba(220,230,214,0.3);
+}
+
+
+.message h3 {
+    text-transform:capitalize;
+    padding:0px;
+    margin:0px;
+}
+
+
+.publisher_info {
+    margin-left:-50px;
+    width:28px;
+    border-radius: 5px;
+    float:left;
+    text-align:center;
+    
+}
+
+.publisher_info:hover {
+    background-color: #4C4C4C;
+    font-size: 0.8em;
+}
+
+.icon {
+    margin-top:5px;
+    width:18px;
+}
+
+.publisher_actions {
+    z-index: 9999;
+    width: 80px;
+    margin-left:-60px;
+    display:none;
+    border-radius: 5px;
+    text-align:right;
+    color:#CCC;
+    padding:5px 0px 5px 0px;
+}
+
+.publisher_info:hover .publisher_actions{
+    background-color: #4C4C4C;
+    display: block;
+}
+
+.publisher_actions a {
+    color: #FFF;
+}
+
+.message:hover .actions {
+    display:block;
+}
+
+.actions {
+    display:none;
+    float:right;
+}
+
+
+
+.actions img {
+    
+}
+
+
+/* CSS specifics. Items should be removed previously */
+.feedflare, .img_label {
+    display:none;
+}
+

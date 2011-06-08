@@ -3,15 +3,19 @@ var Archive = Backbone.Collection.extend({
     database: msgboyDatabase,
     model: Message,
 
+    comparator: function(message) {
+      return -(message.attributes.created_at);
+    },
+
     mark_all_as_read: function(opts) {
         opts = typeof(opts) != 'undefined' ? opts : {};
-        opts.lower = opts.lower || 1;
-        opts.step = opts.step || 60000;
-        opts.callback = opts.callback || function() {};
-        opts.epoch = opts.epoch || 1304200800000;
+        opts.lower = opts.lower         || 0;
+        opts.step = opts.step           || 60000;
+        opts.callback = opts.callback   || function() {};
+        opts.epoch = opts.epoch         || 1304200800000;
 
         if(new Date().getTime() - opts.lower > opts.epoch) {
-            this.fetch_more("unread_at", opts.lower, opts.step, function() {
+            this.fetch_more("unread_at", function() {
                 if(this.models.length > 0) {
                     this.models[0].mark_as_read(function() {
                         this.mark_all_as_read(opts);
@@ -21,7 +25,7 @@ var Archive = Backbone.Collection.extend({
                     opts.lower = opts.lower + opts.step;
                     this.mark_all_as_read(opts);
                 }
-            }.bind(this));
+            }.bind(this), opts);
         } else {
             opts.callback();
         }
@@ -35,7 +39,7 @@ var Archive = Backbone.Collection.extend({
         opts.epoch = opts.epoch || 1304200800000;
 
         if(new Date().getTime() - opts.lower > opts.epoch) {
-            this.fetch_more("created_at", opts.lower, opts.step, function() {
+            this.fetch_more("created_at", function() {
                 if(this.models.length > 0) {
                     this.models[0].destroy({
                         success: function() {
@@ -51,17 +55,30 @@ var Archive = Backbone.Collection.extend({
                     opts.lower = opts.lower + opts.step;
                     this.delete_all(opts);
                 }
-            }.bind(this));
+            }.bind(this), opts);
         } else {
             opts.callback();
         }
     },
 
-    fetch_more: function(filter, lower, step, done) {
-        var conds = {};
-        conds[filter] = [new Date().getTime() - lower, new Date().getTime() - lower - step];
+    fetch_more: function(conds, done, opts) {
+        opts = typeof(opts) != 'undefined' ? opts : {};
+        opts.lower = opts.lower         || 0;
+        opts.step = opts.step           || 60000;
+        
+        var conditions = null;
+        
+        if(typeof(conds) == "string") {
+            conditions = {};
+            conditions[conds] = [new Date().getTime() - opts.lower, new Date().getTime() - opts.lower - opts.step];
+        }
+        else {
+            conditions = conds
+        }
+        
+        
         this.fetch({
-            conditions: conds,
+            conditions: conditions,
             success: function() {
                 done();
             }.bind(this),
