@@ -119,12 +119,12 @@
             //////////////////////////////////////////////////////////////////////////////////////
             var MessageView = Backbone.View.extend({
                 events: {
-                    "click a.more": "openViewer",
                     "click span.unsubscribe": "unsubscribeFeed",
                     "click span.all": "showByAlternate",
                     "click a.destroy": "destroyMessage",
                     "click a.star": "toggleStarMessage",
-                    "click a.unread": "toggleReadMessage"
+                    "click a.unread": "toggleReadMessage",
+                    "click div.message": "openViewer"
                 },
 
                 initialize: function() {
