@@ -151,10 +151,12 @@ span.time {
     float:right;
 }
 
-
-
 .actions img {
     
+}
+
+.message-footer {
+    clear:both;
 }
 
 
@@ -162,4 +164,6 @@ span.time {
 .feedflare, .img_label {
     display:none;
 }
+
+
 
