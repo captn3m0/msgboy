@@ -46,6 +46,8 @@ var Archive = Backbone.Collection.extend({
                         }.bind(this)
                     })
                 } else {
+                    // Since there is no more message, we need to update the epoch!
+                    
                     done();
                 }
             }.bind(this),
