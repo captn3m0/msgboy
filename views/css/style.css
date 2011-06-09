@@ -146,7 +146,7 @@ span.time {
     display:block;
 }
 
-.actions {
+.message .actions {
     display:none;
     float:right;
 }
