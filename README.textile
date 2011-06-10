@@ -1,5 +1,18 @@
 h2.Developers
 
+
+h3. Plugins. How they work.
+
+When a new user comes, we see what services he/she uses and list the feeds.
+The user can decide to import all feeds, or just a handful.
+...
+
+Later, when on a site with a plugin, or with the microformat that allows for subscription, we show a box to the user to ask whether he/she wants to subscribe. If it's a yes, we do subscribe. If not, we can just move on.
+
+Listen on "click" events on any element that has the "msgboy-follow" class.
+If there is a click, we use microformat to get the feed url and title and ask to the user whether he/she wants to subscribe.
+
+
 h3. TODO
 
 * -Add support for shortcuts (lots of shortcuts!)-
@@ -28,6 +41,8 @@ h3. TODO
 * Run continuous testing before running rake tasks.
 * Add support for microformats for "actionable" elements/susbcribe
 * Add support for events from the page to the extension, to auto-susbcribe upon user actions.
+* Add the ability for a 3rd party site to ask for the list of subscriptions for a user who uses the msgboy. We want to use a system that would protect the users from having _all_ their subscriptions stolen. A solution would be to ask for subscriptions on a given domain, for example.
+
 
 h3. Plugins
 

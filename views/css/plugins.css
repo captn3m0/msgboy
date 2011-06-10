@@ -1,0 +1,36 @@
+#plugins {
+    text-align:center;
+}
+
+#plugins form {
+    font-size: 1.2em;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+    width: 780px;
+
+}
+
+#plugins form input {
+    line-height: 25px;
+    padding: 5px;
+    width: 300px;
+    font-size: 1.1em;
+}
+
+#plugins form input.submit {
+    width: 100%;
+}
+
+#plugins form td small{
+    font-size: 0.6em;
+}
+
+#plugins form td {
+    padding:10px ;
+    width: 300px;
+    text-align: right;
+}
+
+#plugins form td{
+}
