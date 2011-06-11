@@ -26,31 +26,9 @@ Plugins.register(new function() {
 			});
 		});
 	},
-	
-	this.importSubscriptionsPage = function(page) {
-		var that = this;
-		$.get(avatarname[0].children[0].href + "/following?page=" + page, function(data) {
-			content = $(data);
-			links = content.find("#watchers li a.follow")
-			links.each(function() {
-				url = 'https://github.com/' + $(this).attr("data-user") + ".atom";
-				chrome.extension.sendRequest({
-					subscribe:{
-						url: url,
-						title: $(this).attr("data-user") + " on Github"
-					}
-				}, function(response) {
-					// Done
-				});
-			});
-			if(links.length > 0) {
-				that.importSubscriptionsPage(page+1);
-			}	
-		});
-	},
-
-	this.importSubscriptions = function() {
-		var that = this;
+		
+	this.listSubscriptions = function(callback) {
+	    var that = this;
 		$.get("http://github.com/", function(data) {
 			content = $(data);
 			avatarname = content.find(".avatarname")
@@ -59,10 +37,35 @@ Plugins.register(new function() {
 			}
 			else {
 				// There should be just one anyway.
-				that.importSubscriptionsPage(1);
+				that.listSubscriptionsPage(1, [], callback);
 			}
 		});	
-	},
+    },
+    
+    this.listSubscriptionsPage = function(page, subscriptions, callback) {
+        var that = this;
+		$.get(avatarname[0].children[0].href + "/following?page=" + page, function(data) {
+			content = $(data);
+			links = content.find("#watchers li a.follow span");
+			links.each(function() {
+				if($(this).html() == "Follow") {
+    				url = 'https://github.com/' + $($(this).parent()).attr("data-user") + ".atom";
+    				subscriptions.push({
+    				    href: url,
+    				    title: $($(this).parent()).attr("data-user") + " on Github"
+    				});
+				}
+			});
+			if(links.length > 0) {
+				that.listSubscriptionsPage(page+1, subscriptions, callback);
+			}
+			else {
+			    callback(subscriptions);
+			}
+		});
+		
+    },
+    
 	
 	this.isUsing = function(callback) {
 		var that = this;

@@ -20,9 +20,9 @@ Plugins.register(new function() {
 		});
 	},
 	
-	this.importSubscriptions = function() {
-		alert("Sorry, we cannot import your current disqus threads, but when you will post answers to new threads, you will be subscribed to those.")
-	},
+	this.listSubscriptions = function(callback) {
+        callback([]); // We're not able to list all subscriptions
+    },
 	
 	this.isUsing = function(callback) {
 		callback(false) // By default we won't show

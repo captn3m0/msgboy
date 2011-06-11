@@ -34,10 +34,9 @@ Plugins.register(new function() {
 		});  
 	},
 
-	this.importSubscriptions = function() {
-		alert("Sorry, we cannot import your Digg subscriptions at the moment, but when you start following someone now, it will be added to Msgboy.")
-	},
-	
+    this.listSubscriptions = function(callback) {
+        callback([]); // We're not able to list all subscriptions
+    },
 	
 	this.isUsing = function(callback) {
 		var that = this;

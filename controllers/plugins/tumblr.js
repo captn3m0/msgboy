@@ -20,15 +20,15 @@ Plugins.register(new function() {
 		});
 	}
 
-	this.importSubscriptions = function() {
-		// This methods import subscription from the specific website for this plugin.
-		this.importSubscriptionsPage(1, 0)
-	}
+	
+	this.listSubscriptions = function(callback) {
+		this.listSubscriptionsPage(1, [], callback);
+    },
 
 	this.isUsing = function(callback) {
 		var that = this;
 		$.get("http://www.tumblr.com/", function(data) {
-			menu = $(data).find("#account_menu")
+			menu = $(data).find("#logout_button")
 			if(menu.length === 0) {
 				callback(false);
 			}
@@ -37,35 +37,32 @@ Plugins.register(new function() {
 			}
 		});
 	},
-
-	// Custom methods :
-	this.importSubscriptionsPage = function(page, retries) {
-		var that = this;
+	
+	this.listSubscriptionsPage = function(page, subscriptions, callback) {
+	    var that = this;
 		$.get("http://www.tumblr.com/following/page/" + page, function(data) {
 			content = $(data);
+		    
 			if(content.find("h1")[0] && $(content.find("h1")[0]).text().match(/Following [0-9]* people/)) {
 				links = content.find(".follower .name a")
 				links.each(function(index, link) {
-					chrome.extension.sendRequest({
-						subscribe: {
-							url: $(link).attr("href") + "rss",
-							title: $(link).html() + " on Tumblr"
-						}
-					}, function(response) {
-						// Done
-					});
+				    subscriptions.push({
+				        href: $(link).attr("href") + "rss",
+				        title:  $(link).html() + " on Tumblr"
+				    })
 				});
 				if(links.length > 0) {
-					that.importSubscriptionsPage(page+1, 0);
+					that.listSubscriptionsPage(page+1, subscriptions, callback);
+				}
+				else {
+				    callback(subscriptions);
 				}
 			} 
-			else if(retries < 3) {
-				// Retry!
-				that.importSubscriptionsPage(page, retries+1)
-			}
 			else {
-				alert("We couldn't get your data out of Tumblr...")
+				console.log("We couldn't get your data out of Tumblr...")
 			}
 		})
+		
 	}
+	
 });

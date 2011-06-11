@@ -20,11 +20,10 @@ Plugins.register(new function() {
 			return false;
 		});
 	},
-
-	this.importSubscriptions = function() {
-		// This methods import subscription from the specific website for this plugin.
-		alert("Sorry we cannot import subscriptions from Typepad at this moment.");
-	},
+	
+	this.listSubscriptions = function(callback) {
+        callback([]); // We're not able to list all subscriptions
+    },
 
 	this.isUsing = function(callback) {
 		var that = this;

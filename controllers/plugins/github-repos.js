@@ -31,33 +31,29 @@ Plugins.register(new function() {
 			}
 		});  
 	},
-
-	this.importSubscriptions = function() {
-		$.get("http://github.com/", function(data) {
+	
+	this.listSubscriptions = function(callback) {
+        $.get("http://github.com/", function(data) {
 			content = $(data);
 			avatarname = content.find(".avatarname")
 			if (avatarname.length == 0) {
-				alert("Make sure you're logged in to Github to import all existing susbcriptions...")
+                callback([]); // We're not able to list all subscriptions as the user is not logged in :(
 			}
 			else {
 				// There should be just one anyway.
 				$.get(avatarname[0].children[0].href + "/following", function(data) {
 					content = $(data);
 					// Let's now import them all.
+					var subscriptions = [];
 					content.find(".repo_list .source a").each(function(){
-						chrome.extension.sendRequest({
-							subscribe: {
-								url: this.href+"/commits/master.atom",
-								title: $(this).text()
-							}
-						}, function(response) {
-							// Done
-						});
+					    subscriptions.push({href: "http://github.com" + $(this).attr("href") + "/commits/master.atom" , title: $(this).text()});
 					});
+					callback(subscriptions);
 				})
 			}
 		});	
-	},
+		
+    },
 	
 	this.isUsing = function(callback) {
 		var that = this;

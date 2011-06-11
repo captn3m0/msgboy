@@ -20,18 +20,6 @@
 
     <!-- Controller includes -->
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
-    <script src="../../controllers/site_plugins.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/digg.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/disqus.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/github-repos.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/github-users.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/google-reader.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/tumblr.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/posterous.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/statusnet.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/typepad.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/quora-people.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/quora-topics.js" type="text/javascript"></script> 
 
 </head>
 
@@ -57,10 +45,6 @@
 		<p id="connectionStatus"></p>
 	
 		<form id="credentials">
-	        <h1>Account</h1>
-			<span id="signup">Please <a href="http://msgboy.com/" target="_blank">sign up</a> first if you don't have an account just yet.</span>
-        	Login : <input type="text" id="jid"><br />
-        	Password : <input type="Password" id="password"><br />
 			<input type="submit" value="Connect!" />
 		</form>
 		
@@ -71,14 +55,6 @@
 		    </span>
 		    
 		</div>
-        <div id="plugins" style="display:none">
-	        <h1>Plugins</h1>
-			<p>We're loading the services that you seem to be using the most often, so you can import subscriptions you've made there. The msgboy will keep them sync'ed for you if you check their boxes!</p>
-			<div class="active"></div>
-			<h2>Others</h2>
-			<small>Looks like we couldn't verify that you use these services, please make sure you're logged in on them before activating them.</small>
-			<div class="passive"></div>
-        </div>
         <span id="saved">Saved</span>
 <!--
 		<input id="reset" type="button" value="Reset" />
@@ -120,14 +96,10 @@
 	}).onMessage.addListener(function (msg) {
 	    $('#connectionStatus').text(msg);
 	    if (msg == "Msgboy is connected.") {
-	        // Good, we can show the plugins.
-	        $("#plugins").show();
 	        $("#signup").hide();
 	        $("#options").show();
 	        $("#credentials").hide();
 	    } else {
-	        // Bad, we can't show the plugins... but let's allow the user to reconnect!
-	        $("#plugins").hide();
 	        $("#options").hide();
 	        $("#credentials").show();
 	    }
@@ -229,53 +201,9 @@
 	
 	});
 
-	var PluginView = Backbone.View.extend({
-	    initialize: function () {
-	        _.each(Plugins.all, function (plugin) {
-				plugin.isUsing(function(using) {
-					element = $(_.template($('#plugin-template').html(), plugin))
-					chrome.extension.sendRequest({
-						"settings": {
-							"get": ["plugin-" + nameToId(plugin.name)]
-						}
-					}, function (response) {
-						$("#" + nameToId(plugin.name)).attr('checked', response.value);
-					});
-					element.change(function () {
-						if ($(this).find("input").is(':checked')) {
-							// When clicked. We should just import the feeds in the back!
-							chrome.extension.sendRequest({
-								"settings": {
-									"set": ["plugin-" + nameToId(plugin.name), true]
-								}
-							}, function (response) {});
-							_gaq.push(['_trackEvent', 'plugin-import-' + nameToId(plugin.name)]);
-							plugin.importSubscriptions();
-						} else {
-							chrome.extension.sendRequest({
-								"settings": {
-									"set": ["plugin-" + nameToId(plugin.name), false]
-								}
-							}, function (response) {});
-							_gaq.push(['_trackEvent', 'plugin-stop-import-' + nameToId(plugin.name)]);
-						}
-					})
-					if(using) {
-						$("#plugins .active").append(element);
-					} else {
-						$("#plugins .passive").append(element);
-					}
-				})
-			});
-	    }
-	})
-
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                                Main                                              //
 	//////////////////////////////////////////////////////////////////////////////////////
-	var pluginView = new PluginView({
-	    el: "#plugins"
-	});
 	var inboxView = new InboxView({
 	    el: "#settings"
 	});

@@ -91,31 +91,29 @@ Plugins.register(new function() {
 		});
 	},
 	
+	this.listSubscriptions = function(callback) {
+        callback([]); // We're not able to list all subscriptions
+        this.listSubscriptionsPage(1, [], callback);
+    },
 	
-	this.importSubscriptions = function() {
-		// This methods import subscription from the specific website for this plugin.
-		this.importSubscriptionsPage(1)
-	},
-	
-	// Custom methods :
-	this.importSubscriptionsPage = function(page) {
+	this.listSubscriptionsPage = function(page, subscriptions, callback) {
 		var that = this;
 		$.get("http://posterous.com/users/me/subscriptions?page=" + page, function(data) {
 			content = $(data);
 			links = content.find("#subscriptions td.image a")
 			links.each(function(index, link) {
-				chrome.extension.sendRequest({
-					subscribe: {
-						url: $(link).attr("href") + "/rss.xml",
-						title: $(link).attr("title")
-					}
-				}, function(response) {
-					// Done
-				});
+			    subscriptions.push({
+			        href: $(link).attr("href") + "/rss.xml",
+			        title: $(link).attr("title")
+			    });
 			});
 			if(links.empty > 0) {
-				importSubscriptionsPage(page + 1)
+				listSubscriptionsPage(page + 1, subscriptions, callback);
+			}
+			else {
+			    callback(subscriptions);
 			}
 		})
 	}
+	
 });

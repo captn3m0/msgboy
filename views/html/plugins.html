@@ -50,68 +50,123 @@
         <div style="clear:both; margin-bottom: 20px">&nbsp;</div>
     
         <p>Based on your recent browsing history, we are able to suggest that you follow these : </p>
-        
-            <div id="done"><a href="">Done, get started!</a></div>
-    </div>
-    
 
-    <script type="text/template" id="plugin-template">
-    
-    <span class="plugin" >
-        <input type="checkbox" name="<%= name %>" id="<%= nameToId(name) %>" /> <%= name %>
-    </span>
-    </script>
+        <ul id="suggestions">
+        </ul>        
+        <div id="done"><a href="">Done, get started!</a></div>
+    </div>
 
     <script>
+    
+    // One single suggestion view
+    var SuggestionView = Backbone.View.extend({
+        events: {
+            "change .checkbox": "checked",
+        },
+          
+        tagName: "li",
+        className: "suggestion",
+        
+        initialize: function() {
+            
+        },
+        
+        checked: function(ev) {
+            // Let's disable the button.
+            this.$("input").attr('disabled', true);
+            chrome.extension.sendRequest({
+                subscribe: {
+                    url: this.model.href,
+                    title: this.model.title
+                }
+            }, function(response) {
+                this.$("input").attr('disabled', false);
+                // Let's re-enable the button
+            }.bind(this));
+        },
+        
+        render: function() {
+            $(this.el).html("<input type='checkbox' class='checkbox' />" + this.model.title + "");
+        }
+    });
+    
+    // One single plugin view
     var PluginView = Backbone.View.extend({
+        events: {
+            "change .global_checkbox": "checked",
+            "click .title": "toggle"
+        },
+        
+        tagName: "li",
+        className: "service",
+        
+        toggle: function() {
+            this.$("ul").toggle();
+            if(this.$("ul").is(":visible")) {
+                this.$("span.title").css("background", "url('../icons/triangle-open.png') no-repeat left center");
+            } 
+            else {
+                this.$("span.title").css("background", "url('../icons/triangle-closed.png') no-repeat left center");
+            }
+            
+        },
+        
+        initialize: function () {
+            // Do stuff?
+        },
+        
+        checked: function() {
+            _.each(this.$("li input.checkbox"), function(checkbox) {
+                $(checkbox).attr('checked',!$(checkbox).attr('checked'));
+                $(checkbox).change();
+            });
+        },
+        
+        render: function() {
+            this.model.listSubscriptions(function(subscriptions) {
+                if(subscriptions.length > 0) {
+                    $(this.el).show();
+                    // We do have subscriptions, let's add a li element to the list of suggested.
+                    var service = $("#suggestions #" + nameToId(this.model.name) + "")[0];
+                    $(this.el).attr("id", nameToId(this.model.name));
+                    $(this.el).html("<span class='title'> <input type='checkbox' class='global_checkbox' /> " + this.model.name + "</span><ul></ul>");
+                    _.each(subscriptions, function(subscription) {
+                        var view = new SuggestionView({model: subscription});
+                        view.render();
+                        this.$("ul").append(view.el);
+                    }.bind(this));
+                }
+            }.bind(this));
+        }
+    });
+    
+    // All the plugins in one view
+    var PluginsView = Backbone.View.extend({
+        
         initialize: function () {
             _.each(Plugins.all, function (plugin) {
                 try {
                     plugin.isUsing(function (using) {
-                        element = $(_.template($('#plugin-template').html(), plugin))
-                        chrome.extension.sendRequest({
-                            "settings": {
-                                "get": ["plugin-" + nameToId(plugin.name)]
-                            }
-                        }, function (response) {
-                            $("#" + nameToId(plugin.name)).attr('checked', response.value);
-                        });
-                        element.change(function () {
-                            if ($(this).find("input").is(':checked')) {
-                                // When clicked. We should just import the feeds in the back!
-                                chrome.extension.sendRequest({
-                                    "settings": {
-                                        "set": ["plugin-" + nameToId(plugin.name), true]
-                                    }
-                                }, function (response) {});
-                                plugin.importSubscriptions();
-                            } else {
-                                chrome.extension.sendRequest({
-                                    "settings": {
-                                        "set": ["plugin-" + nameToId(plugin.name), false]
-                                    }
-                                }, function (response) {});
-                            }
-                        })
-                        if (using) {
-                            $("#plugins .active").append(element);
-                        } else {
-                            $("#plugins .passive").append(element);
+                        if(using) {
+                            var view = new PluginView({model: plugin});
+                            view.render();
+                            $(this.el).append(view.el);
+                            $(view.el).hide();
                         }
-                    })
+                    }.bind(this));
                 }
                 catch(e) {
                     logger.error("Couldn't load plugin " + plugin.name + " - " + e);
                 }
-            });
+            }.bind(this));
         }
     })
 
     //////////////////////////////////////////////////////////////////////////////////////
     //                                Main                                              //
     //////////////////////////////////////////////////////////////////////////////////////
-    var pluginView = new PluginView({
-        el: "#plugins"
+    var pluginsView = new PluginsView({
+        el: "#suggestions"
     });
     
     $("#done").click(function() {

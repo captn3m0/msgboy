@@ -30,10 +30,10 @@ Plugins.register(new function() {
 			});	
 		});
 	},
-
-	this.importSubscriptions = function() {
-		alert("Sorry, we cannot import your Quora subscriptions at this point, but new subscriptions will be automatically added.")
-	},
+	
+	this.listSubscriptions = function(callback) {
+        callback([]); // We're not able to list all subscriptions
+    },
 
 	this.isUsing = function(callback) {
 		var that = this;

@@ -22,27 +22,25 @@ Plugins.register(new function() {
 		$("#quick-add-form .goog-button-body").click(submitted)
 		$("#quick-add-form").submit(submitted);
 	},
-
-	this.importSubscriptions = function() {
-		links = [];
+		
+	this.listSubscriptions = function(callback) {
+	    links = [];
 		request = new XMLHttpRequest();
 		request.open("GET", "http://www.google.com/reader/subscriptions/export", true);
 		request.onreadystatechange = function() {
+		    var subscriptions = [];
 			if (request.readyState == 4) {
 				urls = $(request.responseXML).find("outline").each(function() {
-					chrome.extension.sendRequest({
-						subscribe: {
-							url: $(this).attr("xmlUrl"),
-							title: $(this).attr("title")
-						}
-					}, function(response) {
-						// Done
-					});
+					subscriptions.push({
+					    href:  $(this).attr("xmlUrl"),
+					    title:$(this).attr("title")
+					})
 				});
 			}
+			callback(subscriptions);
 		};
 		request.send();
-	},
+    },
 	
 	this.isUsing = function(callback) {
 		var that = this;
