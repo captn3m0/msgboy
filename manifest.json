@@ -59,12 +59,12 @@
         "/controllers/plugins/quora-topics.js",
         "/controllers/run_plugins.js"
       ],
+      "css": [
+        "/views/css/modalbox.css"
+      ],
       "matches": [
         "http://*/*",
         "https://*/*"
-      ],
-      "css": [
-        "/views/css/modalbox.css"
       ],
       "run_at": "document_end",
       "all_frames": true
@@ -77,5 +77,5 @@
     "128": "views/icons/icon128.png"
   },
   "update_url": "http://sup.ee/update-msgboy",
-  "version": "0.0.21.1"
+  "version": "0.0.22.1"
 }
