@@ -99,9 +99,11 @@
 	        $("#signup").hide();
 	        $("#options").show();
 	        $("#credentials").hide();
+	    } else if(msg == "Msgboy couldn't authenticate. Please check your credentials"){
+	        $('#connectionStatus').html("Msgboy couldn't authenticate. Please <a href='login.html'>check your credentials</a>.");
+	        $("#options").hide();
 	    } else {
 	        $("#options").hide();
-	        $("#credentials").show();
 	    }
 	});
 

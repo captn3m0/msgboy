@@ -129,7 +129,7 @@
                     // We do have subscriptions, let's add a li element to the list of suggested.
                     var service = $("#suggestions #" + nameToId(this.model.name) + "")[0];
                     $(this.el).attr("id", nameToId(this.model.name));
-                    $(this.el).html("<span class='title'> <input type='checkbox' class='global_checkbox' /> " + this.model.name + "</span><ul></ul>");
+                    $(this.el).html("<span class='title'> <input type='checkbox' class='global_checkbox' /> From " + this.model.name + " : </span><ul></ul>");
                     _.each(subscriptions, function(subscription) {
                         var view = new SuggestionView({model: subscription});
                         view.render();
