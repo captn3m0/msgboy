@@ -1,7 +1,7 @@
 #msgboy-mask {
   position:absolute;
   z-index:99999998;
-  background-color:rgba(0,0,0,0.8);
+  background-color: rgba(0,0,0,0.8);
   display:none;
   margin:0px;
   top: 0px;

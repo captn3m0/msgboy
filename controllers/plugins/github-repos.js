@@ -7,29 +7,38 @@ Plugins.register(new function() {
 		return (window.location.host == "github.com")
 	},
 
-	this.hijack = function(callback) {
+	this.hijack = function(follow, unfollow) {
 		// This methods hijacks the susbcription action on the specific website for this plugin.
-		$(".btn-watch").live('click', function(event) {
-			url = 'https://github.com/' + $(event.target).parent().attr("href").replace("toggle_watch", "/commits/master.atom");
-			action = $(event.target).text();
-			switch(action) {
-				case "Watch":
-				chrome.extension.sendRequest({
-					subscribe:{
-						url: url,
-						title: document.title
-					}
-				}, function(response) {
-					// Done
-				});
-				break;
-				case "Unwatch":
-				chrome.extension.sendRequest({unsubscribe:action}, function(response) {
-				});
-				break;
-				default:
-			}
-		});  
+		// TOFIX : if the elements as an onclick element, we need to remove it, so that it's not executed, but also we need to 'remember' it so that it's executed _after_
+		$.each($(".btn-watch"), function(index, button) {
+            var onclick_cb = $(button).attr("onclick").bind(button); // Keep track of onclick.
+            $(button).attr("onclick", ""); // Delete the onclick.
+		    $(button).click(function(event) {
+    		    event.preventDefault();
+    			var url = 'https://github.com/' + $(event.currentTarget).attr("href").replace("toggle_watch", "/commits/master.atom");
+    			var action = $(event.currentTarget).text();
+    			switch(action) {
+    				case "Watch":
+    				follow({
+    				    url: url,
+    				    title: document.title
+    				}, function() {
+                        onclick_cb();
+    				});
+    				break;
+    				case "Unwatch":
+    				unfollow({
+    				    url: url,
+    				    title: document.title
+    				}, function() {
+                        onclick_cb();
+    				});
+    				break;
+    				default:
+    			}
+    			return false;
+		    });
+		}.bind(this));
 	},
 	
 	this.listSubscriptions = function(callback) {
@@ -46,7 +55,7 @@ Plugins.register(new function() {
 					// Let's now import them all.
 					var subscriptions = [];
 					content.find(".repo_list .source a").each(function(){
-					    subscriptions.push({href: "http://github.com" + $(this).attr("href") + "/commits/master.atom" , title: $(this).text()});
+					    subscriptions.push({url: "http://github.com" + $(this).attr("href") + "/commits/master.atom" , title: $(this).text()});
 					});
 					callback(subscriptions);
 				})

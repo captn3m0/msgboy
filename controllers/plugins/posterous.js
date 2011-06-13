@@ -8,18 +8,16 @@ Plugins.register(new function() {
 		return ($('meta[name=generator]').attr("content") === "Posterous" || window.location.host.match(/posterous.com$/));
 	},
 
-	this.hijack = function(callback) {
+	this.hijack = function(follow, unfollow) {
 		$('#posterous_required_header').hover(function(event) {
 			if(!this.hijacked) {
 				this.hijacked = true;
 				$('#posterous_bar_subscribe').click(function() {
-					chrome.extension.sendRequest({
-						subscribe: {
-							title: document.title,
-							url : window.location.href + "/rss.xml"
-						}
-					}, function(response) {
-						// Done
+				    follow({
+				        title: document.title,
+				        url: window.location.href + "/rss.xml"
+					}, function() {
+					    // done
 					});
 				})
 			}
@@ -30,13 +28,11 @@ Plugins.register(new function() {
 			if(!this.hijacked) {
 				this.hijacked = true;
 				$('#posterous_bar_subscribe').click(function() {
-					chrome.extension.sendRequest({
-						subscribe: {
-							title: document.title,
-							url : window.location.href + "/rss.xml"
-						}
-					}, function(response) {
-						// Done
+				    follow({
+				        title: document.title,
+				        url: window.location.href + "/rss.xml"
+					}, function() {
+					    // Done
 					});
 				})
 			}
@@ -44,36 +40,30 @@ Plugins.register(new function() {
 		});
 
 		$("#subscribe_link").click(function() {
-			chrome.extension.sendRequest({
-				subscribe: {
-					title: document.title,
-					url : window.location.href + "/rss.xml"
-				}
-			}, function(response) {
-				// Done
+		    follow({
+		        title: document.title,
+		        url: window.location.href + "/rss.xml"
+			}, function() {
+			    // Done
 			});
 		});
 		
 		$("#psub_unsubscribed_link").click(function() {
-			chrome.extension.sendRequest({
-				subscribe: {
-					title: document.title,
-					url : window.location.href + "/rss.xml"
-				}
-			}, function(response) {
-				// Done
+		    unfollow({
+		        title: document.title,
+		        url: window.location.href + "/rss.xml"
+			}, function() {
+			    // Done
 			});
 		});
 		
 		$(".subscribe_ajax a.unsubscribed").click(function(event) {
-			parent = $($($($(event.target).parent()).parent()).parent().find(".profile_sub_site a")[0]);
-			chrome.extension.sendRequest({
-				subscribe: {
-					title: $.trim(parent.html()),
-					url : parent.attr("href") + "/rss.xml"
-				}
-			}, function(response) {
-				// Done
+			var parent = $($($($(event.target).parent()).parent()).parent().find(".profile_sub_site a")[0]);
+			unfollow({
+		        title: $.trim(parent.html()),
+		        url: parent.attr("href") + "/rss.xml"
+			}, function() {
+			    // Done
 			});
 		});
 	},
@@ -103,7 +93,7 @@ Plugins.register(new function() {
 			links = content.find("#subscriptions td.image a")
 			links.each(function(index, link) {
 			    subscriptions.push({
-			        href: $(link).attr("href") + "/rss.xml",
+			        url: $(link).attr("href") + "/rss.xml",
 			        title: $(link).attr("title")
 			    });
 			});

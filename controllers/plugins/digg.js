@@ -8,7 +8,7 @@ Plugins.register(new function() {
 		return (window.location.host == "digg.com")
 	},
 
-	this.hijack = function(callback) {
+	this.hijack = function(follow, unfollow) {
 		// This methods hijacks the susbcription action on the specific website for this plugin.
 		$(".btn-follow").live('click', function(event) {
 			url = $(event.target).attr("href");
@@ -16,17 +16,19 @@ Plugins.register(new function() {
 			action = url.split("/")[2]
 			switch(action) {
 				case "follow":
-				chrome.extension.sendRequest({
-					subscribe: {
-						url: "http://digg.com/" + login + ".rss",
-						title: login + " on Digg"
-					}
-				}, function(response) {
-					//
-				});
+				follow({
+				    url: "http://digg.com/" + login + ".rss",
+				    title: login + " on Digg"
+				}, function() {
+				    // Done
+    			});
 				break;
 				case "unfollow":
-				chrome.extension.sendRequest({unsubscribe:"http://digg.com/" + login + ".rss"}, function(response) {
+				unfollow({
+				    url: "http://digg.com/" + login + ".rss",
+				    title: login + " on Digg"
+				}, function() {
+				    // Done
 				});
 				break;
 				default:

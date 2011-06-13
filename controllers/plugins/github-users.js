@@ -7,22 +7,24 @@ Plugins.register(new function() {
 		return (window.location.host == "github.com")
 	},
 
-	this.hijack = function(callback) {
+	this.hijack = function(follow, unfollow) {
 		// This methods hijacks the susbcription action on the specific website for this plugin.
-		$("a.btn-follow").live('click', function(event) {
-			url = 'https://github.com/' + $(event.target).attr("data-user") + ".atom";
-			chrome.extension.sendRequest({
-				subscribe: {
-					url: url,
-					title: $(event.target).attr("data-user") + " on Github"
-				}
-			}, function(response) {
-				// Done
+		$("a.btn-follow").click(function(event) {
+			var url = 'https://github.com/' + $(event.currentTarget).attr("data-user") + ".atom";
+			follow({
+			    url: url,
+				title: $(event.currentTarget).attr("data-user") + " on Github"
+			}, function() {
+			    // Done
 			});
 		});
-		$("a.btn-unfollow").live('click', function(event) {
-			url = 'https://github.com/' + $(event.target).attr("data-user") + ".atom";
-			chrome.extension.sendRequest({unsubscribe:url}, function(response) {
+		$("a.btn-unfollow").click(function(event) {
+			var url = 'https://github.com/' + $(event.currentTarget).attr("data-user") + ".atom";
+			unfollow({
+			    url: url,
+				title: $(event.currentTarget).attr("data-user") + " on Github"
+			}, function() {
+			    // Done
 			});
 		});
 	},
@@ -51,7 +53,7 @@ Plugins.register(new function() {
 				if($(this).html() == "Follow") {
     				url = 'https://github.com/' + $($(this).parent()).attr("data-user") + ".atom";
     				subscriptions.push({
-    				    href: url,
+    				    url: url,
     				    title: $($(this).parent()).attr("data-user") + " on Github"
     				});
 				}

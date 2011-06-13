@@ -12,18 +12,16 @@ Plugins.register(new function() {
         callback([]); // We're not able to list all subscriptions
     },
 	
-	this.hijack = function() {
+	this.hijack = function(follow, unfollow) {
 		// This method will add a callback that hijack a website subscription (or follow, or equivalent) so that msgboy also mirrors this subscription.
 		$('#form_ostatus_connect').live("submit", function() {
 			user = $($(this).find("#nickname")[0]).attr("value")
 			url = "http://" + parseUri(window.location).host + "/api/statuses/user_timeline/1.atom"
-			chrome.extension.sendRequest({
-				subscribe: {
-					title: user + " on Status.net",
-					url : url
-				}
-			}, function(response) {
-				// Done
+			follow({
+			    title:  user + " on Status.net",
+			    url: url
+			}, function() {
+			    // Done
 			});
 		});
 	},

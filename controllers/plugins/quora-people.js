@@ -7,20 +7,18 @@ Plugins.register(new function() {
 		return (window.location.host == "www.quora.com")
 	},
 
-	this.hijack = function(callback) {
+	this.hijack = function(follow, unfollow) {
 		$(".follow_button").not(".unfollow_button").not(".topic_follow").click(function(event) {
 			if($.trim($(event.target).html()) == "Follow Question") {
 				// Looks like Questions don't have RSS feeds just yet.
 			}
 			else {
-				// This is must a button on a user's page. Which we want to follow
-				chrome.extension.sendRequest({
-					subscribe: {
-						title: document.title,
-						url : window.location.href + "/rss"
-					}
-				}, function(response) {
-					// Done
+				// This is must a button on a user's page. Which we want to follo
+				follow({
+					title: document.title,
+					url: window.location.href + "/rss"
+				}, function() {
+				    // Done
 				});
 			}
 		});

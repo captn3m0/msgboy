@@ -7,7 +7,7 @@ Plugins.register(new function() {
 		return (window.location.host == "www.quora.com")
 	},
 
-	this.hijack = function(callback) {
+	this.hijack = function(follow, unfollow) {
 		$(".topic_follow.follow_button").not(".unfollow_button").click(function(event) {
 			url = ""
 			title = ""
@@ -20,14 +20,12 @@ Plugins.register(new function() {
 				title = document.title;
 				url = window.location.href + "/rss";
 			}
-			chrome.extension.sendRequest({
-				subscribe: {
-					title: title,
-					url : url
-				}
-			}, function(response) {
-				// Done
-			});	
+			follow({
+			    url: url,
+			    title: title
+			}, function() {
+			    // Done
+			});
 		});
 	},
 	

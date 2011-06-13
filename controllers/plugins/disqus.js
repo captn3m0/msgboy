@@ -7,16 +7,14 @@ Plugins.register(new function() {
 		return (document.getElementById("disqus_thread") != null)
 	},
 
-	this.hijack = function(callback) {
+	this.hijack = function(follow, unfollow) {
 		$("#dsq-post-button").live('click', function(event) {
-			chrome.extension.sendRequest({
-				subscribe: {
-					url: $(".dsq-subscribe-rss a").attr("href"),
-					title: document.title
-				}
-			}, function(response) {
-				// Done
-			});
+		    follow({
+		        url: $(".dsq-subscribe-rss a").attr("href"),
+		        title: document.title + " comments"
+		    }, function() {
+		        //Done
+		    });
 		});
 	},
 	

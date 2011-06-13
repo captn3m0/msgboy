@@ -1,5 +1,12 @@
-MsgboyModal = function() {
+MsgboyModal = function(_onclose) {
     // Msgboy modal.
+    if(typeof(_onclose) == "undefined") {
+        this.onclose = function() {
+            // Nothing.
+        };
+    } else {
+        this.onclose = _onclose;
+    }
 };
 
 MsgboyModal.prototype = {
@@ -33,7 +40,8 @@ MsgboyModal.prototype = {
            id: "msgboy-dialog-close",
            click: function () {
                that.hide();
-           }
+               this.onclose();
+           }.bind(this)
        }).appendTo($("#msgboy-dialog"));
        content.appendTo($("#msgboy-dialog"));
    }

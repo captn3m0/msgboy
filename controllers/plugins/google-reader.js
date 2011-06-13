@@ -8,15 +8,14 @@ Plugins.register(new function() {
 		return (window.location.host == "www.google.com" && window.location.pathname == '/reader/view/')
 	},
 
-	this.hijack = function(callback) {
+	this.hijack = function(follow, unfollow) {
 		// This methods hijacks the susbcription action on the specific website for this plugin.
 		var submitted = function() {
-			chrome.extension.sendRequest({
-				subscribe: {
-					url: $("#quickadd").val(),
-					title: $("#quickadd").val()
-				}
-			}, function(response) {
+		    follow({
+		        url: $("#quickadd").val(),
+		        title: $("#quickadd").val()
+			}, function() {
+			    // Done
 			});
 		}
 		$("#quick-add-form .goog-button-body").click(submitted)
@@ -32,7 +31,7 @@ Plugins.register(new function() {
 			if (request.readyState == 4) {
 				urls = $(request.responseXML).find("outline").each(function() {
 					subscriptions.push({
-					    href:  $(this).attr("xmlUrl"),
+					    url:  $(this).attr("xmlUrl"),
 					    title:$(this).attr("title")
 					})
 				});

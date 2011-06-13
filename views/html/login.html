@@ -72,7 +72,7 @@
                         }).onMessage.addListener(function (msg) {
                             if (msg == "Msgboy is connected.") {
                                 // Cool, we're connected...
-                                window.location = chrome.extension.getURL('/views/html/plugins.html') // We redirect the user 
+                                window.location = chrome.extension.getURL('/views/html/done.html') // We redirect the user 
                             } else {
                                 // We should show this to the user!
                                 $('#connectionStatus').text(msg);

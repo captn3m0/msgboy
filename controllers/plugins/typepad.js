@@ -7,15 +7,13 @@ Plugins.register(new function() {
 		return (window.location.host == "www.typepad.com" && window.location.pathname == '/services/toolbar')
 	},
 
-	this.hijack = function(callback) {
+	this.hijack = function(follow, unfollow) {
 		$("#follow-display").click(function() {
-			chrome.extension.sendRequest({
-				subscribe: {
-					title: $.trim($($("#unfollow-display a")[0]).html()) + " on Typepad",
-					url : $($("#unfollow-display a")[0]).attr("href") + "/activity/atom.xml"
-				}
-			}, function(response) {
-				// Done
+		    follow({
+		        title: $.trim($($("#unfollow-display a")[0]).html()) + " on Typepad",
+				href : $($("#unfollow-display a")[0]).attr("href") + "/activity/atom.xml"
+			}, function() {
+			    // Done
 			});
 			return false;
 		});

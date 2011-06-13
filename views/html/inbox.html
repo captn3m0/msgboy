@@ -227,7 +227,9 @@
                 },
 
                 destroy: function() {
-                    var box = new MsgboyModal();
+                    var box = new MsgboyModal(function() {
+                        // Called when the modal box is closed.
+                    });
                     var content = $("<div>");
                     var message = $("<p>", {
                         text: "Are you sure you want to delete this message? There is no way back."
@@ -268,9 +270,6 @@
                     });
                     yes.appendTo(content);
                     
-                    
-                    
-
                     box.show(content);
                     return false;
                 },

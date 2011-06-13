@@ -7,16 +7,14 @@ Plugins.register(new function() {
 		return (window.location.host == "www.tumblr.com" && window.location.pathname == '/dashboard/iframe')
 	},
 
-	this.hijack = function(callback) {
-		$('form[action|="/follow"]').submit(function() {
-			chrome.extension.sendRequest({
-				subscribe: {
-					title: $('form[action|="/follow"] input[name="id"]').val() + " on Tumblr",
-					url : "http://" + $('form[action|="/follow"] input[name="id"]').val() + ".tumblr.com/rss"
-				}
-			}, function(response) {
-				// Done
-			});
+	this.hijack = function(follow, unfollow) {
+		$('form[action|="/follow"]').submit(function(event) {
+		    follow({
+				title: $('form[action|="/follow"] input[name="id"]').val() + " on Tumblr",
+				url: "http://" + $('form[action|="/follow"] input[name="id"]').val() + ".tumblr.com/rss"
+		    }, function() {
+		        // Done
+		    });
 		});
 	}
 
@@ -47,7 +45,7 @@ Plugins.register(new function() {
 				links = content.find(".follower .name a")
 				links.each(function(index, link) {
 				    subscriptions.push({
-				        href: $(link).attr("href") + "rss",
+				        url: $(link).attr("href") + "rss",
 				        title:  $(link).html() + " on Tumblr"
 				    })
 				});
