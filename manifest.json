@@ -45,6 +45,7 @@
         "/controllers/utils.js",
         "/controllers/modalbox.js",
         "/controllers/site_plugins.js",
+        "/controllers/plugins/generic.js",
         "/controllers/plugins/tumblr.js",
         "/controllers/plugins/posterous.js",
         "/controllers/plugins/google-reader.js",
