@@ -99,7 +99,6 @@
             _.each($("#new_user input"), function(input) {
                 params[$(input).attr("name")] = $(input).val();
             });
-
             $("#user_submit").attr('disabled', 'disabled');
             $.post( base + "/users.json", params, function(data) {
                 this.model = data.user;

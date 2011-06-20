@@ -57,7 +57,7 @@ Plugins.register(new function() {
 				}
 			} 
 			else {
-				console.log("We couldn't get your data out of Tumblr...")
+				console.log("We couldn't get your data out of Tumblr...");
 			}
 		})
 		
