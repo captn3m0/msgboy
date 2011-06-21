@@ -23,6 +23,8 @@
     <!-- Controller includes -->
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     <script src="../../controllers/site_plugins.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/history.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/bookmarks.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/digg.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/disqus.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/github-repos.js" type="text/javascript"></script> 
@@ -60,16 +62,16 @@
     
     // Counter to help detect when we're done.
     var counter = {
-        balance: 0,
+        processing: [],
     };
     _.extend(counter, Backbone.Events);
     counter.bind("increment", function(name) {
-        this.balance ++;
+        this.processing.push(name);
     });
 
     counter.bind("decrement", function(name) {
-        this.balance --;
-        if (this.balance == 0) {
+        this.processing = _.without(this.processing, name);
+        if (this.processing.length == 0) {
             statusMessage.messages.push("<p>That's it! You're <a href=\"/views/html/inbox.html\" class=\"done\">done, resume your browsing!</a></p>");
             $("#register").click("click", function() {
                 window.open('', '_self', '');
@@ -118,6 +120,9 @@
                         });
                         counter.trigger("decrement", plugin.name);
                     });
+                }
+                else {
+                    counter.trigger("decrement", plugin.name);
                 }
             });
         });

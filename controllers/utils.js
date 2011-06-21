@@ -174,3 +174,12 @@ MsgboyHelper.events.trigger = function(ev, object) {
     document.body.dispatchEvent(customEvent);
     return customEvent;
 }
+
+MsgboyHelper.links_to_feeds_at_url = function(_url, callback) {
+    $.ajax({url: "http://feediscovery.appspot.com/",
+      data: {url: _url},
+      success: function(data) {
+          callback(JSON.parse(data));
+      }
+    });
+}
