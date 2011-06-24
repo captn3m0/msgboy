@@ -1,32 +1,217 @@
-body,
-html {
+/* 
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com
+Twitter: @rich_clark
+*/
+
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+abbr, address, cite, code,
+del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var,
+b, i,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
     margin:0;
     padding:0;
+    border:0;
+    outline:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+body {
+    line-height:1;
+}
+
+article,aside,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section { 
+    display:block;
+}
+
+nav ul {
+    list-style:none;
+}
+
+blockquote, q {
+    quotes:none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content:'';
+    content:none;
+}
+
+a {
+    margin:0;
+    padding:0;
+    font-size:100%;
+    vertical-align:baseline;
+    background:transparent;
+}
+
+/* change colours to suit your needs */
+ins {
+    background-color:#ff9;
+    color:#000;
+    text-decoration:none;
+}
+
+/* change colours to suit your needs */
+mark {
+    background-color:#ff9;
+    color:#000; 
+    font-style:italic;
+    font-weight:bold;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+abbr[title], dfn[title] {
+    border-bottom:1px dotted;
+    cursor:help;
+}
+
+table {
+    border-collapse:collapse;
+    border-spacing:0;
+}
+
+/* change border colour to suit your needs */
+hr {
+    display:block;
+    height:1px;
+    border:0;   
+    border-top:1px solid #cccccc;
+    margin:1em 0;
+    padding:0;
+}
+
+input, select {
+    vertical-align:middle;
+}
+
+
+/* ********************* */
+
+
+html, body {
+    margin:0;
+    padding: 0;
+}
+
+@-webkit-keyframes signalOn {
+    from {
+        opacity: 0;
+    }
+    5% {
+        opacity: .2;
+    }
+    7% {
+        opacity: 0;
+    }
+    17% {
+        opacity: .4;
+    }
+    19% {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+html {
+    background: url(../images/buildings.png) no-repeat bottom right fixed,
+        url(../images/clouds.png) no-repeat 437px 34px fixed,
+        url(../images/page-bg.gif) repeat-x top left fixed;
+}
+
+body {
+    
+    padding:0 0 0 29px;
     font-family: sans-serif;
-    background-color: #F0F4F6;
     color: #191919;
 }
 
+a, a:visited {
+    color: #358dc2;
+    text-decoration: none;
+}
+
+#mb-signal {
+    background: url(../images/mb-signal.png) no-repeat top left;
+    -webkit-animation-name: signalOn;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-duration: 2.5s;
+    -webkit-animation-timing-function: ease-out;
+    -webkit-animation-delay: .6s;
+    position: fixed;
+    top: 201px;
+    left: 659px;
+    height: 511px;
+    width: 343px;
+}
+
 #nav {
-    background-color: #000;
-    color: #E6E6E6;
-    text-align:right;
-    margin : 0px 0px 0px 0px;
-    padding: 5px;
+    background: #025e88;
+    border: 1px solid #0375a9;
+    border-width: 0 1px;
+    margin : 0;
+    padding: 0;
+    width: 690px;
 }
 
-#nav span {
-    padding: 10px;
+#nav-inner {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F2F3F3), to(#e6e7e7)) top left repeat-x;
+    border: 1px solid #004868;
+    border-width: 0 1px;
+    border-bottom: 1px solid #d9d9d9;
+    box-shadow: inset 0 0 1px #edf2f4;
+    height: 62px;
+    margin: 0 20px;
+    text-align: right;
 }
 
+#nav-inner h1 {
+    background: url(../images/mb-logo.png) no-repeat top left;
+    display: block;
+    font-size: 0;
+    height: 44px;
+    left: 20px;
+    position: relative;
+    top: 10px;    
+    width: 115px;
+}
 
 #inbox, #settings {
     float:left;
     padding:10px;
 }
 
-.message {
-    margin: 30px 20px 30px 20px;
+#nav-inner .settings {
+    background: url(../images/options.png) no-repeat top left;
+    cursor: pointer;
+    display: block;
+    float: right;
+    font-size: 0;
+    height: 20px;
+    padding: 0;
+    position: relative;
+    right: 20px;
+    text-indent: -9999px;
+    top: 10px;
+    width: 20px;
 }
 
 span.time {
@@ -91,67 +276,61 @@ span.time {
 }
 
 #archive {
-    margin: 0px 20% 0px 20%;
+    background: #025e88;
+    border: 1px solid #0375a9;
+    border-width: 0 1px;
+    margin: 0 0;
+    opacity: 1;
+    width: 690px;
 }
 
 .message {
-    padding: 10px 15px 10px 15px;
-    border-radius: 10px;
-    margin: 10px 0px 20px 0px;
-    clear:both;
+    background: #fff;
+    border: 1px solid #004868;
+    border-width: 0 1px;
+    border-bottom: 3px solid #f2f3f3;
+    box-shadow: inset 0 0 1px #edf2f4;
+    clear: both;
+    margin: 0 20px;
+    padding: 0 20px 10px 20px;
 }
 
 .message.read {
     color: #333;
-    background: -webkit-gradient(linear, 0 0, 0 60%, from(rgba(220,230,234,0.3)), to(rgba(240,244,246,1.0)));
-}
-
-.message.read:hover {
-    background: rgba(220,230,234,0.3);
 }
 
 .message.unread {
+    background: -webkit-gradient(linear, 0% 75%, 0% 100%, from(#FFFFFF), to(#E2EFF6));
+    border-bottom: 3px solid #d6ecf9;
     color: #333;
-    background: -webkit-gradient(linear, 0 0, 0 60%, from(rgba(236,236,236,1.0)), to(rgba(240,244,246,1.0)));
 }
-
-.message.unread:hover {
-    background: rgba(236,236,236,1.0);
-}
-
-.message.starred {
-    background: -webkit-gradient(linear, 0 0, 0 60%, from(rgba(220,230,214,0.3)), to(rgba(240,244,246,1.0)));
-}
-
-.message.starred:hover {
-    background: rgba(220,230,214,0.3);
-}
-
 
 .message h3 {
-    text-transform:capitalize;
-    padding:0px;
-    margin:0px;
+    clear: both;
+    color: #024361;
+    padding: 0;
+    margin: 0;
 }
 
 
 .publisher_info {
-    margin-left:-50px;
-    width:28px;
-    border-radius: 5px;
-    float:left;
-    text-align:center;
-    
+    box-shadow: 0 1px 1px rgba(225,225,225,.95);
+    padding: 5px 5px 5px 10px;
+    margin-bottom: 10px;
+    max-width: 200px;
 }
 
-.publisher_info:hover {
-    background-color: #4C4C4C;
-    font-size: 0.8em;
+.publisher_info small {
+    font-size: 12px;
+    vertical-align: middle;
 }
 
 .icon {
-    margin-top:5px;
-    width:18px;
+    width: 9px;
+    margin-right: 5px;
+    padding: 2px;
+    border: 1px solid #f3f4f4;
+    vertical-align: middle;
 }
 
 .publisher_actions {
@@ -165,17 +344,8 @@ span.time {
     padding:5px 0px 5px 0px;
 }
 
-.publisher_info:hover .publisher_actions{
-    background-color: #4C4C4C;
-    display: block;
-}
-
 .publisher_actions a {
     color: #FFF;
-}
-
-.message:hover .actions {
-    display:block;
 }
 
 .message .actions {
@@ -183,12 +353,13 @@ span.time {
     float:right;
 }
 
-.actions img {
-    
-}
-
 .message-footer {
     clear:both;
+}
+
+.readable-content p {
+    font-size: 12px;
+    line-height: 16px;
 }
 
 

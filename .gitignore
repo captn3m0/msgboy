@@ -4,3 +4,6 @@ updates.xml
 *.pem
 build/
 manifest.json
+node_modules/
+server.js
+.livereload
