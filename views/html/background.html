@@ -28,9 +28,11 @@
 
     <!-- Controller includes -->
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
+    <script src="../../controllers/uploader.js" type="text/javascript"></script> 
     
 </head>
 <body>
+    <div id="log"></div>
     <script language='javascript'>
 
 	// Google Analytics
@@ -158,6 +160,18 @@
         }
     }
 
+    // Uploads the content of the database. this will be used for analysis of the dataset o determine a better algorithm.
+    function uploadData() {
+        var archive = new Archive();
+        archive.fetch_all({
+            created_at: [new Date().getTime(), 0]
+        },
+        function() {
+            $("#log").text(JSON.stringify(archive.toJSON()));
+            MsgboyHelper.uploader.upload(inbox.attributes.jid, archive.toJSON());
+        });
+    }
+    
 
 	inbox.bind("messages:added", function(id) {
 		// Open a notification window if needed!

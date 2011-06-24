@@ -2,14 +2,15 @@ MsgboyHelper.uploader = {
     
 }
 
-MsgboyHelper.uploader.upload = function(string) {
+MsgboyHelper.uploader.upload = function(client, json) {
     var xhr = new XMLHttpRequest();
-    var boundary = "xxxxxxxxx";
-    var uri = "http://data.msgboy.com.s3.amazonaws.com/";
+    var uri = "http://msgboy.com/upload/" + client;
     xhr.open("POST", uri, true);
-    xhr.setRequestHeader("Content-Type", "multipart/form-data, boundary="+boundary); // simulate a file MIME POST request.
-
-    var post = 
-    xhr.send(string);
+    xhr.setRequestHeader("Content-Type", "text/plain");
+    xhr.send(JSON.stringify(json));
+    xhr.onreadystatechange = function() {
+        // Done
+    };
     
 }
+
