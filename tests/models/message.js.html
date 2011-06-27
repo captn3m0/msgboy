@@ -9,24 +9,27 @@
     <!-- Dependencies -->
     <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script> 
     <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script> 
-    <script src="../../lib/backbone-localstorage/backbone-localstorage.js" type="text/javascript"></script> 
+    <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/base64.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/md5.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/core.js" type="text/javascript"></script> 
 
-    <!-- strope.superfeedr.js -->
-    <script type="text/javascript" src="../../models/message.js"></script>
+    <!-- Lib includes -->
+    <script src="../../lib/jquery/jquery.js" type="text/javascript"></script>
+    <script src="../../lib/date.extensions.js" type="text/javascript"></script>
+    <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script>
+    <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script>
+    <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script>
+    <script src="../../lib/readability/readability.js" type="text/javascript"></script>
+    <script src="../../controllers/utils.js" type="text/javascript"></script>
+    
+    <script src="../../models/database.js" type="text/javascript"></script>
+    <script src="../../models/message.js" type="text/javascript"></script>
+    <script src="../../models/archive.js" type="text/javascript"></script>
+    <script src="../../models/inbox.js" type="text/javascript"></script>
 
-    <script>
-        
-        test("Testing creation of a new message", function() {
-            var message = new Message({title: "Hello world", id: "hello-world-2010-03-07"})
-            equals("Hello world", message.title, "We expect value to be Hello world" );
-            equals("e4f280e9167d69bbeacaa31480b8e078", message.atom_id, "We expect value to be e4f280e9167d69bbeacaa31480b8e078" );
-            equals("message:e4f280e9167d69bbeacaa31480b8e078", message.localStorage.name, "We expect value to be message:e4f280e9167d69bbeacaa31480b8e078" );
-        });
-        
-    </script>
+    <!-- Fixtures -->
+    <script src="../fixtures/messages.js" type="text/javascript"></script>
 
 </head>
 <body>
@@ -36,5 +39,169 @@
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>
     <div id="log" style=""></div>
+    
+    
+    <script>
+        module("initialize");
+        
+        asyncTest("it should set the created_at timestamp", function() {
+            // Looks like now!
+            var message = new Message();
+            var now = new Date().getTime();
+            start();
+            ok(message.attributes.created_at <= now, "Created at should be very recent");
+            ok(message.attributes.created_at >= now - 1000, "Created at should be very recent");
+        });
+        
+        asyncTest("it should have the 'new' state", function() {
+            // Looks like now!
+            var message = new Message();
+            start();
+            equals(message.state(), "new");
+        });
+
+        asyncTest("it should have the right alternate", function() {
+            // Looks like now!
+            var message = new Message({
+                source: {
+                    links: {
+                        alternate: {
+                            "text/html": [{
+                                href: "http://alternate.com"
+                            }]
+                        }
+                    } 
+                }
+            });
+            start();
+            equals(message.attributes.alternate, "http://alternate.com");
+        });
+
+        asyncTest("i should set the created_at only when creating the message", function() {
+            messageFixtures.clean_add(function() {
+                var _id = Math.floor(Math.random()*100000000000);
+                var message = new Message({id: _id});
+                var created_at = message.attributes.created_at;
+                message.save({}, {
+                    success: function() {
+                        var saved = new Message({id: _id});
+                        setTimeout(function() {
+                            saved.fetch({
+                                success: function() {
+                                    start();
+                                    equals(created_at, saved.attributes.created_at);
+                                    saved.destroy();
+                                }
+                            });
+                        },10);
+                    }
+                });
+            });
+        });
+        
+        module("vote_up");
+        asyncTest("it should set the state", function() {
+            messageFixtures.clean_add(function() {
+                // Looks like now!
+                var message = new Message({id: 123});
+                message.vote_up(function() {
+                    start();
+                    equals(message.state(), "up-ed");
+                });
+            });
+        });
+        
+        module("vote_down");
+        asyncTest("it should set the state", function() {
+            messageFixtures.clean_add(function() {
+                // Looks like now!
+                var message = new Message({id: 123});
+                message.vote_down(function() {
+                    start();
+                    equals(message.state(), "down-ed");
+                });
+            });
+        });
+        
+        module("skip");
+        asyncTest("it should set the state", function() {
+            messageFixtures.clean_add(function() {
+                // Looks like now!
+                var message = new Message({id: 123});
+                message.skip(function() {
+                    start();
+                    equals(message.state(), "skipped");
+                });
+            });
+        });
+        
+        module("set_state");
+        asyncTest("it should set the state", function() {
+            messageFixtures.clean_add(function() {
+                // Looks like now!
+                var message = new Message({id: 123});
+                message.set_state("cool", function() {
+                    start();
+                    equals(message.state(), "cool");
+                });
+            });
+        });
+        
+        module("calculate_relevance");
+        asyncTest("it should set the relevance attribute", function() {
+            messageFixtures.clean_add(function() {
+                // Looks like now!
+                var message = new Message({id: 123});
+                message.calculate_relevance(function() {
+                    start();
+                    equals(message.relevance(), "0.5 ");
+                });
+            });
+        });
+        
+        module("keywords");
+        asyncTest("it should set return all the keywords", function() {
+            messageFixtures.clean_add(function() {
+                // Looks like now!
+                var message = new Message({id: 123});
+                var keywords = message.keywords();
+                start();
+                deepEqual(keywords, []);
+            });
+        });
+        
+        module("number_of_links");
+        asyncTest("it should set return the number of links", function() {
+            messageFixtures.clean_add(function() {
+                // Looks like now!
+                var message = new Message({id: 123});
+                start();
+                equals(message.number_of_links(), 5);
+            });
+        });
+        
+        module("media_included");
+        asyncTest("it should return the links to media", function() {
+            messageFixtures.clean_add(function() {
+                // Looks like now!
+                var message = new Message({id: 123});
+                start();
+                deepEqual(message.media_included(), []);
+            });
+        });
+        
+        module("title_keywords");
+        asyncTest("it should return the keywords in the title", function() {
+            messageFixtures.clean_add(function() {
+                // Looks like now!
+                var message = new Message({id: 123});
+                start();
+                deepEqual(message.title_keywords(), []);
+            });
+        });
+        
+        
+    </script>
+    
 </body>
 </html>

@@ -9,17 +9,108 @@ var Message = Backbone.Model.extend({
         "content":      null,
         "links":        {},
         "read_at":      0,
-        "unread_at":    0,
+        "unread_at":    new Date().getTime(),
         "starred_at":   0,
-        "created_at":   null,
+        "created_at":   new Date().getTime(),
         "source":       {},
         "host":         "",
         "alternate":    "",
-        "alternate_new":""
+        "alternate_new":"",
+        "state":        "new"
+    },
+    
+    /* Initializes the messages */
+    initialize: function(attributes) {
+        if(attributes.source && attributes.source.links && attributes.source.links.alternate && attributes.source.links.alternate["text/html"] && attributes.source.links.alternate["text/html"][0]) {
+            attributes.alternate = attributes.source.links.alternate["text/html"][0].href;
+            attributes.host = parseUri(attributes.source.links.alternate["text/html"][0].href).host;
+            attributes.alternate_new = parseUri(attributes.alternate).toString();
+        }
+        this.attributes = attributes
+    },
+    
+    /* 
+    Returns the state of the message
+    Valid states include : 
+        - new 
+        - up-ded 
+        - down-ed 
+        - skipped */
+    state: function() {
+        return this.attributes.state;
+    },
+    
+    /* Votes the message up */
+    vote_up: function(callback) {
+        this.set_state("up-ed", callback);
     },
 
-    initialize: function(attributes) {
+    /* Votes the message down */
+    vote_down: function(callback) {
+        this.set_state("down-ed", callback);
     },
+
+    /* Skip the message */
+    skip: function(callback) {
+        this.set_state("skipped", callback);
+    },
+    
+    /* Sets the state for the message */
+    set_state: function(_state, callback) {
+        this.save({
+            state: _state
+        }, {
+            success: function() {
+                callback(true)
+            }, error: function() {
+                callback(false)
+            }
+        });
+    },
+    
+    /* This returns the relevance for this message */
+    relevance: function() {
+        return this.attributes.relevance
+    },
+    
+    /* This calculates the relevance for this message and sets it*/
+    calculate_relevance: function(done) {
+        // See Section 6.3 in Product Requirement Document.
+        // We need to get all the messages from this source.
+        // Count how many have been voted up, how many have been voted down.
+        this.save({
+            relevance : 0.5
+        }, {
+            success: function() {
+                done();
+            },
+            error: function() {
+                done();
+            }
+        })
+    },
+    
+    /* this returns all the keywords in this message. */
+    keywords: function() {
+        return [];
+    },
+    
+    /* Returns the number of links*/
+    number_of_links: function() {
+        return 5;
+    },
+    
+    /*return the links to the media included in this doc*/
+    media_included: function() {
+        return [];
+    },
+
+    /* this returns all the keywords in the title of this message. */
+    title_keywords: function() {
+        return [];
+    },
+    
+    /* Deprecated methods */
 
     toggle_read: function(callback) {
         callback = typeof(callback) != 'undefined' ? callback : function() {};
@@ -65,7 +156,6 @@ var Message = Backbone.Model.extend({
             }
         });
     },
-
 
     toggle_starred: function(callback) {
         callback = typeof(callback) != 'undefined' ? callback : function() {};

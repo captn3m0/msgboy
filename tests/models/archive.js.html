@@ -37,60 +37,7 @@
     <ol id="qunit-tests"></ol>
     <div id="log" style=""></div>
     
-    <script>
-        var messages = [
-            {
-                created_at: new Date().getTime(),
-                unread_at: new Date().getTime(),
-                read_at: 0,
-                starred_at: 0,
-                alternate: "http://blog.superfeedr.com",
-                host: "blog.superfeedr.com",
-                alternate_new: "http://blog.superfeedr.com"
-            },
-            {
-                created_at: new Date().getTime(),
-                unread_at: new Date().getTime(),
-                read_at: 0,
-                starred_at: 0,
-                alternate: "http://blog.superfeedr.com",
-                host: "blog.superfeedr.com",
-                alternate_new: "http://blog.superfeedr.com"
-            },
-            {
-                created_at: new Date().getTime(),
-                unread_at: new Date().getTime(),
-                read_at: 0,
-                starred_at: 0,
-                alternate: "http://blog.superfeedr.com",
-                host: "blog.superfeedr.com",
-                alternate_new: "http://blog.superfeedr.com"
-            }
-        ]
-        
-        function addFixtures(messages, done) {
-            var message = messages.shift();
-            if(message) {
-                var msg = new Message();
-                msg.save(message, {
-                    success: function(obj, err) {
-                        addFixtures(messages, done);
-                    },
-                    error: function(obj, err) {
-                        addFixtures(messages, done);
-                    }
-                });
-            }
-            else {
-                done();
-            }
-        }
-    
-        // module("mark_all_as_read");
-        // 
-        // asyncTest("it should mark all as read", function() {
-        // });
-        
+    <script>        
         module("delete_all");
 
         asyncTest("it should delete all the messages that match the criteria submitted", function() {
@@ -129,12 +76,6 @@
             });
             
         });
-        
-        // 
-        // module("fetch_more");
-        // 
-        // asyncTest("it should get more of the messages matching that criteria", function() {
-        // });
 
     </script>
     

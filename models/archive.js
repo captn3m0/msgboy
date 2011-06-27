@@ -61,10 +61,14 @@ var Archive = Backbone.Collection.extend({
         this.fetch({
             conditions: condition,
             success: function() {
-                done();
+                if(typeof(done) != "undefined" && done) {
+                    done();
+                }
             }.bind(this),
             error: function() {
-                done();
+                if(typeof(done) != "undefined" && done) {
+                    done();
+                }
             }
         });
     },
