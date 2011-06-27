@@ -171,10 +171,9 @@
             MsgboyHelper.uploader.upload(inbox.attributes.jid, archive.toJSON());
         });
     }
-    
 
-	inbox.bind("messages:added", function(id) {
-		// Open a notification window if needed!
+    function notify(id) {
+        // Open a notification window if needed!
 		if (!currentNotification) {
 			url = chrome.extension.getURL('/views/html/notification.html');
 			webkitNotification = window.webkitNotifications.createHTMLNotification(url);
@@ -192,6 +191,10 @@
 			// Let's notify the people who may care about this, includingthe notification popup, hopefully :)
 		});
 		return currentNotification;
+    }
+
+	inbox.bind("messages:added", function(id) {
+		notify(id);
 	})
 
 	chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
@@ -278,6 +281,12 @@
 						}
 					});
 	            }
+	        } else if (request.notify) {
+	            log("Request : notify", request.notify);
+	            notify(request.notify);
+	            sendResponse({
+					value: true
+				});
 	        } else if (request.tab) { // Open tab
 	            log("Request : tab")
 		

@@ -13,7 +13,6 @@
     <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script> 
 
     <!-- Model includes -->
-    <!-- Model includes -->
     <script src="../../models/database.js" type="text/javascript"></script> 
     <script src="../../models/message.js" type="text/javascript"></script> 
 
@@ -23,25 +22,15 @@
 </head>
 <body>
     <div id="message">
+        <div id="votes">
+            <img src="../icons/up.png" class="thumbs" id="vote-up" />
+            <img src="../icons/down.png" class="thumbs" id="vote-down" />
+        </div>
 		<h2></h2>
 		<p></p>
     </div>
 
     <script>
-
-	// Google Analytics
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-22746593-1']);
-	_gaq.push(['_trackPageview']);
-
-	(function () {
-	    var ga = document.createElement('script');
-	    ga.type = 'text/javascript';
-	    ga.async = true;
-	    ga.src = 'https://ssl.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0];
-	    s.parentNode.insertBefore(ga, s);
-	})();
 
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                                Hide Timer                                        //
@@ -53,9 +42,14 @@
 	//                                Views                                           //
 	//////////////////////////////////////////////////////////////////////////////////////
 	var MessageView = Backbone.View.extend({
+	    
+	    events: {
+	        "click #vote-up": "up",
+	        "click #vote-down": "down"
+        },
+        
 	    initialize: function () {
-	        _.bindAll(this, "render", "openViewer");
-	        $('body').click(this.openViewer);
+	        _.bindAll(this, "render", "up", "down");
 	    },
 
 	    render: function () {
@@ -70,29 +64,30 @@
 			if(json.via) {
 				html += "via <span>" + json.via + "</span>."
 			}
-    
 	        this.$("p").html(html);
 	    },
-
-		openViewer: function () {
-			// Open the message!
-			this.model.save({
-	            read_at: new Date().getTime(),
-	            unread_at: 0
-			});
-			chrome.extension.sendRequest({
-				"tab": {
-					url: this.model.attributes.links.alternate["text/html"][0].href,
-					selected: true
-				}
-			}, function (response) {});
-			
-			chrome.extension.sendRequest({
-				close: true
-			}, function (response) {
-				window.close();
-			});
+	    
+	    // Message was voted up
+		up: function() {
+		    showNextMessage();
+		    chrome.extension.sendRequest({
+		        "tab": {
+		            url: this.model.attributes.links.alternate["text/html"][0].href,
+		            selected: true
+		        }
+		    }, function (response) {});
+		},
+		
+		// Message was voted down
+		down: function() {
+		    showNextMessage();
+		},
+		
+		// Message was skipped	
+		skipped: function() {
+		    
 		}
+		
 	});
 
 	//////////////////////////////////////////////////////////////////////////////////////
@@ -101,7 +96,11 @@
 	function showNextMessage() {
 		messageId = messages.pop();
 		if(!messageId) {
-			window.close();
+		    chrome.extension.sendRequest({
+                close: true
+            }, function (response) {
+                window.close();
+            });
 		}
 		else {
 			message = new Message({
@@ -112,9 +111,10 @@
 					view.model = message;
 					view.render();
 					window.focus(); // Put this alert in front!
-					window.setTimeout( function() {  
-						showNextMessage() // After 5 seconds, show the next message.
-					}, 5000);
+                    window.setTimeout( function() {  
+                        view.skipped();
+                        showNextMessage() // After K seconds, show the next message.
+                    }, 8000);
 				},
 			});
 		}
@@ -132,10 +132,6 @@
 					showNextMessage();
 				}
 	        }
-	        else if (request.open && view) {
-				view.openViewer();
-			}
-	
 	    });
 	});
 

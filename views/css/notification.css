@@ -18,3 +18,17 @@ p span {
   font-size:11px;
   color: #999;
 }
+
+#votes {
+    float:left;
+    margin-right: 7px;
+}
+
+img.thumbs {
+    width:30px;
+}
+
+img.thumbs:hover {
+    background-color:green;
+}
+

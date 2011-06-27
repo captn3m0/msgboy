@@ -349,8 +349,8 @@ span.time {
 }
 
 .message .actions {
-    display:none;
-    float:right;
+/*    display:none;
+*/    float:right;
 }
 
 .message-footer {
