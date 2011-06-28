@@ -69,7 +69,7 @@
 	    
 	    // Message was voted up
 		up: function() {
-		    this.model.vote_down();
+		    this.model.vote_up();
 		    showNextMessage();
 		    chrome.extension.sendRequest({
 		        "tab": {
@@ -83,6 +83,7 @@
 		down: function() {
 		    this.model.vote_down();
 		    showNextMessage();
+		    this.model.vote_down();
 		},
 		
 		// Message was skipped	
