@@ -31,60 +31,72 @@
         
         <div id="archive">
             <div id="content">
+                Relevance : <input type="range"  min="0" max="100" value="50" id="relevance-slider" />
                 <!-- Messages will be added here when loaded -->
             </div>
         </div>
         
         <script>
-
-            //////////////////////////////////////////////////////////////////////////////////////
-            //                                Views                                           //
-            //////////////////////////////////////////////////////////////////////////////////////
             var MessageView = Backbone.View.extend({
                 tagName: "p",
                 className: "message",
                 
                 events: {
+                    "click img.vote-up": "up",
+                    "click img.vote-down": "down"
                 },
                 
                 initialize: function() {
-                    this.model.bind('change', this.render);
                     this.model.view = this;
-                },
-                
-                render: function() {
+                    $("#relevance-slider").mouseup(function() {
+                        this.render();
+                    }.bind(this))
+                    
                     // The votes
                     var votes = $("<span>", {
                         class: "votes"
                     });
                     $("<img>", {
                         src: "../icons/up.png",
-                        class: "thumbs",
-                        id: "vote-up"
+                        class: "thumbs vote-up",
                     }).appendTo(votes);
-                    
+
                     $("<img>", {
                         src: "../icons/down.png",
-                        class: "thumbs",
-                        id: "vote-down"
+                        class: "thumbs vote-down",
                     }).appendTo(votes);
                     votes.appendTo($(this.el));
 
 
                     $("<span>", {
-                        text: this.model.attributes.relevance
-                    }).appendTo($(this.el));
-
-                    $("<span>", {
                         text: this.model.attributes.source.title
                     }).appendTo($(this.el));
-                    
+
                      $("<span>", {
                             text: truncate(strip(this.model.attributes.title), 80)
                     }).appendTo($(this.el));
-                    
-                    $(this.el).attr("id", this.model.id)
-                    
+
+                    $(this.el).attr("data-msgboy-relevance", this.model.attributes.relevance);
+
+                    $(this.el).attr("id", this.model.id);
+                },
+                
+                // Message was voted up
+                up: function() {
+                    this.model.vote_up();
+                },
+                
+                // Message was voted down
+                down: function() {
+                    this.model.vote_down();
+                },
+                
+                render: function() {
+                    if(this.model.attributes.relevance < parseFloat($("#relevance-slider").attr("value"))/100) {
+                        $(this.el).hide();
+                    } else {
+                        $(this.el).show();
+                    }
                     return this;
                 }
             });
@@ -92,26 +104,24 @@
             // Our overall InboxView is the top-level piece of UI.
             var ArchiveView = Backbone.View.extend({
                 
-                events: {
-                },
-                
                 initialize: function() {
+                    var now = new Date().getTime();
                     _.bindAll(this, 'render');
-                    $(document).scroll(this.scrolled) // Looks like we can't do it thru 'events' call. Is that a bug in Backbone?
-                    this.render();
+                    
+                    this.collection.fetch_all({
+                        created_at: [now, now - 1000 * 60 * 60 * 24]
+                    },
+                    function() {
+                        this.render();
+                    }.bind(this));
                 },
                 
                 render: function() {
-                    var now = new Date().getTime();
-                    this.collection.fetch_all({
-                        created_at: [now, now - 1000 * 60 * 60 * 24]
-                    }, function() {
-                        _.each(this.collection.models, function(message) {
-                            var view = new MessageView({
-                                model: message
-                            });
-                            $("#content").append(view.render().el);
-                        }.bind(this));
+                    _.each(this.collection.models, function(message) {
+                        var view = new MessageView({
+                            model: message
+                        });
+                        $("#content").append(view.render().el);
                     }.bind(this));
                 },
                 
@@ -126,7 +136,7 @@
                 success: function() {
                     archive = new Archive();
                     archive.comparator = function(message) {
-                      return message.attributes.relevance;
+                      return -message.attributes.relevance;
                     };
                     
                     archiveView = new ArchiveView({

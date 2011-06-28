@@ -59,31 +59,29 @@ var Message = Backbone.Model.extend({
     /* Sets the state for the message */
     set_state: function(_state, callback) {
         this.save({
+            relevance: this.calculate_relevance(),
             state: _state
         }, {
             success: function() {
-                callback(true)
-            }, error: function() {
-                callback(false)
-            }
+                if(typeof(callback) != "undefined" && !callback) {
+                    callback(true);
+                }
+            }.bind(this), 
+            error: function() {
+                if(typeof(callback) != "undefined" && !callback) {
+                    callback(false);
+                }
+            }.bind(this)
         });
     },
         
-    /* This calculates the relevance for this message and sets it*/
+    /* This calculates the relevance for this message and sets it. */
+    /* It just calculates the relevance and does not save it. */
     calculate_relevance: function(done) {
         // See Section 6.3 in Product Requirement Document.
         // We need to get all the messages from this source.
         // Count how many have been voted up, how many have been voted down.
-        this.save({
-            relevance : 0.5
-        }, {
-            success: function() {
-                done();
-            },
-            error: function() {
-                done();
-            }
-        })
+        return Math.random();
     },
     
     /* this returns all the keywords in this message. */
