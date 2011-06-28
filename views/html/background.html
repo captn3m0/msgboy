@@ -211,7 +211,7 @@
 	    //                   Notification Received  Handler                                 //
 	    //////////////////////////////////////////////////////////////////////////////////////
 	    $(document).bind('notification_received', function (ev, notification) {
-		    log("message-received");
+		    log("notification_received");
 			msg = connection.superfeedr.convertAtomToJson(notification.payload);
 			msg.source = notification.source
 			if(notification.via) {
@@ -220,9 +220,12 @@
 	        message = inbox.addMessage(msg, {
 				success: function() {
 					// Cool, message saved!
+				    log("Saved message " + msg.id);
 				},
-				error: function() {
+				error: function(object, error) {
 				    // Message was not saved... probably a dupe
+				    log(error);
+				    log("Could not save message " + JSON.stringify(msg));
 				}
 			});
 		});

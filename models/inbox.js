@@ -26,11 +26,11 @@ var Inbox = Backbone.Model.extend({
                         options.error(object, error);
                     }
                 });
-            },
+            }.bind(this),
             success: function() {
                 options.error();
                 // Success, we should yield null, as this message was not added, because it already existed!
-            }
+            }.bind(this)
         });
     }
 
