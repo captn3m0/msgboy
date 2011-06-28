@@ -16,7 +16,8 @@ var Message = Backbone.Model.extend({
         "host":         "",
         "alternate":    "",
         "alternate_new":"",
-        "state":        "new"
+        "state":        "new",
+        "relevance":    0.3
     },
     
     /* Initializes the messages */
@@ -67,12 +68,7 @@ var Message = Backbone.Model.extend({
             }
         });
     },
-    
-    /* This returns the relevance for this message */
-    relevance: function() {
-        return this.attributes.relevance
-    },
-    
+        
     /* This calculates the relevance for this message and sets it*/
     calculate_relevance: function(done) {
         // See Section 6.3 in Product Requirement Document.
