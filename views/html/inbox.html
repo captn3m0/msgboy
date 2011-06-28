@@ -109,7 +109,7 @@
                 },
 
                 initialize: function() {
-                    _.bindAll(this, "render", "openViewer", "unsubscribeFeed", "destroy", "toggleStar", "toggleRead", "showByAlternate", "notify");
+                    _.bindAll(this, "showByAlternate", "render", "openViewer", "unsubscribeFeed", "destroy", "toggleStar", "toggleRead", "showByAlternate", "notify");
                     this.model.bind('change', this.render);
                     this.model.view = this;
                     this.model.fetch();
@@ -306,8 +306,14 @@
                         text: "Starred Messages"
                     }
                 ],
-                
 
+                initialize: function() {
+                    _.bindAll(this, 'show_loader', 'hide_loader', 'scrolled', 'mark_all_as_read', 'delete_all', 'loadMore', 'showByAlternate', 'showMessageOnTop', 'showMessageAtBottom', 'completePage', 'render', 'showRadioButtons');
+                    $(document).scroll(this.scrolled) // Looks like we can't do it thru 'events' call. Is that a bug in Backbone?
+                    this.hide_loader();
+                    this.render();
+                },
+                
                 show_loader: function() {
                     this.loading = true;
                     $("#loader").show();
@@ -316,13 +322,6 @@
                 hide_loader: function() {
                     this.loading = false;
                     $("#loader").hide();
-                },
-
-                initialize: function() {
-                    _.bindAll(this, 'scrolled', 'showSinglePage', 'render', 'filter', 'loadMore');
-                    $(document).scroll(this.scrolled) // Looks like we can't do it thru 'events' call. Is that a bug in Backbone?
-                    this.hide_loader();
-                    this.render();
                 },
 
                 scrolled: function() {
