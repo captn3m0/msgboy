@@ -27,6 +27,9 @@
     <script src="../../models/archive.js" type="text/javascript"></script>
     <script src="../../models/inbox.js" type="text/javascript"></script>
     
+    <!-- Fixtures -->
+    <script src="../fixtures/messages.js" type="text/javascript"></script>
+    
     <title>Archive QUnit test</title>
 </head>
 <body>
@@ -41,12 +44,12 @@
         module("delete_all");
 
         asyncTest("it should delete all the messages that match the criteria submitted", function() {
-            addFixtures(messages, function() {
+            messageFixtures.clean_add(function() {
                 // Let's now fetch all elements matching the alternate index
                 var archive = new Archive();
-                archive.fetch_all( {alternate: "http://blog.superfeedr.com"}, function() {
+                archive.fetch_all({alternate: "http://blog.superfeedr.com"}, function() {
                     start();
-                    ok(archive.length == 3, "There should be 3 items in the array matching this criteria");
+                    equals(archive.length, 3, "There should be 3 items in the array matching this criteria");
                     archive.delete_all({alternate: "http://blog.superfeedr.com"}, function() {
                         archive.fetch_all( {alternate: "http://blog.superfeedr.com"}, function() {
                             start();
@@ -59,7 +62,7 @@
         });
 
         asyncTest("it should delete all the messages if there is no criteria", function() {
-            addFixtures(messages, function() {
+            messageFixtures.clean_add(function() {
                 // Let's now fetch all elements matching the alternate index
                 var archive = new Archive();
                 archive.fetch_all(function() {
@@ -76,6 +79,23 @@
             });
             
         });
+        
+        module("for_source");
+        asyncTest("it should only get items from that source (alternate link)", function() {
+            messageFixtures.clean_add(function() {
+                var archive = new Archive();
+                archive.for_source("http://www.nytimes.com/", function() {
+                    start();
+                    
+                    deepEqual(archive.pluck("alternate"), [
+                      "http://www.nytimes.com/",
+                      "http://www.nytimes.com/"
+                    ]);
+                })
+            });
+        });
+        
+        
 
     </script>
     

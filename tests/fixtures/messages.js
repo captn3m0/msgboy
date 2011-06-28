@@ -3,29 +3,35 @@ var MessageFixtures = function () {
 
 MessageFixtures.prototype = {
     messages: [{
-        created_at: new Date().getTime(),
-        unread_at: new Date().getTime(),
-        read_at: 0,
-        starred_at: 0,
+        id: "123",
         alternate: "http://blog.superfeedr.com",
         host: "blog.superfeedr.com",
         alternate_new: "http://blog.superfeedr.com"
     }, {
-        created_at: new Date().getTime(),
-        unread_at: new Date().getTime(),
-        read_at: 0,
-        starred_at: 0,
+        id: "124",
         alternate: "http://blog.superfeedr.com",
         host: "blog.superfeedr.com",
         alternate_new: "http://blog.superfeedr.com"
     }, {
-        created_at: new Date().getTime(),
-        unread_at: new Date().getTime(),
-        read_at: 0,
-        starred_at: 0,
+        id: "125",
         alternate: "http://blog.superfeedr.com",
         host: "blog.superfeedr.com",
         alternate_new: "http://blog.superfeedr.com"
+    }, {
+        id: "126",
+        alternate: "https://github.com/superfeedr.atom",
+        host: "github.com",
+        alternate_new: "https://github.com/superfeedr.atom"
+    }, {
+        id: "127",
+        alternate: "http://www.nytimes.com/",
+        host: "nytimes.com",
+        alternate_new: "http://www.nytimes.com/"
+    }, {
+        id: "128",
+        alternate: "http://www.nytimes.com/",
+        host: "nytimes.com",
+        alternate_new: "http://www.nytimes.com/"
     }],
 
     add_all: function (done) {
@@ -51,7 +57,16 @@ MessageFixtures.prototype = {
     },
 
     clean_all: function(done) {
-        done();
+        // We need to clean all the items.
+        var ids = _.pluck(this.messages, 'id'); 
+        var deleted_all = _.after(ids.length, done)
+        _.each(ids, function(_id) {
+            var message = new Message({id: _id})
+            message.destroy({
+                success: deleted_all,
+                error: deleted_all
+            });
+        });
     },
     
     clean_add: function(done) {
@@ -61,4 +76,4 @@ MessageFixtures.prototype = {
     }
 }
 
-messageFixtures = new MessageFixtures();
+var messageFixtures = new MessageFixtures();

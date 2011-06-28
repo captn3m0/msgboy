@@ -65,7 +65,7 @@ var Archive = Backbone.Collection.extend({
                     done();
                 }
             }.bind(this),
-            error: function() {
+            error: function(object, error) {
                 if(typeof(done) != "undefined" && done) {
                     done();
                 }
@@ -98,5 +98,10 @@ var Archive = Backbone.Collection.extend({
                 done();
             }
         });
+    },
+
+    for_source: function(source, done) {
+        this.fetch_all({alternate: source}, done);
     }
+
 });
