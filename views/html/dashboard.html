@@ -77,6 +77,7 @@
                     }).appendTo($(this.el));
 
                     $(this.el).attr("data-msgboy-relevance", this.model.attributes.relevance);
+                    $(this.el).attr("data-msgboy-state", this.model.attributes.state);
 
                     $(this.el).attr("id", this.model.id);
                 },
@@ -108,7 +109,7 @@
                     var now = new Date().getTime();
                     _.bindAll(this, 'render');
                     
-                    this.collection.fetch_all({
+                    this.collection.all({
                         created_at: [now, now - 1000 * 60 * 60 * 24]
                     },
                     function() {

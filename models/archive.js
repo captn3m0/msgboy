@@ -57,7 +57,7 @@ var Archive = Backbone.Collection.extend({
         });
     },
     
-    fetch_all: function(condition, done) {
+    all: function(condition, done) {
         this.fetch({
             conditions: condition,
             success: function() {
@@ -67,7 +67,7 @@ var Archive = Backbone.Collection.extend({
             }.bind(this),
             error: function(object, error) {
                 if(typeof(done) != "undefined" && done) {
-                    done();
+                    done(error);
                 }
             }
         });
@@ -101,7 +101,7 @@ var Archive = Backbone.Collection.extend({
     },
 
     for_source: function(source, done) {
-        this.fetch_all({alternate: source}, done);
+        this.all({alternate: source}, done);
     }
 
 });

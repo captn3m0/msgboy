@@ -47,11 +47,11 @@
             messageFixtures.clean_add(function() {
                 // Let's now fetch all elements matching the alternate index
                 var archive = new Archive();
-                archive.fetch_all({alternate: "http://blog.superfeedr.com"}, function() {
+                archive.all({alternate: "http://blog.superfeedr.com"}, function() {
                     start();
                     equals(archive.length, 3, "There should be 3 items in the array matching this criteria");
                     archive.delete_all({alternate: "http://blog.superfeedr.com"}, function() {
-                        archive.fetch_all( {alternate: "http://blog.superfeedr.com"}, function() {
+                        archive.all( {alternate: "http://blog.superfeedr.com"}, function() {
                             start();
                             ok(archive.length == 0, "There should be no more items in the array matching this criteria");
                             // We should make sure other items are still there as well....
@@ -65,11 +65,11 @@
             messageFixtures.clean_add(function() {
                 // Let's now fetch all elements matching the alternate index
                 var archive = new Archive();
-                archive.fetch_all(function() {
+                archive.all(function() {
                     start();
                     ok(archive.length == 5, "There should be 5 items in the array of messages");
                     archive.delete_all(function() {
-                        archive.fetch_all(function() {
+                        archive.all(function() {
                             start();
                             ok(archive.length == 0, "There should be no more items in the array matching this criteria");
                             // We should make sure other items are still there as well....

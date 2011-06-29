@@ -163,7 +163,7 @@
     // Uploads the content of the database. this will be used for analysis of the dataset o determine a better algorithm.
     function uploadData() {
         var archive = new Archive();
-        archive.fetch_all({
+        archive.all({
             created_at: [new Date().getTime(), 0]
         },
         function() {

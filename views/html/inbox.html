@@ -358,7 +358,7 @@
                             var value = JSON.parse($(".filters input:checked").val());
                             condition[key] = value;
                             this.show_loader();
-                            this.collection.fetch_all(condition, function() {
+                            this.collection.all(condition, function() {
                                 this.hide_loader();
                                 
                                 _.each(this.collection, function(message, index) {

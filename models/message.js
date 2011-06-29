@@ -104,8 +104,22 @@ var Message = Backbone.Model.extend({
         return [];
     },
     
+    main_link: function() {
+        if(this.attributes.links["alternate"]) {
+            if(this.attributes.links["alternate"]["text/html"]) {
+                return this.attributes.links["alternate"]["text/html"][0].href;
+            }
+            else {
+                // Hum, let's see what other types we have!
+                return "";
+            }
+        }
+        else {
+            return "";
+        }
+    },
+     
     /* Deprecated methods */
-
     toggle_read: function(callback) {
         callback = typeof(callback) != 'undefined' ? callback : function() {};
         var _read_at = 0
