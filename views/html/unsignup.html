@@ -5,7 +5,7 @@
     <title>Signing up</title>
     <meta name="application-name" content="Msgboy"/>
     <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/signup.css" />
+    <link rel="stylesheet" href="../css/unsignup.css" />
 
     <!-- Lib includes -->
     <script src="../../lib/jquery/jquery.js" type="text/javascript"></script> 
@@ -43,7 +43,6 @@
     </div>
 
     <script>
-    
     var statusMessage = {
         current: "",
         messages: ["Creating your account"]
@@ -52,7 +51,7 @@
     function update_status_message() {
         if(statusMessage.messages.length > 0) {
             statusMessage.current = statusMessage.messages.shift();
-            $('#connectionStatus').html(statusMessage.current);
+            $('#connectionStatus').html(statusMessage.current + "...");
         }
         setTimeout(function() {
             update_status_message();
