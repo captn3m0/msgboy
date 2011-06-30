@@ -277,9 +277,21 @@
 	            });
 	        }
 	    },
+	    dashboard: {
+	        name: "Dashboard",
+			show: false,
+	        callback: function () {
+	            chrome.extension.sendRequest({
+	                "tab": {
+	                    url: chrome.extension.getURL('/views/html/dashboard.html'),
+	                    selected: true
+	                }
+	            }, function (response) {});
+	        }
+	    },
 	    inbox: {
 	        name: "Stream",
-			show: true,
+			show: false,
 	        callback: function () {
 	            chrome.extension.sendRequest({
 	                "tab": {
