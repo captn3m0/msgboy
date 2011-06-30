@@ -420,34 +420,14 @@
                     "feedSpotted": link.href
                 }, function (response) {
                     if(response.value) {
-                        var feed = response.value;
-                        showBar("Do you want to subscribe to " + link.title + "?", [
-                            {
-                                id: "msgboy-bar-no",
-                                text: "No",
-                                action: function() {
-                                    chrome.extension.sendRequest({
-                                        "suggestedFeedSkipped": feed.id
-                                    }, function (response) {
-                                        // Cool.
-                                    });
-                                }
-                            },
-                            {
-                                id: "msgboy-bar-yes",
-                                text: "Yes",
-                                action: function() {
-                                    chrome.extension.sendRequest({
-                                        "suggestedFeedSubscribed": feed.id
-                                    }, function (response) {
-                                        // Cool.
-                                    });
-                                    followFeed(feed.url, feed.url, function() {
-                                        // Cool
-                                    });
-                                }
-                            }
-                        ])
+                        chrome.extension.sendRequest({
+                            "suggestedFeedSubscribed": feed.id
+                        }, function (response) {
+                            // Cool.
+                        });
+                        followFeed(feed.url, feed.url, function() {
+                            // Cool
+                        });
                     }
                 });
             });
