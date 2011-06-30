@@ -50,7 +50,7 @@ var Feed = Backbone.Model.extend({
             
             if( normalizedDeviation(diffs) < 1 
                 && diffs.length >= 2 
-                && (this.attributes.seen_at[this.attributes.seen_at.length - 1] -  this.attributes.seen_at[0] > 1000 * 60 * 60 * 2)
+                && (this.attributes.seen_at[this.attributes.seen_at.length - 1] -  this.attributes.seen_at[0] > 1000 * 60 * 60 * 2 || diffs.length >= 5)
               ) {
                 return true;
             }
