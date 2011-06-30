@@ -47,7 +47,7 @@
         "/lib/jquery/jquery.event.drag.js",
         "/controllers/utils.js",
         "/controllers/modalbox.js",
-        "/controllers/site_plugins.js",
+        "/controllers/plugins.js",
         "/controllers/plugins/generic.js",
         "/controllers/plugins/tumblr.js",
         "/controllers/plugins/posterous.js",

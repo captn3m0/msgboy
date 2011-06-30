@@ -37,5 +37,15 @@ Plugins.register(new function () {
     this.isUsing = function (callback) {
         callback(true) // By default we will show.
     }
+    
+    this.subscribeInBackground = function(callback) {
+        chrome.bookmarks.onCreated.addListener(function(id, bookmark) {
+            MsgboyHelper.links_to_feeds_at_url(bookmark.url, function (links) {
+                _.each(links, function (link) {
+                    callback(link);
+                });
+            });
+        }.bind(this));
+    }
 
 });

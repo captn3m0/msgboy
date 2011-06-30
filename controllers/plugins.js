@@ -31,4 +31,9 @@ var Plugin = new function() {
 		// This method calls back with true if the user is a logged-in user of the service for this plugin. It callsback with false otherwise.
 		// callback(true)
 	}
+	
+    this.subscribeInBackground = function(callback) {
+        // The callback needs to be called with a feed object {url: _, title: _}
+        // this function is called from the background and used to define a "chrome-wide" callback. It should probably not be used by any plugin specific to a 3rd pary site, but for plugins like History and/or Bookmarks
+    }
 }

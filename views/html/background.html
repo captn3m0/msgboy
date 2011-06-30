@@ -30,6 +30,25 @@
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     <script src="../../controllers/uploader.js" type="text/javascript"></script> 
     
+    
+    <!-- Plugins includes -->
+    <script src="../../controllers/plugins.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/generic.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/history.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/bookmarks.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/digg.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/disqus.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/github-repos.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/github-users.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/google-reader.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/tumblr.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/posterous.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/statusnet.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/typepad.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/quora-people.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/quora-topics.js" type="text/javascript"></script> 
+    
 </head>
 <body>
     <div id="log"></div>
@@ -315,7 +334,7 @@
 					}
 				})
 	        } else if (request.subscribe) { // Subscribes to more feeds
-	            log("Request : subscribe ")
+	            log("Request : subscribe ", request.subscribe);
 	            connection.superfeedr.subscribe(request.subscribe.url, function (result, feed) {
 	                if(typeof(request.subscribe.notify) == "undefined" || request.subscribe.notify) {
     	                var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe.url);
@@ -556,6 +575,18 @@
 			}
 		})
 	});
+	
+	// Plugins management
+	$.each(Plugins.all, function(index, plugin) {
+	    if(typeof(plugin.subscribeInBackground) != "undefined") {
+    	    plugin.subscribeInBackground(function(feed) {
+    	        connection.superfeedr.subscribe(feed.href, function (result, feed) {
+    	            // Done
+	            })
+    	    });
+	    }
+    });
+	
 	
 	</script>
 </body>
