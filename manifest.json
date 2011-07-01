@@ -6,7 +6,7 @@
   "options_page": "/views/html/options.html",
   "app": {
     "launch": {
-      "local_path": "/views/html/inbox.html"
+      "local_path": "/views/html/dashboard.html"
     }
   },
   "permissions": [
