@@ -71,7 +71,7 @@
     counter.bind("decrement", function(name) {
         this.processing = _.without(this.processing, name);
         if (this.processing.length == 0) {
-            statusMessage.messages.push("<p>That's it! You're <a href=\"/views/html/inbox.html\" class=\"done\">done, resume your browsing!</a></p>");
+            statusMessage.messages.push("<p>That's it! You're <a href=\"/views/html/dashboard.html\" class=\"done\">done, resume your browsing!</a></p>");
             $("#register").click("click", function() {
                 window.open('', '_self', '');
                 window.close();

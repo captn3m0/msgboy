@@ -289,18 +289,6 @@
 	            }, function (response) {});
 	        }
 	    },
-	    inbox: {
-	        name: "Stream",
-			show: false,
-	        callback: function () {
-	            chrome.extension.sendRequest({
-	                "tab": {
-	                    url: chrome.extension.getURL('/views/html/inbox.html'),
-	                    selected: true
-	                }
-	            }, function (response) {});
-	        }
-	    },
 		options: {
 			name: "Options",
 			show: false,
