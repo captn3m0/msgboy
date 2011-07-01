@@ -19,7 +19,7 @@ var Inbox = Backbone.Model.extend({
                 // The message was not found, so we just have to create one!
                 message.save(msg, {
                     success: function() {
-                        this.trigger("messages:added", message.id)
+                        this.trigger("messages:added", message)
                         options.success(message);
                     }.bind(this),
                     error: function(object, error) {

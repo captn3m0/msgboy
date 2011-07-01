@@ -42,7 +42,7 @@ h3. TODO
 * Add support for microformats for "actionable" elements/susbcribe
 * Add support for events from the page to the extension, to auto-susbcribe upon user actions.
 * Add the ability for a 3rd party site to ask for the list of subscriptions for a user who uses the msgboy. We want to use a system that would protect the users from having _all_ their subscriptions stolen. A solution would be to ask for subscriptions on a given domain, for example.
-
+* Making sure we do not hide the notification when the mouse is over it.
 
 h3. Plugins
 

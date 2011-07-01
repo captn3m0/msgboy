@@ -34,7 +34,7 @@ var Message = Backbone.Model.extend({
     Returns the state of the message
     Valid states include : 
         - new 
-        - up-ded 
+        - up-ed 
         - down-ed 
         - skipped */
     state: function() {
@@ -47,6 +47,7 @@ var Message = Backbone.Model.extend({
     },
 
     /* Votes the message down */
+    /* TODO : we may want to unsubscribe from this source if it has too many downvotes! */
     vote_down: function(callback) {
         this.set_state("down-ed", callback);
     },
@@ -63,12 +64,12 @@ var Message = Backbone.Model.extend({
             state: _state
         }, {
             success: function() {
-                if(typeof(callback) != "undefined" && !callback) {
+                if(typeof(callback) != "undefined" && callback) {
                     callback(true);
                 }
             }.bind(this), 
             error: function() {
-                if(typeof(callback) != "undefined" && !callback) {
+                if(typeof(callback) != "undefined" && callback) {
                     callback(false);
                 }
             }.bind(this)
@@ -77,11 +78,48 @@ var Message = Backbone.Model.extend({
         
     /* This calculates the relevance for this message and sets it. */
     /* It just calculates the relevance and does not save it. */
-    calculate_relevance: function(done) {
+    calculate_relevance: function(callback) {
         // See Section 6.3 in Product Requirement Document.
         // We need to get all the messages from this source.
         // Count how many have been voted up, how many have been voted down.
-        return Math.random();
+        // First, let's pull all the messages from the same source.
+        var brothers = new Archive();
+        brothers.comparator = function(brother) {
+            return brother.attributes.created_at;
+        }
+        brothers.for_source(this.attributes.alternate, function() {
+            var relevance = 1.0;
+            // So, now, we need to check the ratio of up-ed and down-ed. [TODO : limit the subset?].
+            var states = relevanceMath.percentages(brothers.pluck("state"), function(member, index) {
+                return 1;
+            });
+            
+            relevance = relevanceMath.average(states, {
+                "new" : 0.5,
+                "up-ed": 1.0,
+                "down-ed": 0.0,
+                "skipped": 0.5
+            });
+            
+            // Keywords [TODO]
+            
+            // Verboseness (in this source) : we apply a penalty when more than 3 messages for this source have been seen.
+            var verboseness = _.select(brothers.models, function(brother) {
+                return (brother.attributes.created_at > new Date().getTime() - 1000 * 60 * 60 * 24);
+            }).length;
+            if(verboseness > 3) {
+                var factor = 2 - (1/(verboseness - 3))
+                relevance = relevance/factor
+            }
+            
+            // Verboseness (global to all messages.) [TODO]
+            
+            // Check when the feed was susbcribed. Add bonus if it's recent! [TODO].
+            
+            if(typeof(callback) != "undefined" && callback) {
+                callback(relevance);
+            } 
+        });
     },
     
     /* this returns all the keywords in this message. */
@@ -102,6 +140,11 @@ var Message = Backbone.Model.extend({
     /* this returns all the keywords in the title of this message. */
     title_keywords: function() {
         return [];
+    },
+    
+    /* Returns true of the message is relevant! */
+    is_relevant: function() {
+        return this.attributes.relevance > 0.7
     },
     
     main_link: function() {
@@ -185,4 +228,37 @@ var Message = Backbone.Model.extend({
     },
 
 });
+
+
+var relevanceMath = {
+
+    percentages: function(array, weight) {
+        var counts = {}, percentages = {}, sum = 0;
+        _.each(array, function(element, index, list) {
+            if(!counts[element]) {
+                counts[element] = 0;
+            }
+            if(typeof(weight) != "undefined") {
+                counts[element] += weight(element, index);
+            }
+            else {
+                counts[element] += 1;
+            }
+        })
+        sum = _.reduce(counts, function(memo, num){ return memo + num; }, 0);
+        _.each(_.keys(counts), function(key) {
+            percentages[key] = counts[key]/sum;
+        });
+        return percentages;
+    },
+    
+    average: function(percentages, weights) {
+        var sum = 0, count = 0;
+        _.each(_.keys(percentages), function(key) {
+            sum += percentages[key] * weights[key];
+            count += weights[key]
+        });
+        return sum/count;
+    }
+}
 

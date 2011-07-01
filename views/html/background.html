@@ -212,8 +212,10 @@
 		return currentNotification;
     }
 
-	inbox.bind("messages:added", function(id) {
-		notify(id);
+	inbox.bind("messages:added", function(message) {
+	    if(message.is_relevant) {
+    		notify(message.id);
+	    }
 	})
 
 	chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
