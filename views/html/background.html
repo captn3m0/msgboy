@@ -213,8 +213,12 @@
     }
 
 	inbox.bind("messages:added", function(message) {
-	    if(message.is_relevant) {
+	    if(message.is_relevant()) {
+	        log("Relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
     		notify(message.id);
+	    }
+	    else {
+	        log("Not relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
 	    }
 	})
 

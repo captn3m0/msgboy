@@ -59,20 +59,22 @@ var Message = Backbone.Model.extend({
     
     /* Sets the state for the message */
     set_state: function(_state, callback) {
-        this.save({
-            relevance: this.calculate_relevance(),
-            state: _state
-        }, {
-            success: function() {
-                if(typeof(callback) != "undefined" && callback) {
-                    callback(true);
-                }
-            }.bind(this), 
-            error: function() {
-                if(typeof(callback) != "undefined" && callback) {
-                    callback(false);
-                }
-            }.bind(this)
+        this.calculate_relevance(function(_relevance) {
+            this.save({
+                relevance: _relevance,
+                state: _state
+            }, {
+                success: function() {
+                    if(typeof(callback) != "undefined" && callback) {
+                        callback(true);
+                    }
+                }.bind(this), 
+                error: function() {
+                    if(typeof(callback) != "undefined" && callback) {
+                        callback(false);
+                    }
+                }.bind(this)
+            });
         });
     },
         
@@ -144,7 +146,7 @@ var Message = Backbone.Model.extend({
     
     /* Returns true of the message is relevant! */
     is_relevant: function() {
-        return this.attributes.relevance > 0.7
+        return this.attributes.relevance > 0.7;
     },
     
     main_link: function() {
