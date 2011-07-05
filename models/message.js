@@ -113,26 +113,21 @@ var Message = Backbone.Model.extend({
                     return 1;
                 });
 
-                relevance = relevanceMath.average(states, {
-                    "new" : 0.5,
-                    "up-ed": 1.0,
-                    "down-ed": 0.0,
-                    "skipped": 0.5
-                });
-                
-                // Verboseness (in this source) : we apply a penalty when more than 3 messages for this source have been seen.
-                var verboseness = _.select(brothers.models, function(brother) {
-                    return (brother.attributes.created_at > new Date().getTime() - 1000 * 60 * 60 * 24);
-                }).length;
-                if(verboseness > 3) {
-                    var factor = 2 - (1/(verboseness - 3))
-                    relevance = relevance/factor
+                if(states["up-ed"] == 0 && states["down-ed"] == 0 && states["skipped"] == 0) {
+                    // We have no clue! So we keep the relevance at 1, because we really want to get some indication!
+                    relevance = 1.0;
+                }
+                else {
+                    relevance = relevanceMath.average(states, {
+                        "new" : 0.6,
+                        "up-ed": 1.0,
+                        "down-ed": 0.0,
+                        "skipped": 0.4
+                    });
                 }
             }
 
             // Keywords [TODO]
-            
-            // Verboseness (global to all messages.) [TODO]
             
             // Check when the feed was susbcribed. Add bonus if it's recent! [TODO].
             
@@ -164,7 +159,7 @@ var Message = Backbone.Model.extend({
     
     /* Returns true of the message is relevant! */
     is_relevant: function() {
-        return this.attributes.relevance > 0.7;
+        return this.attributes.relevance > 0.5;
     },
     
     main_link: function() {
@@ -290,12 +285,11 @@ var relevanceMath = {
     },
     
     average: function(percentages, weights) {
-        var sum = 0, count = 0;
+        var sum = 0
         _.each(_.keys(percentages), function(key) {
             sum += percentages[key] * weights[key];
-            count += weights[key]
         });
-        return sum/count;
+        return sum;
     }
 }
 
