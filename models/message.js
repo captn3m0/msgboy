@@ -49,7 +49,23 @@ var Message = Backbone.Model.extend({
     /* Votes the message down */
     /* TODO : we may want to unsubscribe from this source if it has too many downvotes! */
     vote_down: function(callback) {
-        this.set_state("down-ed", callback);
+        this.set_state("down-ed", function(result) {
+            // We need to unsubscribe the feed if possible, but only if there is enough negative votes.
+            var brothers = new Archive();
+            brothers.for_feed(this.attributes.feed, function() {
+                var states = relevanceMath.percentages(brothers.pluck("state"), {"new":0.0, "up-ed":0.0, "down-ed": 0.0, "skipped":0.0}, function(member, index) {
+                    return 1;
+                });
+                var counts = relevanceMath.counts(brothers.pluck("state"));
+                
+                if(brothers.length > 3 && states["up-ed"] < 0.05 && (states["down-ed"] > 0.3 || counts["down-ed"] > 10)) {
+                    callback({unsubscribe: true});
+                }
+                else {
+                    callback({unsubscribe: false});
+                }
+            });
+        }.bind(this));
     },
 
     /* Skip the message */
@@ -93,7 +109,7 @@ var Message = Backbone.Model.extend({
                 // We can't compute relevance
             } else {
                 // So, now, we need to check the ratio of up-ed and down-ed. [TODO : limit the subset?].
-                var states = relevanceMath.percentages(brothers.pluck("state"), function(member, index) {
+                var states = relevanceMath.percentages(brothers.pluck("state"), {"new":0.0, "up-ed":0.0, "down-ed": 0.0, "skipped":0.0}, function(member, index) {
                     return 1;
                 });
 
@@ -236,8 +252,25 @@ var Message = Backbone.Model.extend({
 
 var relevanceMath = {
 
-    percentages: function(array, weight) {
-        var counts = {}, percentages = {}, sum = 0;
+    counts: function(array, defaults, weight) {
+        var counts = {}, sum = 0;
+        _.each(array, function(element, index, list) {
+            if(!counts[element]) {
+                counts[element] = 0;
+            }
+            if(typeof(weight) != "undefined") {
+                counts[element] += weight(element, index);
+            }
+            else {
+                counts[element] += 1;
+            }
+        })
+        sum = _.reduce(counts, function(memo, num){ return memo + num; }, 0);
+        return counts;
+    },
+
+    percentages: function(array, defaults, weight) {
+        var counts = {}, percentages = defaults, sum = 0;
         _.each(array, function(element, index, list) {
             if(!counts[element]) {
                 counts[element] = 0;

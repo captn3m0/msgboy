@@ -47,6 +47,8 @@
                 },
                 
                 initialize: function() {
+                    _.bindAll(this, "render", "up", "down");
+                    
                     this.model.view = this;
                     $("#relevance-slider").mouseup(function() {
                         this.render();
@@ -60,26 +62,34 @@
                         src: "../icons/up.png",
                         class: "thumbs vote-up",
                     }).appendTo(votes);
-
+                    
                     $("<img>", {
                         src: "../icons/down.png",
                         class: "thumbs vote-down",
                     }).appendTo(votes);
                     votes.appendTo($(this.el));
-
-
+                    
                     $("<span>", {
-                        text: this.model.attributes.source.title
+                        text: this.model.attributes.source.title,
+                        class: "source"
                     }).appendTo($(this.el));
-
-                     $("<span>", {
-                            text: truncate(strip(this.model.attributes.title), 80)
+                    
+                    var a = $("<a>", {
+                        href: this.model.main_link(),
+                        text: truncate(strip(this.model.attributes.title), 80),
+                        target: "_blank"
+                    });
+                    
+                    var span = $("<span>", {
+                        class: ""
                     }).appendTo($(this.el));
-
+                    a.appendTo(span);
+                    
                     $(this.el).attr("data-msgboy-relevance", this.model.attributes.relevance);
                     $(this.el).attr("data-msgboy-state", this.model.attributes.state);
-
+                    
                     $(this.el).attr("id", this.model.id);
+                    this.model.bind("change", this.render);
                 },
                 
                 // Message was voted up
@@ -89,22 +99,33 @@
                 
                 // Message was voted down
                 down: function() {
-                    this.model.vote_down();
+                    this.model.vote_down(function(result) {
+                        if(result.unsubscribe) {
+                            var request = {
+                                unsubscribe: this.model.attributes.feed
+                            };
+                            chrome.extension.sendRequest(request);
+                            archiveView.delete_from_feed(this.model.attributes.feed);
+                        }
+                    }.bind(this));
                 },
                 
                 render: function() {
-                    if(this.model.attributes.relevance < parseFloat($("#relevance-slider").attr("value"))/100) {
+                    if(this.model.attributes.state == "up-ed" || this.model.attributes.state == "down-ed") {
                         $(this.el).hide();
                     } else {
-                        $(this.el).show();
+                        if(this.model.attributes.relevance < parseFloat($("#relevance-slider").attr("value"))/100) {
+                            $(this.el).hide();
+                        } else {
+                            $(this.el).show();
+                        }
                     }
                     return this;
-                }
+                },
             });
             
             // Our overall InboxView is the top-level piece of UI.
             var ArchiveView = Backbone.View.extend({
-                
                 initialize: function() {
                     var now = new Date().getTime();
                     _.bindAll(this, 'render');
@@ -126,6 +147,18 @@
                     }.bind(this));
                 },
                 
+                delete_from_feed: function(feed) {
+                    _.each(this.collection.models, function(model) {
+                        if(model.attributes.feed == feed) {
+                            model.destroy({
+                                success: function() {
+                                    model.view.remove();
+                                }
+                            });
+                        }
+                    });
+                }
+                
             });
             
             var archiveView = null;
@@ -137,7 +170,7 @@
                 success: function() {
                     archive = new Archive();
                     archive.comparator = function(message) {
-                      return -message.attributes.relevance;
+                      return message.attributes.created_at;
                     };
                     
                     archiveView = new ArchiveView({

@@ -373,12 +373,13 @@
                     });
 	            })
 	        } else if (request.unsubscribe) { // Unsubscribes from feeds
-	            log("Request : unsubscribe")
+	            log("Request : unsubscribe "  + request.unsubscribe);
 	            connection.superfeedr.unsubscribe(request.unsubscribe, function (result) {
+    	            log("Request : unsubscribed "  + request.unsubscribe);
 	                sendResponse({
 	                    value: result
 	                });
-	            })
+	            });
 	        } else if (request.connect) {
 	            log("Request : connect")
 	            reconnect();

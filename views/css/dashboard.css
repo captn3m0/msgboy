@@ -24,3 +24,9 @@ img.thumbs:hover {
     background-color:green;
 }
 
+.source {
+    margin-right: 5px;
+    color: #666;
+    font-style:italic;
+}
+
