@@ -88,10 +88,10 @@
 	var reconnectDelay = 0;
 
 	connection.rawInput = function (data) {
-	    log('RECV: ' + data);
+        // log('RECV: ' + data);
 	};
 	connection.rawOutput = function (data) {
-	    log('SENT: ' + data);
+        // log('SENT: ' + data);
 	};
 
 	Strophe.log = function (level, msg) {
@@ -236,22 +236,23 @@
 	    //                   Notification Received  Handler                                 //
 	    //////////////////////////////////////////////////////////////////////////////////////
 	    $(document).bind('notification_received', function (ev, notification) {
-		    log("notification_received");
-			msg = connection.superfeedr.convertAtomToJson(notification.payload);
-			msg.source = notification.source
+		    log("Notification received from " + notification.source.url);
+			var msg = connection.superfeedr.convertAtomToJson(notification.payload);
+			msg.source = notification.source;
+			msg.feed = notification.source.url;
 			if(notification.via) {
 				msg.via = notification.via
 			}
-	        message = inbox.addMessage(msg, {
+	        var message = inbox.addMessage(msg, {
 				success: function() {
 					// Cool, message saved!
 				    log("Saved message " + msg.id);
-				},
+				}.bind(this),
 				error: function(object, error) {
 				    // Message was not saved... probably a dupe
 				    log(error);
 				    log("Could not save message " + JSON.stringify(msg));
-				}
+				}.bind(this),
 			});
 		});
 
@@ -316,7 +317,7 @@
 					value: true
 				});
 	        } else if (request.tab) { // Open tab
-	            log("Request : tab")
+	            log("Request : tab " + request.tab.url)
 		
 				var active_window = null
 				
@@ -340,8 +341,9 @@
 					}
 				})
 	        } else if (request.subscribe) { // Subscribes to more feeds
-	            log("Request : subscribe ", request.subscribe);
+	            log("Request : subscribe " + request.subscribe.url);
 	            connection.superfeedr.subscribe(request.subscribe.url, function (result, feed) {
+	                log("Request : subscribed " + request.subscribe.url);
 	                if(typeof(request.subscribe.notify) == "undefined" || request.subscribe.notify) {
     	                var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe.url);
     	                var title = feed.title || request.subscribe.title
@@ -430,7 +432,7 @@
 					}.bind(this)
 				});
 			} else if (request.feedSpotted) {
-			    log("Request : feedSpotted")
+			    log("Request : feedSpotted " + request.feedSpotted);
 			    var feed = new Feed({url: request.feedSpotted});
                 feed.fetch({
                     success: function() {

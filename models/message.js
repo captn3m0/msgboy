@@ -59,22 +59,19 @@ var Message = Backbone.Model.extend({
     
     /* Sets the state for the message */
     set_state: function(_state, callback) {
-        this.calculate_relevance(function(_relevance) {
-            this.save({
-                relevance: _relevance,
-                state: _state
-            }, {
-                success: function() {
-                    if(typeof(callback) != "undefined" && callback) {
-                        callback(true);
-                    }
-                }.bind(this), 
-                error: function() {
-                    if(typeof(callback) != "undefined" && callback) {
-                        callback(false);
-                    }
-                }.bind(this)
-            });
+        this.save({
+            state: _state
+        }, {
+            success: function() {
+                if(typeof(callback) != "undefined" && callback) {
+                    callback(true);
+                }
+            }.bind(this), 
+            error: function() {
+                if(typeof(callback) != "undefined" && callback) {
+                    callback(false);
+                }
+            }.bind(this)
         });
     },
         
@@ -89,30 +86,35 @@ var Message = Backbone.Model.extend({
         brothers.comparator = function(brother) {
             return brother.attributes.created_at;
         }
-        brothers.for_source(this.attributes.alternate, function() {
+        brothers.for_feed(this.attributes.feed, function() {
             var relevance = 1.0;
-            // So, now, we need to check the ratio of up-ed and down-ed. [TODO : limit the subset?].
-            var states = relevanceMath.percentages(brothers.pluck("state"), function(member, index) {
-                return 1;
-            });
             
-            relevance = relevanceMath.average(states, {
-                "new" : 0.5,
-                "up-ed": 1.0,
-                "down-ed": 0.0,
-                "skipped": 0.5
-            });
-            
-            // Keywords [TODO]
-            
-            // Verboseness (in this source) : we apply a penalty when more than 3 messages for this source have been seen.
-            var verboseness = _.select(brothers.models, function(brother) {
-                return (brother.attributes.created_at > new Date().getTime() - 1000 * 60 * 60 * 24);
-            }).length;
-            if(verboseness > 3) {
-                var factor = 2 - (1/(verboseness - 3))
-                relevance = relevance/factor
+            if(brothers.length == 0) {
+                // We can't compute relevance
+            } else {
+                // So, now, we need to check the ratio of up-ed and down-ed. [TODO : limit the subset?].
+                var states = relevanceMath.percentages(brothers.pluck("state"), function(member, index) {
+                    return 1;
+                });
+
+                relevance = relevanceMath.average(states, {
+                    "new" : 0.5,
+                    "up-ed": 1.0,
+                    "down-ed": 0.0,
+                    "skipped": 0.5
+                });
+                
+                // Verboseness (in this source) : we apply a penalty when more than 3 messages for this source have been seen.
+                var verboseness = _.select(brothers.models, function(brother) {
+                    return (brother.attributes.created_at > new Date().getTime() - 1000 * 60 * 60 * 24);
+                }).length;
+                if(verboseness > 3) {
+                    var factor = 2 - (1/(verboseness - 3))
+                    relevance = relevance/factor
+                }
             }
+
+            // Keywords [TODO]
             
             // Verboseness (global to all messages.) [TODO]
             

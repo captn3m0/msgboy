@@ -102,6 +102,11 @@ var Archive = Backbone.Collection.extend({
 
     for_source: function(source, done) {
         this.all({alternate: source}, done);
+    },
+
+    for_feed: function(_feed, done) {
+        this.all({feed: _feed}, done);
     }
+
 
 });

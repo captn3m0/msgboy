@@ -1,198 +1,251 @@
 var msgboyDatabase = {
     functions: {
-        eachBlock: function(a, i, d) {
+        eachBlock: function (a, i, d) {
             var e = a.pop();
-            if(e) {
-                i(e, function() {
+            if (e) {
+                i(e, function () {
                     msgboyDatabase.functions.eachBlock(a, i, d);
                 });
-            }
-            else {
+            } else {
                 d();
             }
         }
     },
     id: "msgboy-database",
     description: "The database for the msgboy",
-    migrations : [
-    {
+    migrations: [{
         version: "0.0.1",
-        migrate: function(db, versionRequest, next) {
-            db.createObjectStore("messages"); 
-            db.createObjectStore("inbox"); 
+        migrate: function (db, versionRequest, next) {
+            db.createObjectStore("messages");
+            db.createObjectStore("inbox");
             next();
         }
-    },
-    {
+    }, {
         version: "0.0.2",
-        migrate: function(db, versionRequest, next) {
+        migrate: function (db, versionRequest, next) {
             var store = versionRequest.transaction.objectStore("messages")
-            store.createIndex("createdAtIndex", "created_at", { unique: false}); 
+            store.createIndex("createdAtIndex", "created_at", {
+                unique: false
+            });
             next();
         }
-    },
-    {
+    }, {
         version: "0.0.3",
-        migrate: function(db, versionRequest, next) {
+        migrate: function (db, versionRequest, next) {
             var store = versionRequest.transaction.objectStore("messages")
-            store.createIndex("readAtIndex", "read_at", { unique: false}); 
-            store.createIndex("unreadAtIndex", "unread_at", { unique: false}); 
-            store.createIndex("starredAtIndex", "starred_at", { unique: false}); 
+            store.createIndex("readAtIndex", "read_at", {
+                unique: false
+            });
+            store.createIndex("unreadAtIndex", "unread_at", {
+                unique: false
+            });
+            store.createIndex("starredAtIndex", "starred_at", {
+                unique: false
+            });
             next();
         }
-    },
-    {
+    }, {
         version: "0.0.4",
-        migrate: function(db, versionRequest, next) {
-            var store = db.createObjectStore("feeds"); 
-            store.createIndex("urlIndex", "url", { unique: false}); 
+        migrate: function (db, versionRequest, next) {
+            var store = db.createObjectStore("feeds");
+            store.createIndex("urlIndex", "url", {
+                unique: false
+            });
             next();
         }
-    },
-    {
+    }, {
         version: "0.0.5",
-        migrate: function(db, versionRequest, next) {
+        migrate: function (db, versionRequest, next) {
             var store = versionRequest.transaction.objectStore("messages");
-            store.createIndex("alternateIndex", "alternate", { unique: false}); 
-            store.createIndex("hostIndex", "host", { unique: false}); 
+            store.createIndex("alternateIndex", "alternate", {
+                unique: false
+            });
+            store.createIndex("hostIndex", "host", {
+                unique: false
+            });
             next();
         },
-        before: function(db, next) {
-            var indexedDB      = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
+        before: function (db, next) {
+            var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
             var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction; // No prefix in moz
-            var IDBKeyRange    = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
-
+            var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
             // We need to add the missing fields, on the host, and the feed's alternate url.
             var transaction = db.transaction(["messages"], IDBTransaction.READ_ONLY);
             var store = transaction.objectStore("messages")
             var cursor = store.openCursor();
             var messages_to_save = [];
-            cursor.onsuccess = function ( e ) {
+            cursor.onsuccess = function (e) {
                 cursor = e.target.result;
-                if(cursor) {
-                    if(typeof(cursor.value.host) == "undefined" || typeof(cursor.value.alternate) == "undefined" || cursor.value.host == null || cursor.value.alternate == null) {
+                if (cursor) {
+                    if (typeof (cursor.value.host) == "undefined" || typeof (cursor.value.alternate) == "undefined" || cursor.value.host == null || cursor.value.alternate == null) {
                         messages_to_save.push(cursor.value);
                     }
-                    cursor.continue();
-                }
-                else {
+                    cursor.
+                    continue ();
+                } else {
                     // Fine, we have all the elements
                 }
             };
-            transaction.oncomplete = function() {
-                msgboyDatabase.functions.eachBlock(messages_to_save, function(message, next) {
+            transaction.oncomplete = function () {
+                msgboyDatabase.functions.eachBlock(messages_to_save, function (message, next) {
                     var writeTransaction = db.transaction(["messages"], IDBTransaction.READ_WRITE);
                     var store = writeTransaction.objectStore("messages");
                     message.host = "";
                     message.alternate = "";
                     var writeRequest = store.put(message, message.id);
-                    writeRequest.onerror = function ( e ) {
+                    writeRequest.onerror = function (e) {
                         console.log("There was an error. Migration will fail. Plese reload browser.");
                         next();
                     };
-                    writeRequest.onsuccess = function ( e ) {
+                    writeRequest.onsuccess = function (e) {
                         next();
                     };
-                }, function() {
+                }, function () {
                     next();
                 });
             }
         }
-    },
-    {
+    }, {
         version: "0.0.6",
-        migrate: function(db, versionRequest, next) {
+        migrate: function (db, versionRequest, next) {
             var store = versionRequest.transaction.objectStore("messages");
-            store.createIndex("alternateNewIndex", "alternate_new", { unique: false}); 
+            store.createIndex("alternateNewIndex", "alternate_new", {
+                unique: false
+            });
             next();
         },
-        before: function(db, next) {
-            var indexedDB      = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
+        before: function (db, next) {
+            var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
             var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction; // No prefix in moz
-            var IDBKeyRange    = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
-
+            var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
             // We need to add the missing fields, on the host, and the feed's alternate url.
             var transaction = db.transaction(["messages"], IDBTransaction.READ_ONLY);
             var store = transaction.objectStore("messages");
             var cursor = store.openCursor();
             var messages_to_save = [];
-            cursor.onsuccess = function ( e ) {
+            cursor.onsuccess = function (e) {
                 cursor = e.target.result;
-                if(cursor) {
-                    if(typeof(cursor.value.alternate_new) == "undefined" || cursor.value.alternate_new == null) {
+                if (cursor) {
+                    if (typeof (cursor.value.alternate_new) == "undefined" || cursor.value.alternate_new == null) {
                         messages_to_save.push(cursor.value);
                     }
-                    cursor.continue();
-                }
-                else {
+                    cursor.
+                    continue ();
+                } else {
                     // Fine, we have all the elements
                 }
             };
-            transaction.oncomplete = function() {
-                msgboyDatabase.functions.eachBlock(messages_to_save, function(message, next) {
+            transaction.oncomplete = function () {
+                msgboyDatabase.functions.eachBlock(messages_to_save, function (message, next) {
                     var writeTransaction = db.transaction(["messages"], IDBTransaction.READ_WRITE);
                     var store = writeTransaction.objectStore("messages");
                     message.alternate_new = "";
                     var writeRequest = store.put(message, message.id);
-                    writeRequest.onerror = function ( e ) {
+                    writeRequest.onerror = function (e) {
                         console.log("There was an error. Migration will fail. Plese reload browser.");
                         next();
                     };
-                    writeRequest.onsuccess = function ( e ) {
+                    writeRequest.onsuccess = function (e) {
                         next();
                     };
-                }, function() {
+                }, function () {
                     next();
                 });
             }
         }
-    }, 
-    {
+    }, {
         version: "0.0.7",
-        migrate: function(db, versionRequest, next) {
+        migrate: function (db, versionRequest, next) {
             var store = versionRequest.transaction.objectStore("messages");
-            store.createIndex("stateIndex", "state", { unique: false}); 
+            store.createIndex("stateIndex", "state", {
+                unique: false
+            });
             next();
         },
-        before: function(db, next) {
-            var indexedDB      = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
+        before: function (db, next) {
+            var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
             var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction; // No prefix in moz
-            var IDBKeyRange    = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
-
+            var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
             var transaction = db.transaction(["messages"], IDBTransaction.READ_ONLY);
             var store = transaction.objectStore("messages");
             var cursor = store.openCursor();
             var messages_to_save = [];
-            cursor.onsuccess = function ( e ) {
+            cursor.onsuccess = function (e) {
                 cursor = e.target.result;
-                if(cursor) {
-                    if(typeof(cursor.value.state) == "undefined" || cursor.value.state == null) {
+                if (cursor) {
+                    if (typeof (cursor.value.state) == "undefined" || cursor.value.state == null) {
                         messages_to_save.push(cursor.value);
                     }
-                    cursor.continue();
-                }
-                else {
+                    cursor.
+                    continue ();
+                } else {
                     // Fine, we have all the elements
                 }
             };
-            transaction.oncomplete = function() {
-                msgboyDatabase.functions.eachBlock(messages_to_save, function(message, next) {
+            transaction.oncomplete = function () {
+                msgboyDatabase.functions.eachBlock(messages_to_save, function (message, next) {
                     var writeTransaction = db.transaction(["messages"], IDBTransaction.READ_WRITE);
                     var store = writeTransaction.objectStore("messages");
                     message.state = "new";
                     var writeRequest = store.put(message, message.id);
-                    writeRequest.onerror = function ( e ) {
+                    writeRequest.onerror = function (e) {
                         console.log("There was an error. Migration will fail. Plese reload browser.");
                         next();
                     };
-                    writeRequest.onsuccess = function ( e ) {
+                    writeRequest.onsuccess = function (e) {
                         next();
                     };
-                }, function() {
+                }, function () {
                     next();
                 });
             }
         }
-    }
-    ]
+    }, {
+        version: "0.0.8",
+        migrate: function (db, versionRequest, next) {
+            var store = versionRequest.transaction.objectStore("messages");
+            store.createIndex("feedIndex", "feed", {
+                unique: false
+            });
+            next();
+        },
+        before: function (db, next) {
+            var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
+            var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction; // No prefix in moz
+            var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
+            var transaction = db.transaction(["messages"], IDBTransaction.READ_ONLY);
+            var store = transaction.objectStore("messages");
+            var cursor = store.openCursor();
+            var messages_to_save = [];
+            cursor.onsuccess = function (e) {
+                cursor = e.target.result;
+                if (cursor) {
+                    if (typeof (cursor.value.feed) == "undefined" || cursor.value.feed == null) {
+                        messages_to_save.push(cursor.value);
+                    }
+                    cursor.
+                    continue ();
+                } else {
+                    // Fine, we have all the elements
+                }
+            };
+            transaction.oncomplete = function () {
+                msgboyDatabase.functions.eachBlock(messages_to_save, function (message, next) {
+                    var writeTransaction = db.transaction(["messages"], IDBTransaction.READ_WRITE);
+                    var store = writeTransaction.objectStore("messages");
+                    message.feed = message.source.url;
+                    var writeRequest = store.put(message, message.id);
+                    writeRequest.onerror = function (e) {
+                        console.log("There was an error. Migration will fail. Plese reload browser.");
+                        next();
+                    };
+                    writeRequest.onsuccess = function (e) {
+                        next();
+                    };
+                }, function () {
+                    next();
+                });
+            }
+        }
+    }]
 };

@@ -116,16 +116,7 @@
 							}
 						}, function (response) {});
 					});
-
-					var unread = 0;
-					// Show unread count
-					chrome.extension.sendRequest({
-						"unreadCount": true
-					}, function (response) {
-						var color = recolor(parseFloat(response.value))
-						$("#msgboy-bookmark #inbox").css("color", "rgba(" + color.join(",") + ", 1)") // We want to apply a different styling based on the max unread count
-					});
-				})
+				});
 			});
 		}
 	}
