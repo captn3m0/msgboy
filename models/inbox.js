@@ -40,6 +40,18 @@ var Inbox = Backbone.Model.extend({
                 // Success, we should yield null, as this message was not added, because it already existed!
             }.bind(this)
         });
+    },
+    
+    delete_all_messages: function() {
+        var archive = new Archive();
+        archive.all({
+            created_at: [new Date().getTime(), 0]
+        },
+        function() {
+            _.each(archive.models, function(message) {
+                message.destroy();
+            });
+        });
     }
 
 });
