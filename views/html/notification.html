@@ -98,7 +98,7 @@
 	//                                  Functions                                       //
 	//////////////////////////////////////////////////////////////////////////////////////
 	function showNextMessage() {
-		messageId = messages.pop();
+		var messageId = messages.pop();
 		if(!messageId) {
 		    chrome.extension.sendRequest({
                 close: true
@@ -107,7 +107,7 @@
             });
 		}
 		else {
-			message = new Message({
+			var message = new Message({
 				'id': messageId
 			})
 			message.fetch({
