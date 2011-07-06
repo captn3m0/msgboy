@@ -30,3 +30,9 @@ img.thumbs:hover {
     font-style:italic;
 }
 
+.time {
+    display:block;
+    float:right;
+    font-size: 0.6em;
+    color: #CCC;
+}

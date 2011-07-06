@@ -9,9 +9,9 @@ var Message = Backbone.Model.extend({
         "content":      null,
         "links":        {},
         "read_at":      0,
-        "unread_at":    new Date().getTime(),
+        "unread_at":    0,
         "starred_at":   0,
-        "created_at":   new Date().getTime(),
+        "created_at":   0,
         "source":       {},
         "host":         "",
         "alternate":    "",
@@ -27,7 +27,13 @@ var Message = Backbone.Model.extend({
             attributes.host = parseUri(attributes.source.links.alternate["text/html"][0].href).host;
             attributes.alternate_new = parseUri(attributes.alternate).toString();
         }
-        this.attributes = attributes
+        this.attributes = attributes;
+        if(this.attributes.unread_at == 0) {
+            this.attributes.unread_at = new Date().getTime();
+        }
+        if(this.attributes.created_at == 0) {
+            this.attributes.created_at = new Date().getTime();
+        }
     },
     
     /* 
