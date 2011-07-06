@@ -400,11 +400,11 @@
                 }, function (response) {
                     if(response.value) {
                         chrome.extension.sendRequest({
-                            "suggestedFeedSubscribed": feed.id
+                            "suggestedFeedSubscribed": link.href
                         }, function (response) {
                             // Cool.
                         });
-                        followFeed(feed.url, feed.url, function() {
+                        followFeed(link.href, link.href, function() {
                             // Cool
                         });
                     }

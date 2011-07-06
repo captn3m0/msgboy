@@ -466,8 +466,8 @@
                     }
                 });
             } else if(request.suggestedFeedSkipped) {
-                log("Request : suggestedFeedSkipped")
-                var feed = new Feed({id: request.suggestedFeedSkipped});
+                log("Request : suggestedFeedSkipped " + request.suggestedFeedSkipped)
+                var feed = new Feed({url: request.suggestedFeedSkipped});
                 feed.fetch({
                     success: function() {
                         feed.mark_as_skipped({
@@ -486,8 +486,8 @@
                     }
                 }); 
             } else if(request.suggestedFeedSubscribed) {
-                log("Request : suggestedFeedSubscribed");
-                var feed = new Feed({id: request.suggestedFeedSubscribed});
+                log("Request : suggestedFeedSubscribed " + request.suggestedFeedSubscribed);
+                var feed = new Feed({url: request.suggestedFeedSubscribed});
                 feed.fetch({
                     success: function() {
                         feed.mark_as_subscribed({
@@ -589,8 +589,9 @@
 	$.each(Plugins.all, function(index, plugin) {
 	    if(typeof(plugin.subscribeInBackground) != "undefined") {
     	    plugin.subscribeInBackground(function(feed) {
-    	        connection.superfeedr.subscribe(feed.href, function (result, feed) {
-    	            // Done
+    	        log("Request : subscribe " + feed.href);
+    	        connection.superfeedr.subscribe(feed.href, function (result, f) {
+        	        log("Request : subscribed " + feed.href);
 	            })
     	    });
 	    }
