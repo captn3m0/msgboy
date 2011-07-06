@@ -250,8 +250,9 @@
 				}.bind(this),
 				error: function(object, error) {
 				    // Message was not saved... probably a dupe
-				    log(error);
 				    log("Could not save message " + JSON.stringify(msg));
+				    log(object);
+				    log(error);
 				}.bind(this),
 			});
 		});
