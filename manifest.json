@@ -15,12 +15,14 @@
     "background",
     "management",
     "unlimitedStorage",
+    "bookmarks",
     "http://*/",
     "https://*/"
   ],
   "content_scripts": [
     {
       "js": [
+        "/controllers/bookmark.js",
         "/controllers/trainer.js"
       ],
       "css": [

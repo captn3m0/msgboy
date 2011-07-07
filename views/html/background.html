@@ -544,6 +544,94 @@
                         });
                     }
                 })
+	        } else if(request.message) {
+                log("Request : message " + request.message);
+                var message = new Message({id: request.message});
+                message.fetch({
+                    success: function() {
+                        sendResponse({
+                            value: message.toJSON()
+                        });
+                    },
+                    error: function() {
+                        // Dang. We could not retrieve that message :(
+                    }
+                });
+            } else if(request.up) {
+                log("Request : up " + request.up);
+                var message = new Message({id: request.up});
+                message.fetch({
+                    success: function() {
+                        message.vote_up(function() {
+                            sendResponse({
+                                value: true
+                            });
+                        });
+                    },
+                    error: function() {
+                        sendResponse({
+                            value: false
+                        });
+                    }
+                });
+            } else if(request.down) {
+                log("Request : down " + request.down);
+                var message = new Message({id: request.down});
+                message.fetch({
+                    success: function() {
+                        message.vote_down(function(result) {
+                            sendResponse({
+                                value: true
+                            });
+                        });
+                    },
+                    error: function() {
+                        sendResponse({
+                            value: false
+                        });
+                    }
+                });
+            } else if(request.skip) {
+                log("Request : skip " + request.skip);
+                var message = new Message({id: request.skip});
+                message.fetch({
+                    success: function() {
+                        message.skip(function(result) {
+                            sendResponse({
+                                value: true
+                            });
+                        });
+                    },
+                    error: function() {
+                        sendResponse({
+                            value: false
+                        });
+                    }
+                });
+            } else if(request.train) {
+                log("Request : train");
+                var archive = new Archive();
+                archive.fetch({
+                    conditions: {
+                        state: "new"
+                    },
+                    success: function() {
+                        // Let's pick a random model in the collection
+                        var message = archive.models[Math.ceil(Math.random() * archive.models.length)];
+                        sendResponse({
+                            value: {
+                                url: message.main_link(),
+                                id: message.id
+                            }
+                        });
+                    },
+                    error: function(object, error) {
+                        sendResponse({
+                            value: null
+                        });
+                    }
+                });
+                
             }
 	        else {
 	            log("Could not handle message : " +  JSON.stringify(request))

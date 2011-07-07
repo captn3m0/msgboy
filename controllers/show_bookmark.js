@@ -68,58 +68,6 @@
         $("#msgboy-dialog").fadeIn(400);
  
     }
-	
-    // Shows the full bookmark
-	function showBookmark() {
-		if($("#msgboy-bookmark").length == 0) {
-			// Gets the bookmarkPosition
-			chrome.extension.sendRequest({
-				"settings": {
-					"get": ["bookmarkPosition"]
-				}
-			}, function (response) {
-				$(document).ready(function() {
-				    MsgboyHelper.events.trigger("msgboy-bookmark-loaded");
-					// Add the bookmark now.
-					$("<div>", {
-						id: "msgboy-bookmark"
-					}).appendTo("body");
-					var left = Math.min(Math.max(parseInt(response.value), 0), $(window).width() - 100); // 100 is the size of the bookmark!
-					$("#msgboy-bookmark").css("left", left);
-
-					// Add each of the actions in the bookmark
-					for (var id in actions) {
-						var action = actions[id];
-						if(action.show) {
-							$("#msgboy-bookmark").append(
-							$("<span>", {
-								id: id,
-								text: action.name,
-								class: 'action',
-								click: action.callback
-							}))							
-						}
-					}
-
-					// Called when the bookmark has been moved.
-					$("#msgboy-bookmark").bind('drag', function (ev, dd) {
-						$(this).css({
-							left: dd.offsetX
-						});
-					});
-
-					// Dragging is over.
-					$("#msgboy-bookmark").bind('dragend', function (ev, dd) {
-						chrome.extension.sendRequest({
-							"settings": {
-								"set": ["bookmarkPosition", parseInt(dd.offsetX)]
-							}
-						}, function (response) {});
-					});
-				});
-			});
-		}
-	}
 
     // shows the icon (usually if the bookmark is not displayed)
 	function showIcon() {
@@ -312,7 +260,9 @@
 		}
 	}, function (response) {
 		if(!response.value) {
-			showBookmark();
+			//showBookmark();
+			MsgboyBookmark.show(actions);
+			
 		} else {
 			showIcon();
 		}
@@ -361,7 +311,7 @@
 		break;
 		case "$$b":
 			// show bookmark
-			showBookmark();
+            MsgboyBookmark.show(actions);
 			$("#msgboy-icon").css("opacity", "0.50");
 			$("#msgboy-icon").attr("src", chrome.extension.getURL('/views/icons/icon16-grey.png'));
 			string = ""
