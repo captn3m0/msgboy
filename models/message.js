@@ -110,7 +110,6 @@ var Message = Backbone.Model.extend({
         }
         brothers.for_feed(this.attributes.feed, function() {
             var relevance = 1.0;
-            
             if(brothers.length == 0) {
                 // We can't compute relevance
             } else {

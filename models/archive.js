@@ -60,7 +60,6 @@ var Archive = Backbone.Collection.extend({
     all: function(condition, done) {
         this.fetch({
             conditions: condition,
-            addIndividually: true,
             success: function() {
                 if(typeof(done) != "undefined" && done) {
                     done();
@@ -71,6 +70,13 @@ var Archive = Backbone.Collection.extend({
                     done(error);
                 }
             }
+        });
+    },
+    
+    each: function(condition) {
+        this.fetch({
+            conditions: condition,
+            addIndividually: true
         });
     },
 
