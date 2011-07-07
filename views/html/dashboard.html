@@ -144,12 +144,13 @@
                 
                 initialize: function() {
                     _.bindAll(this, 'render', 'delete_from_feed');
-                    var now = new Date().getTime();
-                    var days = 1/(1-(parseFloat($("#time-slider").attr("value"))/100)) - 1;
                 },
                 
                 render: function() {
-                    $(".message").remove(); // Cleanup!
+                    $(".message").remove(); // Cleanup
+                    
+                    var now = new Date().getTime();
+                    var days = 1/(1-(parseFloat($("#time-slider").attr("value"))/100)) - 1;
                     
                     this.collection = new Archive();
                     
