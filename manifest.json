@@ -10,9 +10,6 @@
     }
   },
   "permissions": [
-    "history",
-    "file",
-    "bookmarks",
     "notifications",
     "tabs",
     "background",
@@ -22,6 +19,19 @@
     "https://*/"
   ],
   "content_scripts": [
+    {
+      "js": [
+        "/controllers/trainer.js"
+      ],
+      "css": [
+        "/views/css/trainer.css"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "run_at": "document_start"
+    },
     {
       "js": [
         "/lib/date.format.js",
@@ -79,5 +89,6 @@
     "48": "views/icons/icon48.png",
     "128": "views/icons/icon128.png"
   },
+  "update_url": "http://sup.ee/update-msgboy",
   "version": "0.0.22.1"
 }
