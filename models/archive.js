@@ -60,6 +60,7 @@ var Archive = Backbone.Collection.extend({
     all: function(condition, done) {
         this.fetch({
             conditions: condition,
+            addIndividually: true,
             success: function() {
                 if(typeof(done) != "undefined" && done) {
                     done();

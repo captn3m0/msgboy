@@ -32,7 +32,8 @@
         
         <div id="archive">
             <div id="content">
-                Relevance : <input type="range"  min="0" max="100" value="50" id="relevance-slider" /> 
+                Relevance :  <input type="range"  min="0" max="100" value="50" id="relevance-slider" /> 
+                Time frame : <input type="range"  min="0" max="100" value="50" id="time-slider" /> 
                 <!-- Messages will be added here when loaded -->
             </div>
         </div>
@@ -136,25 +137,36 @@
             
             // Our overall InboxView is the top-level piece of UI.
             var ArchiveView = Backbone.View.extend({
+                
+                events: {
+                    "mouseup #time-slider": "render",
+                },
+                
                 initialize: function() {
+                    _.bindAll(this, 'render', 'delete_from_feed');
                     var now = new Date().getTime();
-                    _.bindAll(this, 'render');
-                    
-                    this.collection.all({
-                        created_at: [now, now - 1000 * 60 * 60 * 24]
-                    },
-                    function() {
-                        this.render();
-                    }.bind(this));
+                    var days = 1/(1-(parseFloat($("#time-slider").attr("value"))/100)) - 1;
                 },
                 
                 render: function() {
-                    _.each(this.collection.models, function(message) {
+                    $(".message").remove(); // Cleanup!
+                    
+                    this.collection = new Archive();
+                    
+                    this.collection.comparator = function(message) {
+                      return -message.attributes.created_at;
+                    };
+
+                    this.collection.bind("add", function(message, collection) {
                         var view = new MessageView({
                             model: message
                         });
                         $("#content").append(view.render().el);
-                    }.bind(this));
+                    });
+                    
+                    this.collection.all({
+                        created_at: [now, now - days * (1000 * 60 * 60 * 24)]
+                    });
                 },
                 
                 delete_from_feed: function(feed) {
@@ -172,21 +184,15 @@
             });
             
             var archiveView = null;
-            var archive = null;
             var inbox = new Inbox({
                 id: "1"
             });
             inbox.fetch({
                 success: function() {
-                    archive = new Archive();
-                    archive.comparator = function(message) {
-                      return -message.attributes.created_at;
-                    };
-                    
                     archiveView = new ArchiveView({
                         el: "#archive",
-                        collection: archive
                     });
+                    archiveView.render();
                 }
             })
         </script>
