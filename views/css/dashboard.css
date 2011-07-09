@@ -1,20 +1,22 @@
 .message {
     background: #fff;
-    border: 1px solid #004868;
-    border-width: 0 1px;
+    width: 100px;
+    padding: 5px;
+    margin: 3px;
+/*    border-width: 0 1px;
     border-bottom: 3px solid #f2f3f3;
     box-shadow: inset 0 0 1px #edf2f4;
     clear: both;
     margin: 0 20px;
     padding: 10px 20px 10px 20px;
     min-height: 30px;
-}
+*/}
 
 
 .votes {
-    float:left;
+/*    float:left;
     margin-right: 7px;
-}
+*/}
 
 img.thumbs {
     width:30px;
@@ -25,14 +27,14 @@ img.thumbs:hover {
 }
 
 .source {
-    margin-right: 5px;
+/*    margin-right: 5px;
     color: #666;
     font-style:italic;
-}
+*/}
 
 .time {
-    display:block;
+/*    display:block;
     float:right;
     font-size: 0.6em;
     color: #CCC;
-}
+*/}

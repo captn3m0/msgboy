@@ -271,10 +271,6 @@ span.time {
     display:none;
 }
 
-.filters {
-    margin: 10px;
-}
-
 #archive {
     background: #025e88;
     border: 1px solid #0375a9;
@@ -282,90 +278,6 @@ span.time {
     margin: 0 0;
     opacity: 1;
     width: 690px;
-}
-
-.message {
-    background: #fff;
-    border: 1px solid #004868;
-    border-width: 0 1px;
-    border-bottom: 3px solid #f2f3f3;
-    box-shadow: inset 0 0 1px #edf2f4;
-    clear: both;
-    margin: 0 20px;
-    padding: 0 20px 10px 20px;
-}
-
-.message.read {
-    color: #333;
-}
-
-.message.unread {
-    background: -webkit-gradient(linear, 0% 75%, 0% 100%, from(#FFFFFF), to(#E2EFF6));
-    border-bottom: 3px solid #d6ecf9;
-    color: #333;
-}
-
-.message h3 {
-    clear: both;
-    color: #024361;
-    padding: 0;
-    margin: 0;
-}
-
-
-.publisher_info {
-    box-shadow: 0 1px 1px rgba(225,225,225,.95);
-    padding: 5px 5px 5px 10px;
-    margin-bottom: 10px;
-    max-width: 200px;
-}
-
-.publisher_info small {
-    font-size: 12px;
-    vertical-align: middle;
-}
-
-.icon {
-    width: 9px;
-    margin-right: 5px;
-    padding: 2px;
-    border: 1px solid #f3f4f4;
-    vertical-align: middle;
-}
-
-.publisher_actions {
-    z-index: 9999;
-    width: 80px;
-    margin-left:-60px;
-    display:none;
-    border-radius: 5px;
-    text-align:right;
-    color:#CCC;
-    padding:5px 0px 5px 0px;
-}
-
-.publisher_actions a {
-    color: #FFF;
-}
-
-.message .actions {
-/*    display:none;
-*/    float:right;
-}
-
-.message-footer {
-    clear:both;
-}
-
-.readable-content p {
-    font-size: 12px;
-    line-height: 16px;
-}
-
-
-/* CSS specifics. Items should be removed previously */
-.feedflare, .img_label {
-    display:none;
 }
 
 

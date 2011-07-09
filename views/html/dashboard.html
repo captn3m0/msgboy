@@ -11,8 +11,8 @@
         
         <!-- Lib includes -->
         <script src="../../lib/jquery/jquery.js" type="text/javascript"></script>
+        <script src="../../lib/jquery/jquery.isotope.min.js" type="text/javascript"></script>
         <script src="../../lib/date.extensions.js" type="text/javascript"></script>
-        <script src="../../lib/pretty.js" type="text/javascript"></script>
         <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script>
         <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script>
         <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script>
@@ -31,11 +31,11 @@
         <div id="mb-signal"></div>
         
         <div id="archive">
-            <div id="content">
                 Relevance :  <input type="range"  min="0" max="100" value="50" id="relevance-slider" /> 
                 Time frame : <input type="range"  min="0" max="100" value="50" id="time-slider" /> 
-                <!-- Messages will be added here when loaded -->
-            </div>
+                <div id="container" class="isotope">
+                    <!-- Messages will be added here when loaded -->
+                </div>
         </div>
         
         <script>
@@ -54,27 +54,7 @@
                     this.model.view = this;
                     $("#relevance-slider").mouseup(function() {
                         this.render();
-                    }.bind(this))
-                    
-                    // The votes
-                    var votes = $("<span>", {
-                        class: "votes"
-                    });
-                    $("<img>", {
-                        src: "../icons/up.png",
-                        class: "thumbs vote-up",
-                    }).appendTo(votes);
-                    
-                    $("<img>", {
-                        src: "../icons/down.png",
-                        class: "thumbs vote-down",
-                    }).appendTo(votes);
-                    votes.appendTo($(this.el));
-
-                    $("<span>", {
-                        text: this.model.attributes.source.title,
-                        class: "source"
-                    }).appendTo($(this.el));
+                    }.bind(this));
                     
                     var a = $("<a>", {
                         href: this.model.main_link(),
@@ -86,15 +66,6 @@
                         class: ""
                     }).appendTo($(this.el));
                     a.appendTo(span);
-                    
-                    
-                    $("<span>", {
-                        text: (new Date(this.model.attributes.created_at)).toRelativeTime(),
-                        "data-msgboy-created-at":this.model.attributes.created_at,
-                        class: "time"
-                    }).appendTo($(this.el));
-                    
-                    
                     
                     $(this.el).attr("data-msgboy-relevance", this.model.attributes.relevance);
                     $(this.el).attr("data-msgboy-state", this.model.attributes.state);
@@ -122,15 +93,7 @@
                 },
                 
                 render: function() {
-                    if(this.model.attributes.state == "up-ed" || this.model.attributes.state == "down-ed") {
-                        $(this.el).hide();
-                    } else {
-                        if(this.model.attributes.relevance < parseFloat($("#relevance-slider").attr("value"))/100) {
-                            $(this.el).hide();
-                        } else {
-                            $(this.el).show();
-                        }
-                    }
+                    $(this.el).show();
                     return this;
                 },
             });
@@ -162,8 +125,9 @@
                         var view = new MessageView({
                             model: message
                         });
-                        $("#content").append(view.render().el);
-                    });
+                        $("#container").append(view.render().el);
+                        $('#container').isotope('appended', $(view.render().el));
+                    }.bind(this));
                     
                     this.collection.each({
                         created_at: [now, now - days * (1000 * 60 * 60 * 24)]
@@ -182,6 +146,13 @@
                     });
                 },
             });
+            
+            $('#container').isotope({
+              // options
+              itemSelector : '.message',
+              layoutMode : 'fitRows'
+            });
+            
             
             var archiveView = null;
             var inbox = new Inbox({
