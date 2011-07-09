@@ -25,45 +25,26 @@
       "js": [
         "/lib/date.format.js",
         "/lib/jquery/jquery.js",
-        "/lib/jquery/jquery.event.drag.js",
         "/controllers/utils.js",
-        "/controllers/feed_sniffer.js",
-        "/controllers/bookmark.js",
-        "/controllers/show_bookmark.js"
-      ],
-      "css": [
-        "/views/css/bookmark.css"
-      ],
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "run_at": "document_start"
-    },
-    {
-      "js": [
-        "/lib/date.format.js",
-        "/lib/jquery/jquery.js",
-        "/lib/jquery/jquery.event.drag.js",
-        "/controllers/utils.js",
-        "/controllers/modalbox.js",
         "/controllers/plugins.js",
-        "/controllers/plugins/generic.js",
-        "/controllers/plugins/tumblr.js",
-        "/controllers/plugins/posterous.js",
-        "/controllers/plugins/google-reader.js",
+        "/controllers/plugins/bookmarks.js",
         "/controllers/plugins/digg.js",
+        "/controllers/plugins/disqus.js",
+        "/controllers/plugins/generic.js",
         "/controllers/plugins/github-repos.js",
         "/controllers/plugins/github-users.js",
-        "/controllers/plugins/disqus.js",
-        "/controllers/plugins/statusnet.js",
-        "/controllers/plugins/typepad.js",
+        "/controllers/plugins/google-reader.js",
+        "/controllers/plugins/history.js",
+        "/controllers/plugins/posterous.js",
         "/controllers/plugins/quora-people.js",
         "/controllers/plugins/quora-topics.js",
+        "/controllers/plugins/statusnet.js",
+        "/controllers/plugins/tumblr.js",
+        "/controllers/plugins/typepad.js",
         "/controllers/run_plugins.js"
       ],
       "css": [
-        "/views/css/modalbox.css"
+
       ],
       "matches": [
         "http://*/*",

@@ -89,7 +89,7 @@
                     
                     
                     $("<span>", {
-                        text: prettyDate(new Date(this.model.attributes.created_at)),
+                        text: (new Date(this.model.attributes.created_at)).toRelativeTime(),
                         "data-msgboy-created-at":this.model.attributes.created_at,
                         class: "time"
                     }).appendTo($(this.el));
