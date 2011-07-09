@@ -34,7 +34,6 @@
             <div id="content">
                 Relevance :  <input type="range"  min="0" max="100" value="50" id="relevance-slider" /> 
                 Time frame : <input type="range"  min="0" max="100" value="50" id="time-slider" /> 
-                <span id="training">Training</span>
                 <!-- Messages will be added here when loaded -->
             </div>
         </div>
@@ -141,11 +140,10 @@
                 
                 events: {
                     "mouseup #time-slider": "render",
-                    "click #training": "train"
                 },
                 
                 initialize: function() {
-                    _.bindAll(this, 'render', 'delete_from_feed', 'train');
+                    _.bindAll(this, 'render', 'delete_from_feed');
                 },
                 
                 render: function() {
@@ -183,15 +181,6 @@
                         }
                     });
                 },
-                
-                train: function() {
-                    chrome.extension.sendRequest({
-                        "train": {}
-                    }, function(response) {
-                        window.location = response.value.url + "#msgboy-training=" + response.value.id;
-                    });
-                }
-                
             });
             
             var archiveView = null;

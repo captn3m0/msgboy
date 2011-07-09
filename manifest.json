@@ -15,6 +15,7 @@
     "background",
     "management",
     "unlimitedStorage",
+    "history",
     "bookmarks",
     "http://*/",
     "https://*/"
@@ -22,25 +23,12 @@
   "content_scripts": [
     {
       "js": [
-        "/controllers/bookmark.js",
-        "/controllers/trainer.js"
-      ],
-      "css": [
-        "/views/css/trainer.css"
-      ],
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "run_at": "document_start"
-    },
-    {
-      "js": [
         "/lib/date.format.js",
         "/lib/jquery/jquery.js",
         "/lib/jquery/jquery.event.drag.js",
         "/controllers/utils.js",
         "/controllers/feed_sniffer.js",
+        "/controllers/bookmark.js",
         "/controllers/show_bookmark.js"
       ],
       "css": [

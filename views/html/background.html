@@ -608,31 +608,7 @@
                         });
                     }
                 });
-            } else if(request.train) {
-                log("Request : train");
-                var archive = new Archive();
-                archive.fetch({
-                    conditions: {
-                        state: "new"
-                    },
-                    success: function() {
-                        // Let's pick a random model in the collection
-                        var message = archive.models[Math.ceil(Math.random() * archive.models.length)];
-                        sendResponse({
-                            value: {
-                                url: message.main_link(),
-                                id: message.id
-                            }
-                        });
-                    },
-                    error: function(object, error) {
-                        sendResponse({
-                            value: null
-                        });
-                    }
-                });
-                
-            }
+            } 
 	        else {
 	            log("Could not handle message : " +  JSON.stringify(request))
 	        }
