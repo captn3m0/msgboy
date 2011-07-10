@@ -4,11 +4,24 @@
 
 .message {
     background: #fff;
-    padding: 5px;
+    padding: 0px;
     margin: 3px;
     overflow: hidden;
 }
 
+.message h1 {
+    background-repeat:no-repeat;
+    background-position: 7px 50%; 
+    padding:5px 10px 5px 30px;
+    margin:0px;
+    display:block;
+    position: absolute;
+    bottom:0px;
+    white-space: nowrap; 
+    min-height: 15px;
+    line-height: 15px;
+    vertical-align:middle;
+}
 
 .votes {
 }
@@ -45,31 +58,26 @@ img.thumbs:hover {
 
 .brick-1 {
     font-size:0.8em;
-    width: 75px;
-    max-height: 75px; /* 10k */
-    min-height: 50px;
+    width: 150px;
+    max-height: 150px
 }
 
 .brick-2 {
     font-size:0.8em;
-    width: 75px;
-    max-height: 75px; /*  10k*/
-    min-height: 50px;
-    
+    width: 150px;
+    max-height: 150px
 }
 
 .brick-3 {
     font-size:1.0em;
-    width: 150px;
-    max-height: 150px; /* 22.5k */
-    min-height: 100px;
+    width: 200px;
+    max-height: 160px;
 }
 
 .brick-4 {
     font-size:1.2em;
     width: 300px;
-    max-height: 300px; /* 62.5k */
-    min-height: 200px;
+    max-height: 160px; 
 }
 
 .isotope,
@@ -91,3 +99,24 @@ img.thumbs:hover {
      -moz-transition-property:    -moz-transform, opacity;
           transition-property:         transform, opacity;
 }
+
+.image h1 {
+    color: #E6E6E6;
+    background-color: rgba(10,10,10,0.5);
+}
+
+.image img {
+}
+
+
+.text {
+}
+
+.text p {
+}
+
+.text h1 {
+    background-color: rgba(10,10,10,0.5);
+    color: #FF8000;
+}
+

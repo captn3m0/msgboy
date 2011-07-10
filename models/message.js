@@ -248,6 +248,46 @@ var Message = Backbone.Model.extend({
         });
     },
 
+    
+    layout: function() {
+        if(this.image() != "") {
+            console.log("IMAGE");
+            return 'image';
+        }
+        console.log("TEXT");
+        return "text";
+    },
+    
+    // This function must return the image for this message. It's extracted from the links.
+    image: function() {
+        if(this.attributes.links.enclosure && this.attributes.links.enclosure["image/jpeg"]) {
+            return this.attributes.links.enclosure["image/jpeg"][0].href;
+        }
+        if(this.attributes.links.thumbnail && this.attributes.links.thumbnail["image/jpeg"]) {
+            return this.attributes.links.thumbnail["image/jpeg"][0].href;
+        }
+        return "";
+    },
+    
+    // This retruns the longest text!
+    text: function() {
+        if(this.attributes.content) {
+            if(this.attributes.summary && this.attributes.summary.length > this.attributes.content.length) {
+                return this.attributes.summary;
+            }
+            else {
+                return this.attributes.content;
+            }
+        } 
+        else if(this.attributes.summary) {
+            return this.attributes.summary;
+        }
+        else {
+            return "..."
+        }
+    }
+    
+
 });
 
 
@@ -296,6 +336,6 @@ var relevanceMath = {
             sum += percentages[key] * weights[key];
         });
         return sum;
-    }
+    },
 }
 

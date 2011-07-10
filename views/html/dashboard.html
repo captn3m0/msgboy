@@ -52,9 +52,6 @@
                     _.bindAll(this, "render", "up", "down");
                     
                     this.model.view = this;
-                    $("#relevance-slider").mouseup(function() {
-                        this.render();
-                    }.bind(this));
                     
                     var controls = $("<span>", {
                         class:"controls"
@@ -67,12 +64,6 @@
                         class:"down",
                         text:"-"
                     }).appendTo(controls);
-                    
-                    var p = $("<p>", {
-                        text: truncate(strip(this.model.attributes.title), 80),
-                        class: ""
-                    }).appendTo($(this.el));
-
                     
                     $(this.el).attr("data-msgboy-relevance", this.model.attributes.relevance);
                     $(this.el).attr("data-msgboy-state", this.model.attributes.state);
@@ -88,6 +79,49 @@
                     $(this.el).attr("id", this.model.id);
                     this.model.bind("change", this.render);
                 },
+                
+                format: function() {
+                    console.log(this.model);
+                    if(this.model.layout() == "image") {
+                        this.image_layout();
+                    }
+                    else {
+                        this.text_layout();
+                    }
+                },
+                
+                image_layout: function() {
+                    $(this.el).addClass("image");
+                    $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
+                    this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.attributes.alternate + "?defaulticon=lightpng')");
+                    var i = parseInt(this.$("h1").css("font-size"));
+                    while((this.$("h1").width() + 40) > $(this.el).width() && i > 6) {
+                        this.$("h1").css("font-size", --i+"px");
+                    }
+                    this.$("h1").css("width", "100%");
+                    
+                    $("<img/>").attr("src", this.model.image()).load(function() {
+                        pic_real_width = this.width;
+                        pic_real_height = this.height; 
+                        if(pic_real_width/pic_real_height > 300/160) {
+                            $(this).css("max-height", "160px");
+                        } else {
+                            $(this).css("max-width", "300px");
+                        }
+                    }).appendTo($(this.el));
+                },
+                
+                text_layout: function() {
+                    $(this.el).addClass("text");
+                    $("<p>").text(this.model.text()).appendTo($(this.el));
+                    $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
+                    var i = parseInt($("h1").css("font-size"));
+                    while(this.$("h1").height() > 35 && i > 0) {
+                        this.$("h1").css("font-size", --i+"px");
+                    }
+                    this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.attributes.alternate + "?defaulticon=lightpng')");
+                },
+                
                 
                 // Message was voted up
                 up: function() {
@@ -183,6 +217,7 @@
                     });
                     $("#container").append(view.render().el);
                     $('#container').isotope('appended', $(view.render().el));
+                    view.format();
                     this.complete_page();
                 },
                 
