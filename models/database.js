@@ -70,7 +70,6 @@ var msgboyDatabase = {
             var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction; // No prefix in moz
             var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
             // We need to add the missing fields, on the host, and the feed's alternate url.
-            console.log(db);
             var transaction = db.transaction(["messages"], IDBTransaction.READ_ONLY);
             
             var store = transaction.objectStore("messages")

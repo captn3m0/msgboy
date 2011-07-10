@@ -1,22 +1,17 @@
+#archive {
+    width: 1000px;
+}
+
 .message {
     background: #fff;
-    width: 100px;
     padding: 5px;
     margin: 3px;
-/*    border-width: 0 1px;
-    border-bottom: 3px solid #f2f3f3;
-    box-shadow: inset 0 0 1px #edf2f4;
-    clear: both;
-    margin: 0 20px;
-    padding: 10px 20px 10px 20px;
-    min-height: 30px;
-*/}
+    overflow: hidden;
+}
 
 
 .votes {
-/*    float:left;
-    margin-right: 7px;
-*/}
+}
 
 img.thumbs {
     width:30px;
@@ -27,14 +22,72 @@ img.thumbs:hover {
 }
 
 .source {
-/*    margin-right: 5px;
-    color: #666;
-    font-style:italic;
-*/}
+}
 
 .time {
-/*    display:block;
-    float:right;
-    font-size: 0.6em;
-    color: #CCC;
-*/}
+    
+}
+
+.page_nav {
+    display:none;
+}
+
+.controls {
+    position: absolute;
+    top:0px;
+    right:0px;
+    display:none;
+}
+
+.message:hover .controls {
+    display:block;
+}
+
+.brick-1 {
+    font-size:0.8em;
+    width: 75px;
+    max-height: 75px; /* 10k */
+    min-height: 50px;
+}
+
+.brick-2 {
+    font-size:0.8em;
+    width: 75px;
+    max-height: 75px; /*  10k*/
+    min-height: 50px;
+    
+}
+
+.brick-3 {
+    font-size:1.0em;
+    width: 150px;
+    max-height: 150px; /* 22.5k */
+    min-height: 100px;
+}
+
+.brick-4 {
+    font-size:1.2em;
+    width: 300px;
+    max-height: 300px; /* 62.5k */
+    min-height: 200px;
+}
+
+.isotope,
+.isotope .isotope-item {
+  /* change duration value to whatever you like */
+  -webkit-transition-duration: 0.8s;
+     -moz-transition-duration: 0.8s;
+          transition-duration: 0.8s;
+}
+
+.isotope {
+  -webkit-transition-property: height, width;
+     -moz-transition-property: height, width;
+          transition-property: height, width;
+}
+
+.isotope .isotope-item {
+  -webkit-transition-property: -webkit-transform, opacity;
+     -moz-transition-property:    -moz-transform, opacity;
+          transition-property:         transform, opacity;
+}

@@ -3,6 +3,12 @@ var Archive = Backbone.Collection.extend({
     database: msgboyDatabase,
     model: Message,
 
+    initialize: function() {
+        this.bind("add", function(message, collection) {
+            this.current = message;
+        }.bind(this));
+    },
+
     comparator: function(message) {
       return -(message.attributes.created_at);
     },
@@ -78,6 +84,18 @@ var Archive = Backbone.Collection.extend({
             conditions: condition,
             addIndividually: true
         });
+    },
+    
+    next: function(condition) {
+        options = {
+            conditions: condition,
+            limit: 1,
+            addIndividually: true
+        }
+        if(this.current) {
+            options.from = this.current;
+        }
+        this.fetch(options);
     },
 
     fetch_more: function(conds, done, opts) {
