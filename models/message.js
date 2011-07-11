@@ -251,10 +251,8 @@ var Message = Backbone.Model.extend({
     
     layout: function() {
         if(this.image() != "") {
-            console.log("IMAGE");
             return 'image';
         }
-        console.log("TEXT");
         return "text";
     },
     

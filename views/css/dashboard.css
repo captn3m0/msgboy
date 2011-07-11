@@ -1,5 +1,10 @@
+body{
+    padding:0px;
+}
 #archive {
-    width: 1000px;
+    background: transparent;
+    border: none;
+    width: 1350px;
 }
 
 .message {
@@ -7,6 +12,7 @@
     padding: 0px;
     margin: 3px;
     overflow: hidden;
+    min-height: 50px;
 }
 
 .message h1 {
@@ -21,6 +27,8 @@
     min-height: 15px;
     line-height: 15px;
     vertical-align:middle;
+    color: #E6E6E6;
+    background-color: rgba(10,10,10,0.8);
 }
 
 .votes {
@@ -58,26 +66,26 @@ img.thumbs:hover {
 
 .brick-1 {
     font-size:0.8em;
-    width: 150px;
+    width: 200px;
     max-height: 150px
 }
 
 .brick-2 {
     font-size:0.8em;
-    width: 150px;
+    width: 200px;
     max-height: 150px
 }
 
 .brick-3 {
     font-size:1.0em;
-    width: 200px;
+    width: 300px;
     max-height: 160px;
 }
 
 .brick-4 {
     font-size:1.2em;
-    width: 300px;
-    max-height: 160px; 
+    width: 500px;
+    max-height: 300px; 
 }
 
 .isotope,
@@ -101,8 +109,6 @@ img.thumbs:hover {
 }
 
 .image h1 {
-    color: #E6E6E6;
-    background-color: rgba(10,10,10,0.5);
 }
 
 .image img {
@@ -116,7 +122,5 @@ img.thumbs:hover {
 }
 
 .text h1 {
-    background-color: rgba(10,10,10,0.5);
-    color: #FF8000;
 }
 

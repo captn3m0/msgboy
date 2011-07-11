@@ -31,8 +31,6 @@
         <div id="mb-signal"></div>
         
         <div id="archive">
-            Relevance :  <input type="range"  min="0" max="100" value="50" id="relevance-slider" /> 
-            Time frame : <input type="range"  min="0" max="100" value="50" id="time-slider" /> 
             <div id="container" class="isotope">
                 <!-- Messages will be added here when loaded -->
             </div>
@@ -81,7 +79,6 @@
                 },
                 
                 format: function() {
-                    console.log(this.model);
                     if(this.model.layout() == "image") {
                         this.image_layout();
                     }
@@ -93,35 +90,43 @@
                 image_layout: function() {
                     $(this.el).addClass("image");
                     $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
+                    this.adjust_title();
+                    $("<img/>").attr("src", this.model.image()).load(function() {
+                        pic_real_width = this.$("img").width();
+                        pic_real_height = this.$("img").height(); 
+                        if(pic_real_width/pic_real_height > $(this.el).width()/$(this.el).height()) {
+                            if($(this.el).height() > this.$("img").height()) {
+                                $(this.el).css("height", his.$("img").height())
+                            }
+                            else {
+                                this.$("img").css("max-height", $(this.el).height() + "px");
+                            }
+                        } else {
+                            if($(this.el).width() > this.$("img").width()) {
+                                $(this.el).css("width", this.$("img").width());
+                            }
+                            else {
+                                this.$("img").css("max-width", $(this.el).width() + "px");
+                            }
+                        }
+                    }.bind(this)).appendTo($(this.el));
+                },
+                
+                text_layout: function() {
+                    $(this.el).addClass("text");
+                    $("<p>").html(this.model.text()).appendTo($(this.el));
+                    $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
+                    this.adjust_title();
+                },
+                
+                adjust_title: function() {
                     this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.attributes.alternate + "?defaulticon=lightpng')");
                     var i = parseInt(this.$("h1").css("font-size"));
                     while((this.$("h1").width() + 40) > $(this.el).width() && i > 6) {
                         this.$("h1").css("font-size", --i+"px");
                     }
                     this.$("h1").css("width", "100%");
-                    
-                    $("<img/>").attr("src", this.model.image()).load(function() {
-                        pic_real_width = this.width;
-                        pic_real_height = this.height; 
-                        if(pic_real_width/pic_real_height > 300/160) {
-                            $(this).css("max-height", "160px");
-                        } else {
-                            $(this).css("max-width", "300px");
-                        }
-                    }).appendTo($(this.el));
                 },
-                
-                text_layout: function() {
-                    $(this.el).addClass("text");
-                    $("<p>").text(this.model.text()).appendTo($(this.el));
-                    $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
-                    var i = parseInt($("h1").css("font-size"));
-                    while(this.$("h1").height() > 35 && i > 0) {
-                        this.$("h1").css("font-size", --i+"px");
-                    }
-                    this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.attributes.alternate + "?defaulticon=lightpng')");
-                },
-                
                 
                 // Message was voted up
                 up: function() {
