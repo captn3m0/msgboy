@@ -78,54 +78,56 @@
                     this.model.bind("change", this.render);
                 },
                 
-                format: function() {
+                format: function(done) {
                     if(this.model.layout() == "image") {
-                        this.image_layout();
+                        this.image_layout(done);
                     }
                     else {
-                        this.text_layout();
+                        this.text_layout(done);
                     }
                 },
-                
-                image_layout: function() {
+
+                image_layout: function(done) {
                     $(this.el).addClass("image");
                     $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
-                    this.adjust_title();
-                    $("<img/>").attr("src", this.model.image()).load(function() {
-                        pic_real_width = this.$("img").width();
-                        pic_real_height = this.$("img").height(); 
-                        if(pic_real_width/pic_real_height > $(this.el).width()/$(this.el).height()) {
-                            if($(this.el).height() > this.$("img").height()) {
-                                $(this.el).css("height", his.$("img").height())
+                    this.adjust_title(function() {
+                        $("<img/>").attr("src", this.model.image()).load(function() {
+                            pic_real_width = this.$("img").width();
+                            pic_real_height = this.$("img").height(); 
+                            if(pic_real_width/pic_real_height > $(this.el).width()/$(this.el).height()) {
+                                if($(this.el).height() > this.$("img").height()) {
+                                    $(this.el).css("height", his.$("img").height())
+                                }
+                                else {
+                                    this.$("img").css("max-height", $(this.el).height() + "px");
+                                }
+                            } else {
+                                if($(this.el).width() > this.$("img").width()) {
+                                    $(this.el).css("width", this.$("img").width());
+                                }
+                                else {
+                                    this.$("img").css("max-width", $(this.el).width() + "px");
+                                }
                             }
-                            else {
-                                this.$("img").css("max-height", $(this.el).height() + "px");
-                            }
-                        } else {
-                            if($(this.el).width() > this.$("img").width()) {
-                                $(this.el).css("width", this.$("img").width());
-                            }
-                            else {
-                                this.$("img").css("max-width", $(this.el).width() + "px");
-                            }
-                        }
-                    }.bind(this)).appendTo($(this.el));
+                        }.bind(this)).appendTo($(this.el));
+                    }.bind(this));
                 },
                 
-                text_layout: function() {
+                text_layout: function(done) {
                     $(this.el).addClass("text");
                     $("<p>").html(this.model.text()).appendTo($(this.el));
                     $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
-                    this.adjust_title();
+                    this.adjust_title(done);
                 },
                 
-                adjust_title: function() {
+                adjust_title: function(done) {
                     this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.attributes.alternate + "?defaulticon=lightpng')");
                     var i = parseInt(this.$("h1").css("font-size"));
                     while((this.$("h1").width() + 40) > $(this.el).width() && i > 6) {
                         this.$("h1").css("font-size", --i+"px");
                     }
                     this.$("h1").css("width", "100%");
+                    done();
                 },
                 
                 // Message was voted up
@@ -136,6 +138,7 @@
                     $(this.el).addClass("brick-4");
                     $('#container').isotope('reLayout');
                     this.model.vote_up();
+                    this.adjust_title();
                 },
                 
                 // Message was voted down
@@ -159,8 +162,8 @@
                     }.bind(this));
                 },
                 
-                render: function() {
-                    return this;
+                render: function(done) {
+                    this.format(done);
                 },
             });
             
@@ -220,10 +223,12 @@
                     var view = new MessageView({
                         model: message
                     });
-                    $("#container").append(view.render().el);
-                    $('#container').isotope('appended', $(view.render().el));
-                    view.format();
-                    this.complete_page();
+                    view.render(function() {
+                        $("#container").append(view.el);
+                        $('#container').isotope('appended', $(view.el), function() {
+                            this.complete_page();
+                        }.bind(this));
+                    }.bind(this));
                 },
                 
                 delete_from_feed: function(feed) {
