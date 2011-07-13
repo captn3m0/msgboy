@@ -24,9 +24,7 @@ body{
     position: absolute;
     bottom:0px;
     white-space: nowrap; 
-    min-height: 15px;
-    line-height: 15px;
-    vertical-align:middle;
+    vertical-align: middle;
     color: #E6E6E6;
     background-color: rgba(10,10,10,0.8);
     background-size: 16px 16px;

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Notification</title>
     <meta name="application-name" content="Msgboy"/>
+    <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/notification.css" />
 
     <!-- Lib includes -->
@@ -20,16 +21,11 @@
     <!-- Controller includes -->
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
 
+    <!-- Views includes -->
+    <script src="../../views/js/message-view.js" type="text/javascript"></script>
+
 </head>
 <body>
-    <div id="message">
-        <div id="votes">
-            <img src="../icons/up.png" class="thumbs" id="vote-up" />
-            <img src="../icons/down.png" class="thumbs" id="vote-down" />
-        </div>
-		<h2></h2>
-		<p></p>
-    </div>
 
     <script>
 
@@ -38,61 +34,6 @@
 	//////////////////////////////////////////////////////////////////////////////////////
 	var started = false;
 	var messages = [];
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	//                                Views                                           //
-	//////////////////////////////////////////////////////////////////////////////////////
-	var MessageView = Backbone.View.extend({
-	    
-	    events: {
-	        "click #vote-up": "up",
-	        "click #vote-down": "down"
-        },
-        
-	    initialize: function () {
-	        _.bindAll(this, "render", "up", "down");
-	    },
-
-	    render: function () {
-	        json = this.model.toJSON();
-			this.$('h2').html(json.title)
-            html = "";
-			if (json.source) {
-				html += "<span>" + json.source.title + "</span>&nbsp—&nbsp" + truncate(strip(json.summary), 128)
-            } else {
-				html += truncate(strip(json.summary), 128)
-            }
-			if(json.via) {
-				html += "via <span>" + json.via + "</span>."
-			}
-	        this.$("p").html(html);
-	    },
-	    
-	    // Message was voted up
-		up: function() {
-		    this.model.vote_up();
-		    showNextMessage();
-		    chrome.extension.sendRequest({
-		        "tab": {
-		            url: this.model.attributes.links.alternate["text/html"][0].href,
-		            selected: true
-		        }
-		    }, function (response) {});
-		},
-		
-		// Message was voted down
-		down: function() {
-		    this.model.vote_down();
-		    showNextMessage();
-		    this.model.vote_down();
-		},
-		
-		// Message was skipped	
-		skipped: function() {
-		    this.model.skip();
-		}
-		
-	});
 
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                                  Functions                                       //
@@ -112,18 +53,22 @@
 			})
 			message.fetch({
 				success: function() {
-					view.model = message;
-					view.render();
 					window.focus(); // Put this alert in front!
-                    window.setTimeout( function() {  
-                        view.skipped();
-                        showNextMessage() // After K seconds, show the next message.
-                    }, 8000);
+                    var view = new MessageView({
+                        model: message
+                    });
+                    view.bind("rendered", function() {
+                        $(view.el).appendTo($("body"));
+                        $(view.el).show();
+                    });
+                    $(view.el).hide();
+                    view.render(); // builds the HTML
+                    
 				},
 			});
 		}
 	}
-
+	
 	//////////////////////////////////////////////////////////////////////////////////////
 	//                          Chrome Extension Handlers                               //
 	//////////////////////////////////////////////////////////////////////////////////////
@@ -137,13 +82,6 @@
 				}
 	        }
 	    });
-	});
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	//                                Main                                              //
-	//////////////////////////////////////////////////////////////////////////////////////
-	var view = new MessageView({
-	    el: "#message"
 	});
 	
     </script>

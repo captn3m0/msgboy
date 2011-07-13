@@ -226,8 +226,18 @@ MsgboyHelper.cleaner.dom = function(element) {
             }
         }
         else if(child.nodeName == "CENTER") {
-            // We should remove that element, but keep its children...
-            MsgboyHelper.cleaner.remove(child);
+            // We need to replace this with a p. We don't want specific formats...
+            var p = document.createElement("P");
+            p.innerHTML = child.innerHTML;
+            child.parentNode.replaceChild(p,child);
+            child = p;
+        }
+        else if(child.nodeName == "FONT") {
+            // Let's replace with a span. We don't want specific formats!
+            var span = document.createElement("SPAN");
+            span.innerHTML = child.innerHTML;
+            child.parentNode.replaceChild(span,child);
+            child = span;
         }
         else if(child.nodeName == "BR") {
             MsgboyHelper.cleaner.remove(child);
@@ -239,16 +249,21 @@ MsgboyHelper.cleaner.dom = function(element) {
             // Not much
         }
         // Remove style attributes
+        
         $(child).removeAttr("style");
         $(child).removeAttr("align");
         $(child).removeAttr("width");
         $(child).removeAttr("height");
         $(child).removeAttr("class");
         $(child).removeAttr("border");
+        $(child).removeAttr("cellpadding");
+        $(child).removeAttr("cellspacing");
+        $(child).removeAttr("valign");
+        $(child).removeAttr("border");
         
         MsgboyHelper.cleaner.dom(child);
     })
-    return element
+    return element;
 }
 
 MsgboyHelper.cleaner.remove = function(element) {
@@ -261,11 +276,13 @@ MsgboyHelper.cleaner.remove = function(element) {
     }
 }
 
-MsgboyHelper.get_original_img_size = function(img) {
-    var clone = $(img).clone();
+MsgboyHelper.get_original_element_size = function(el) {
+    var clone = $(el).clone();
     clone.css("display", "none");
     clone.removeAttr('height');
     clone.removeAttr('width');
     clone.appendTo($("body"));
-    return {width: clone.width(), height:clone.height()};
+    var sizes = {width: clone.width(), height:clone.height()}
+    clone.remove();
+    return sizes;
 }

@@ -1,27 +1,38 @@
+html {
+    background: none;
+}
+
 body {
-  font-family: helvetica;
-  line-height:14px;
+    padding:0;
+    font-family: sans-serif;
+    color: #191919;
 }
 
-h2 {
-  margin:0px;
-  font-size:12px;
-  font-weight: bold;
+.message {
+    background: #fff;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    width: 300px;
+    max-height: 150px;
 }
 
-p {
-  margin:0px;
-  font-size:11px;
+.message h1 {
+    background-repeat:no-repeat;
+    background-position: 7px 50%; 
+    padding:5px 10px 5px 30px;
+    margin:0px;
+    display:block;
+    position: absolute;
+    bottom:0px;
+    white-space: nowrap; 
+    vertical-align: middle;
+    color: #E6E6E6;
+    background-color: rgba(10,10,10,0.8);
+    background-size: 16px 16px;
 }
 
-p span {
-  font-size:11px;
-  color: #999;
-}
-
-#votes {
-    float:left;
-    margin-right: 7px;
+.votes {
 }
 
 img.thumbs {
@@ -30,5 +41,65 @@ img.thumbs {
 
 img.thumbs:hover {
     background-color:green;
+}
+
+.source {
+}
+
+.time {
+    
+}
+
+.page_nav {
+    display:none;
+}
+
+.controls {
+    position: absolute;
+    top:0px;
+    right:0px;
+    display:none;
+}
+
+.message:hover .controls {
+    display:block;
+}
+
+.brick-1 {
+    font-size:0.8em;
+}
+
+.brick-2 {
+    font-size:0.8em;
+}
+
+.brick-3 {
+    font-size:1.0em;
+}
+
+.brick-4 {
+    font-size:1.2em;
+}
+
+.image h1 {
+}
+
+.image img {
+}
+
+
+.text {
+}
+
+.text img {
+    float: left;
+    padding: 0px 5px 5px 0px;
+}
+
+.text p {
+    padding: 5px;
+}
+
+.text h1 {
 }
 

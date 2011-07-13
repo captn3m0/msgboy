@@ -86,10 +86,10 @@ var Archive = Backbone.Collection.extend({
         });
     },
     
-    next: function(condition) {
+    next: function(number, condition) {
         options = {
             conditions: condition,
-            limit: 1,
+            limit: number,
             addIndividually: true
         }
         if(this.current) {
@@ -112,7 +112,6 @@ var Archive = Backbone.Collection.extend({
         else {
             conditions = conds
         }
-        
         
         this.fetch({
             conditions: conditions,
