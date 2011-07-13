@@ -183,3 +183,89 @@ MsgboyHelper.links_to_feeds_at_url = function(_url, callback) {
       }
     });
 }
+
+
+// This function, which requires JQUERY cleans up the HTML that it includes
+MsgboyHelper.cleaner = {};
+MsgboyHelper.cleaner.html = function(string) {
+    var div = $("<div/>").html(string);
+    var cleaned = $(MsgboyHelper.cleaner.dom(div.get()));
+    return cleaned.html();
+}
+
+MsgboyHelper.cleaner.dom = function(element) {
+    // Do stuff here :)
+    // console.log($(element));
+    // console.log(element.nodeName);
+    $.each($(element).children(), function(index, child) {
+        if(child.nodeName == "IMG") {
+            if($(child).attr("width") < 2 && $(child).attr("height") < 2) {
+                MsgboyHelper.cleaner.remove(child);
+            }
+            else {
+            }
+        }
+        else if(child.nodeName == "P") {
+            if(child.childNodes.length == 0) {
+                MsgboyHelper.cleaner.remove(child);
+            }
+            else {
+                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") == "") {
+                    MsgboyHelper.cleaner.remove(child);
+                }
+            }
+        }
+        else if(child.nodeName == "DIV") {
+            if(child.childNodes.length == 0) {
+                MsgboyHelper.cleaner.remove(child);
+            }
+            else {
+                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") == "") {
+                    MsgboyHelper.cleaner.remove(child);
+                }
+            }
+        }
+        else if(child.nodeName == "CENTER") {
+            // We should remove that element, but keep its children...
+            MsgboyHelper.cleaner.remove(child);
+        }
+        else if(child.nodeName == "BR") {
+            MsgboyHelper.cleaner.remove(child);
+        }
+        else if($(child).hasClass("mf-viral") || $(child).hasClass("feedflare")) {
+            MsgboyHelper.cleaner.remove(child);
+        }
+        else {
+            // Not much
+        }
+        // Remove style attributes
+        $(child).removeAttr("style");
+        $(child).removeAttr("align");
+        $(child).removeAttr("width");
+        $(child).removeAttr("height");
+        $(child).removeAttr("class");
+        $(child).removeAttr("border");
+        
+        MsgboyHelper.cleaner.dom(child);
+    })
+    return element
+}
+
+MsgboyHelper.cleaner.remove = function(element) {
+    var parent = element.parentNode;
+    if(parent) {
+        parent.removeChild(element);
+        if(parent.childNodes.length == 0) {
+            MsgboyHelper.cleaner.remove(parent);
+        }
+    }
+}
+
+MsgboyHelper.get_original_img_size = function(img) {
+    var clone = $(img).clone();
+    clone.css("display", "none");
+    clone.removeAttr('height');
+    clone.removeAttr('width');
+    clone.appendTo($("body"));
+    return {width: clone.width(), height:clone.height()};
+}

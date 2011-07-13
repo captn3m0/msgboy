@@ -37,6 +37,7 @@
         </div>
         
         <script>
+        
             var MessageView = Backbone.View.extend({
                 tagName: "div",
                 className: "message",
@@ -45,7 +46,7 @@
                     "click .up": "up",
                     "click .down": "down"
                 },
-                
+
                 initialize: function() {
                     _.bindAll(this, "render", "up", "down");
                     
@@ -78,57 +79,82 @@
                     this.model.bind("change", this.render);
                 },
                 
-                format: function(done) {
+                format: function() {
                     if(this.model.layout() == "image") {
-                        this.image_layout(done);
+                        this.image_layout();
                     }
                     else {
-                        this.text_layout(done);
+                        this.text_layout();
                     }
                 },
 
-                image_layout: function(done) {
+                image_layout: function() {
                     $(this.el).addClass("image");
                     $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
-                    this.adjust_title(function() {
-                        $("<img/>").attr("src", this.model.image()).load(function() {
-                            pic_real_width = this.$("img").width();
-                            pic_real_height = this.$("img").height(); 
-                            if(pic_real_width/pic_real_height > $(this.el).width()/$(this.el).height()) {
-                                if($(this.el).height() > this.$("img").height()) {
-                                    $(this.el).css("height", his.$("img").height())
-                                }
-                                else {
-                                    this.$("img").css("max-height", $(this.el).height() + "px");
-                                }
-                            } else {
-                                if($(this.el).width() > this.$("img").width()) {
-                                    $(this.el).css("width", this.$("img").width());
-                                }
-                                else {
-                                    this.$("img").css("max-width", $(this.el).width() + "px");
+                    $("<img/>").attr("src", this.model.image()).load(function() {
+                        var img_size = MsgboyHelper.get_original_img_size(this.$("img").get());
+                        if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
+                            if($(this.el).height() > img_size.height) {
+                                $(this.el).css("height", img_size.height())
+                                if(this.model.id == "09b952cd24965ac652a34508ff7c86ae") {
+                                    console.log("OKI")
                                 }
                             }
-                            done();
-                        }.bind(this)).appendTo($(this.el));
-                    }.bind(this));
+                            else {
+                                this.$("img").css("max-height", "100%");
+                                if(this.model.id == "09b952cd24965ac652a34508ff7c86ae") {
+                                    console.log("OKI")
+                                }
+                            }
+                        } else {
+                            if($(this.el).width() > img_size.width) {
+                                $(this.el).css("width", img_size.width);
+                                if(this.model.id == "09b952cd24965ac652a34508ff7c86ae") {
+                                    console.log("OKI")
+                                }
+                            }
+                            else {
+                                this.$("img").css("max-width", "100%");
+                                if(this.model.id == "09b952cd24965ac652a34508ff7c86ae") {
+                                    console.log("OKI")
+                                    console.log($(this.el).width());
+                                }
+                            }
+                        }
+                        this.adjust_title();
+                    }.bind(this)).appendTo($(this.el));
                 },
                 
-                text_layout: function(done) {
+                text_layout: function() {
                     $(this.el).addClass("text");
-                    $("<p>").html(this.model.text()).appendTo($(this.el));
+                    $("<p>").html(MsgboyHelper.cleaner.html(this.model.text())).appendTo($(this.el));
                     $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
-                    this.adjust_title(done);
+                    var images = this.$("img");
+                    var that = this;
+                    if(images.length > 0) {
+                        var count = 0;
+                        this.$("img").each(function() {
+                            $(this).load(function() {
+                                count++;
+                                if(count ==  images.length) {
+                                    that.adjust_title();
+                                }
+                            })
+                        })
+                    }
+                    else {
+                        this.adjust_title();
+                    }
                 },
                 
-                adjust_title: function(done) {
+                adjust_title: function() {
                     this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.attributes.alternate + "?defaulticon=lightpng')");
                     var i = parseInt(this.$("h1").css("font-size"));
                     while((this.$("h1").width() + 40) > $(this.el).width() && i > 6) {
                         this.$("h1").css("font-size", --i+"px");
                     }
                     this.$("h1").css("width", "100%");
-                    done();
+                    this.trigger("rendered");
                 },
                 
                 // Message was voted up
@@ -139,7 +165,9 @@
                     $(this.el).addClass("brick-4");
                     $('#container').isotope('reLayout');
                     this.model.vote_up();
-                    this.adjust_title();
+                    this.adjust_title(function() {
+                        
+                    });
                 },
                 
                 // Message was voted down
@@ -163,8 +191,8 @@
                     }.bind(this));
                 },
                 
-                render: function(done) {
-                    this.format(done);
+                render: function() {
+                    this.format();
                 },
             });
             
@@ -202,7 +230,6 @@
                     }
                     else {
                         // Nothing to load
-                        // this.load_next();
                     }
                 },
 
@@ -224,12 +251,15 @@
                     var view = new MessageView({
                         model: message
                     });
-                    view.render(function() {
-                        $("#container").append(view.el);
+                    view.bind("rendered", function() {
                         $('#container').isotope('appended', $(view.el), function() {
+                            $(view.el).show();
                             this.complete_page();
                         }.bind(this));
                     }.bind(this));
+                    $(view.el).hide();
+                    $("#container").append(view.el);
+                    view.render();
                 },
                 
                 delete_from_feed: function(feed) {
@@ -247,7 +277,10 @@
             
             $('#container').isotope({
               itemSelector : '.message',
-              filter: '.brick-2 .brick-3 .brick-4' 
+              filter: '.brick-2 .brick-3 .brick-4',
+              masonry: {
+                 columnWidth: 100
+               },
             });
             
             var archiveView = null;

@@ -29,6 +29,7 @@ body{
     vertical-align:middle;
     color: #E6E6E6;
     background-color: rgba(10,10,10,0.8);
+    background-size: 16px 16px;
 }
 
 .votes {
@@ -118,7 +119,13 @@ img.thumbs:hover {
 .text {
 }
 
+.text img {
+    float: left;
+    padding: 0px 5px 5px 0px;
+}
+
 .text p {
+    padding: 5px;
 }
 
 .text h1 {
