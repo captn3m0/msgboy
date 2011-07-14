@@ -28,8 +28,10 @@
 <body>
 
     <script>
+    var view    = null;
     var started = false;
     var messages = [];
+    var mouse_in = false;
 
     function goToMessage(model) {
         chrome.extension.sendRequest({
@@ -55,7 +57,7 @@
             message.fetch({
                 success: function () {
                     window.focus(); // Put this alert in front!
-                    var view = new MessageView({
+                    view = new MessageView({
                         model: message
                     });
 
@@ -66,7 +68,6 @@
                     });
 
                     message.bind("down-ed", function() {
-                        // We hide the message.
                         $(view.el).hide();
                         showNextMessage();
                     });
@@ -80,6 +81,24 @@
             });
         }
     }
+    
+    function rotate() {
+        setTimeout(function() {
+            if(!mouse_in) {
+                $(view.el).hide();
+                showNextMessage();
+            }
+            rotate();
+        }, 8000);
+    }
+    
+    $("body").mouseover(function() {
+        mouse_in = true;
+    });
+    
+    $("body").mouseout(function() {
+        mouse_in = false;
+    });
 
     $(document).ready(function () {
         chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
@@ -92,5 +111,8 @@
             }
         });
     });
+    
+    rotate();
+    
     </script>
 </body>

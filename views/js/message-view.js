@@ -45,6 +45,8 @@ var MessageView = Backbone.View.extend({
     click: function(evt) {
         if(evt.shiftKey) {
             chrome.extension.sendRequest({notify: this.model.id});
+        } else {
+            chrome.extension.sendRequest({"tab": {url: this.model.main_link(), selected: false}});
         }
     },
     
