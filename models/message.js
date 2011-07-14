@@ -184,6 +184,15 @@ var Message = Backbone.Model.extend({
             return "";
         }
     },
+    
+    source_link: function() {
+        if(this.attributes.source && this.attributes.source.links && this.attributes.source.links["alternate"] && this.attributes.source.links["alternate"]["text/html"] && this.attributes.source.links["alternate"]["text/html"][0]) {
+            return this.attributes.source.links["alternate"]["text/html"][0].href;
+        }
+        else {
+            return "";
+        }
+    },
      
     /* Deprecated methods */
     toggle_read: function(callback) {

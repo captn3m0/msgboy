@@ -81,6 +81,7 @@ var MessageView = Backbone.View.extend({
     },
     
     text_layout: function() {
+        console.log("TEXT LAYOUT");
         $(this.el).addClass("text");
         $("<p>").html(MsgboyHelper.cleaner.html(this.model.text())).appendTo($(this.el));
         $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
@@ -102,7 +103,9 @@ var MessageView = Backbone.View.extend({
     },
     
     adjust_title: function() {
-        this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.attributes.alternate + "?defaulticon=lightpng')");
+        console.log("ADJUST TITLE");
+        console.log(this.model.source_link());
+        this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
         var i = parseInt(this.$("h1").css("font-size"));
         while((MsgboyHelper.get_original_element_size(this.$("h1")).width + 40) > $(this.el).width() && i > 6) {
             this.$("h1").css("font-size", --i+"px");
