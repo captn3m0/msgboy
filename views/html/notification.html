@@ -28,61 +28,69 @@
 <body>
 
     <script>
+    var started = false;
+    var messages = [];
 
-	//////////////////////////////////////////////////////////////////////////////////////
-	//                                Hide Timer                                        //
-	//////////////////////////////////////////////////////////////////////////////////////
-	var started = false;
-	var messages = [];
+    function goToMessage(model) {
+        chrome.extension.sendRequest({
+            "tab": {
+                url: model.main_link(),
+                selected: true
+            }
+        });
+    };
 
-	//////////////////////////////////////////////////////////////////////////////////////
-	//                                  Functions                                       //
-	//////////////////////////////////////////////////////////////////////////////////////
-	function showNextMessage() {
-		var messageId = messages.pop();
-		if(!messageId) {
-		    chrome.extension.sendRequest({
+    function showNextMessage() {
+        var messageId = messages.pop();
+        if (!messageId) {
+            chrome.extension.sendRequest({
                 close: true
             }, function (response) {
                 window.close();
             });
-		}
-		else {
-			var message = new Message({
-				'id': messageId
-			})
-			message.fetch({
-				success: function() {
-					window.focus(); // Put this alert in front!
+        } else {
+            var message = new Message({
+                'id': messageId
+            })
+            message.fetch({
+                success: function () {
+                    window.focus(); // Put this alert in front!
                     var view = new MessageView({
                         model: message
                     });
-                    view.bind("rendered", function() {
-                        $(view.el).appendTo($("body"));
-                        $(view.el).show();
+
+                    message.bind("up-ed", function() {
+                        $(view.el).hide();
+                        goToMessage(message);
+                        showNextMessage();
                     });
-                    $(view.el).hide();
-                    view.render(); // builds the HTML
+
+                    message.bind("down-ed", function() {
+                        // We hide the message.
+                        $(view.el).hide();
+                        showNextMessage();
+                    });
                     
-				},
-			});
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////
-	//                          Chrome Extension Handlers                               //
-	//////////////////////////////////////////////////////////////////////////////////////
-	$(document).ready(function () {
-	    chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-	        if (request.notify && request.notify.message) {
-				messages.push(request.notify.message);
-				if(!started) {
-					started = true // Initiate the loop.
-					showNextMessage();
-				}
-	        }
-	    });
-	});
-	
+                    view.bind("rendered", function () {
+                        $(view.el).appendTo($("body"));
+                    });
+                    
+                    view.render(); // builds the HTML
+                },
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
+            if (request.notify && request.notify.message) {
+                messages.push(request.notify.message);
+                if (!started) {
+                    started = true // Initiate the loop.
+                    showNextMessage();
+                }
+            }
+        });
+    });
     </script>
 </body>

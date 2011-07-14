@@ -64,7 +64,7 @@ var MessageView = Backbone.View.extend({
         var img_size = MsgboyHelper.get_original_element_size(this.$("img").get());
         if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
             if($(this.el).height() > img_size.height) {
-                $(this.el).css("height", img_size.height())
+                $(this.el).css("height", img_size.height)
             }
             else {
                 this.$("img").css("max-height", "100%");

@@ -50,6 +50,7 @@ var Message = Backbone.Model.extend({
     /* Votes the message up */
     vote_up: function(callback) {
         this.set_state("up-ed", callback);
+        this.trigger("up-ed");
     },
 
     /* Votes the message down */
@@ -71,6 +72,7 @@ var Message = Backbone.Model.extend({
                     callback({unsubscribe: false});
                 }
             });
+            this.trigger("down-ed");
         }.bind(this));
     },
 

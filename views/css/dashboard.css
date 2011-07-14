@@ -65,26 +65,26 @@ img.thumbs:hover {
 
 .brick-1 {
     font-size:0.8em;
-    width: 200px;
-    max-height: 150px
 }
 
 .brick-2 {
     font-size:0.8em;
     width: 200px;
-    max-height: 150px
+    max-height: 100px
 }
 
 .brick-3 {
     font-size:1.0em;
     width: 300px;
-    max-height: 160px;
+    min-height: 140px;
+    max-height: 280px; 
 }
 
 .brick-4 {
     font-size:1.2em;
     width: 500px;
-    max-height: 300px; 
+    min-height: 160px; 
+    max-height: 320px; 
 }
 
 .isotope,
