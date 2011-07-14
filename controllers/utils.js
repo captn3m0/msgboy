@@ -199,7 +199,7 @@ MsgboyHelper.cleaner.dom = function(element) {
     // console.log(element.nodeName);
     $.each($(element).children(), function(index, child) {
         if(child.nodeName == "IMG") {
-            if($(child).attr("width") < 2 && $(child).attr("height") < 2) {
+            if(MsgboyHelper.get_original_element_size.width < 2 || MsgboyHelper.get_original_element_size.height < 2) {
                 MsgboyHelper.cleaner.remove(child);
             }
             else {

@@ -5,7 +5,9 @@ var MessageView = Backbone.View.extend({
     events: {
         "click" : "click",
         "click .up": "up",
-        "click .down": "down"
+        "click .down": "down",
+        "mouseover": "show_source",
+        "mouseout": "show_title"
     },
 
     initialize: function() {
@@ -54,10 +56,22 @@ var MessageView = Backbone.View.extend({
             this.text_layout();
         }
     },
+    
+    show_source: function() {
+        this.$("h1").text(this.model.attributes.source.title); 
+        this.adjust_title();
+    },
+    
+    show_title: function() {
+        this.$("h1").text(this.model.attributes.title);
+        this.adjust_title();
+    },
 
     image_layout: function() {
         $(this.el).addClass("image");
         $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
+        this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
+        
         var img = $("<img/>").attr("src", this.model.image());
         img.appendTo($(this.el));
         
@@ -78,40 +92,39 @@ var MessageView = Backbone.View.extend({
             }
         }
         this.adjust_title();
+        this.trigger("rendered");
     },
     
     text_layout: function() {
-        console.log("TEXT LAYOUT");
         $(this.el).addClass("text");
         $("<p>").html(MsgboyHelper.cleaner.html(this.model.text())).appendTo($(this.el));
         $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
+        this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
         var images = this.$("img");
         var that = this;
         if(images.length > 0) {
             var count = 0;
             this.$("img").each(function() {
-                var img_size = MsgboyHelper.get_original_element_size(this);
                 count++;
                 if(count ==  images.length) {
                     that.adjust_title();
+                    that.trigger("rendered");
                 }
             });
         }
         else {
             this.adjust_title();
+            this.trigger("rendered");
         }
     },
     
     adjust_title: function() {
-        console.log("ADJUST TITLE");
-        console.log(this.model.source_link());
-        this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
-        var i = parseInt(this.$("h1").css("font-size"));
-        while((MsgboyHelper.get_original_element_size(this.$("h1")).width + 40) > $(this.el).width() && i > 6) {
-            this.$("h1").css("font-size", --i+"px");
-        }
+        // this.$("h1").css("font-size", "20px");
+        // var i = parseInt(this.$("h1").css("font-size"));
+        // while((MsgboyHelper.get_original_element_size(this.$("h1")).width + 40) > $(this.el).width() && i > 6) {
+        //     this.$("h1").css("font-size", --i+"px");
+        // }
         this.$("h1").css("width", "100%");
-        this.trigger("rendered");
     },
     
     // Message was voted up
