@@ -62,13 +62,13 @@
                     });
 
                     message.bind("up-ed", function() {
-                        $(view.el).hide();
+                        view.remove();
                         goToMessage(message);
                         showNextMessage();
                     });
 
                     message.bind("down-ed", function() {
-                        $(view.el).hide();
+                        view.remove();
                         showNextMessage();
                     });
                     
@@ -85,7 +85,7 @@
     function rotate() {
         setTimeout(function() {
             if(!mouse_in) {
-                $(view.el).hide();
+                view.remove();
                 showNextMessage();
             }
             rotate();

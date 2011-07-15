@@ -203,6 +203,22 @@ MsgboyHelper.cleaner.dom = function(element) {
                 MsgboyHelper.cleaner.remove(child);
             }
             else {
+                var src = $(child).attr("src");
+                if(!src) {
+                    MsgboyHelper.cleaner.remove(child);
+                }
+                else if(src.match("http://rss.feedsportal.com/.*/*.gif")) {
+                    MsgboyHelper.cleaner.remove(child);
+                }
+                else if(src.match("http://da.feedsportal.com/.*/*.img")) {
+                    MsgboyHelper.cleaner.remove(child);
+                }
+                else if(src.match("http://ads.pheedo.com/img.phdo?.*")) {
+                    MsgboyHelper.cleaner.remove(child);
+                }
+                else if(src.match("http://feedads.g.doubleclick.net/~at/.*")) {
+                    MsgboyHelper.cleaner.remove(child);
+                }
             }
         }
         else if(child.nodeName == "P") {
@@ -211,7 +227,7 @@ MsgboyHelper.cleaner.dom = function(element) {
             }
             else {
                 if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") == "") {
-                    MsgboyHelper.cleaner.remove(child);
+                    // MsgboyHelper.cleaner.remove(child);
                 }
             }
         }
@@ -248,8 +264,8 @@ MsgboyHelper.cleaner.dom = function(element) {
         else {
             // Not much
         }
-        // Remove style attributes
         
+        // Remove style attributes
         $(child).removeAttr("style");
         $(child).removeAttr("align");
         $(child).removeAttr("width");
@@ -260,6 +276,8 @@ MsgboyHelper.cleaner.dom = function(element) {
         $(child).removeAttr("cellspacing");
         $(child).removeAttr("valign");
         $(child).removeAttr("border");
+        
+        
         
         MsgboyHelper.cleaner.dom(child);
     })

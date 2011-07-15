@@ -70,31 +70,29 @@ var MessageView = Backbone.View.extend({
     },
 
     image_layout: function() {
-        $(this.el).addClass("image");
-        $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
-        this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
-        
-        var img = $("<img/>").attr("src", this.model.image());
-        img.appendTo($(this.el));
-        
+        // Let's check that the img is not too small! If it is, we may want to switch to a text view...
         var img_size = MsgboyHelper.get_original_element_size(this.$("img").get());
-        if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
-            if($(this.el).height() > img_size.height) {
-                $(this.el).css("height", img_size.height)
-            }
-            else {
+        if(img_size.width < $(this.el).width()) {
+            this.text_layout();
+        }
+        else {
+            $(this.el).addClass("image");
+            $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
+            this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
+
+            var img = $("<img/>").attr("src", this.model.image());
+            img.appendTo($(this.el));
+
+            if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
                 this.$("img").css("max-height", "100%");
-            }
-        } else {
-            if($(this.el).width() > img_size.width) {
-                $(this.el).css("width", img_size.width);
-            }
-            else {
+            } else {
                 this.$("img").css("max-width", "100%");
             }
+
+
+            this.adjust_title();
+            this.trigger("rendered");
         }
-        this.adjust_title();
-        this.trigger("rendered");
     },
     
     text_layout: function() {
@@ -102,22 +100,8 @@ var MessageView = Backbone.View.extend({
         $("<p>").html(MsgboyHelper.cleaner.html(this.model.text())).appendTo($(this.el));
         $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
         this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
-        var images = this.$("img");
-        var that = this;
-        if(images.length > 0) {
-            var count = 0;
-            this.$("img").each(function() {
-                count++;
-                if(count ==  images.length) {
-                    that.adjust_title();
-                    that.trigger("rendered");
-                }
-            });
-        }
-        else {
-            this.adjust_title();
-            this.trigger("rendered");
-        }
+        this.adjust_title();
+        this.trigger("rendered");
     },
     
     adjust_title: function() {
@@ -147,7 +131,7 @@ var MessageView = Backbone.View.extend({
         $(this.el).removeClass("brick-3");
         $(this.el).removeClass("brick-4");
         $(this.el).addClass("brick-1");
-        this.trigger("change");
+        // this.trigger("change");
         this.model.vote_down(function(result) {
             if(result.unsubscribe) {
                 var request = {

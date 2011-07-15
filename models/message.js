@@ -272,9 +272,6 @@ var Message = Backbone.Model.extend({
         if(this.attributes.links.enclosure && this.attributes.links.enclosure["image/jpeg"]) {
             return this.attributes.links.enclosure["image/jpeg"][0].href;
         }
-        if(this.attributes.links.thumbnail && this.attributes.links.thumbnail["image/jpeg"]) {
-            return this.attributes.links.thumbnail["image/jpeg"][0].href;
-        }
         return "";
     },
     

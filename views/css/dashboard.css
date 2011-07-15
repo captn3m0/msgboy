@@ -64,27 +64,28 @@ img.thumbs:hover {
 }
 
 .brick-1 {
-    font-size:0.8em;
+    /* These shouldn't be displayed anyway...*/
+    display:none;
+    width:0px;
+    height:0px;
 }
 
 .brick-2 {
     font-size:0.8em;
     width: 200px;
-    max-height: 100px
+    height: 100px
 }
 
 .brick-3 {
     font-size:1.0em;
     width: 300px;
-    min-height: 140px;
-    max-height: 280px; 
+    height: 150px;
 }
 
 .brick-4 {
     font-size:1.2em;
     width: 500px;
-    min-height: 160px; 
-    max-height: 320px; 
+    height: 300px;
 }
 
 .isotope,
