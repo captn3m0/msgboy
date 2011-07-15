@@ -43,49 +43,44 @@
     };
 
     function showNextMessage() {
-        var messageId = messages.pop();
-        if (!messageId) {
+        var message = messages.pop();
+        if (!message) {
             chrome.extension.sendRequest({
                 close: true
             }, function (response) {
                 window.close();
             });
         } else {
-            var message = new Message({
-                'id': messageId
-            })
-            message.fetch({
-                success: function () {
-                    window.focus(); // Put this alert in front!
-                    view = new MessageView({
-                        model: message
-                    });
-
-                    message.bind("up-ed", function() {
-                        view.remove();
-                        goToMessage(message);
-                        showNextMessage();
-                    });
-
-                    message.bind("down-ed", function() {
-                        view.remove();
-                        showNextMessage();
-                    });
-                    
-                    view.bind("rendered", function () {
-                        $(view.el).appendTo($("body"));
-                    });
-                    
-                    view.render(); // builds the HTML
-                },
+            window.focus(); // Put this alert in front!
+            view = new MessageView({
+                model: message
             });
+            
+            message.bind("up-ed", function() {
+                view.remove();
+                goToMessage(message);
+                showNextMessage();
+            });
+            
+            message.bind("down-ed", function() {
+                view.remove();
+                showNextMessage();
+            });
+            
+            view.bind("rendered", function () {
+                $(view.el).appendTo($("body"));
+            });
+            
+            view.render(); // builds the HTML
         }
     }
     
     function rotate() {
         setTimeout(function() {
             if(!mouse_in) {
-                view.remove();
+                if(view) {
+                    view.remove();
+                }
                 showNextMessage();
             }
             rotate();
@@ -103,11 +98,18 @@
     $(document).ready(function () {
         chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
             if (request.notify && request.notify.message) {
-                messages.push(request.notify.message);
-                if (!started) {
-                    started = true // Initiate the loop.
-                    showNextMessage();
-                }
+                var message = new Message({
+                    'id': request.notify.message
+                });
+                message.fetch({
+                    success: function() {
+                        messages.push(message);
+                        if (!started) {
+                            started = true // Initiate the loop.
+                            showNextMessage();
+                        }
+                    }
+                });
             }
         });
     });
