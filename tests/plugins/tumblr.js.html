@@ -21,9 +21,9 @@
     <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script>
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/bookmarks.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/tumblr.js" type="text/javascript"></script> 
     
-    <title>Browser Bookmarks QUnit test</title>
+    <title>Browsing History QUnit test</title>
 </head>
 <body>
     <h1 id="qunit-header">Archive QUnit test</h1>
@@ -37,15 +37,9 @@
         var plugin = Plugins.all[0];
         plugin.listSubscriptions(function(subscriptions) {
             console.log(subscriptions);
-        }); 
+        });
         
-        plugin.subscribeInBackground(function(message) {
-            console.log(message)
-        })
-    
     </script>
-    
-    
     
 </body>
 </html>
