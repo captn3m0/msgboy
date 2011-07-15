@@ -9,7 +9,7 @@ var MessageView = Backbone.View.extend({
     },
 
     initialize: function() {
-        _.bindAll(this, "render", "up", "down", "format", "image_layout", "text_layout", "adjust_title");
+        _.bindAll(this, "render", "up", "down", "format");
         
         this.model.view = this;
         
@@ -49,62 +49,50 @@ var MessageView = Backbone.View.extend({
     },
     
     format: function() {
-        if(this.model.layout() == "image") {
-            this.image_layout();
-        }
-        else {
-            this.text_layout();
-        }
-    },
-    
-    image_layout: function() {
-        // Let's check that the img is not too small! If it is, we may want to switch to a text view...
-        var img_size = MsgboyHelper.get_original_element_size(this.$("img").get());
-        if(img_size.width < MsgboyHelper.get_original_element_size(this.el).width) {
-            this.text_layout();
-        }
-        else {
-            $(this.el).addClass("image");
-            $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
-            this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
-
-            var img = $("<img/>").attr("src", this.model.image());
-            img.appendTo($(this.el));
-
-            if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
-                this.$("img").css("max-height", "100%");
-            } else {
-                this.$("img").css("max-width", "100%");
-            }
-
-
-            this.adjust_title();
-            this.trigger("rendered");
-        }
-    },
-    
-    text_layout: function() {
         $(this.el).addClass("text");
+        $("<div>", {
+            "class": "full-content",
+            "style": "display:none"
+        }).html(MsgboyHelper.cleaner.html(this.model.text())).appendTo($(this.el));
+        
+        // Let's allow for the images to be loaded... but how long should we wait?
+        setTimeout(function() {
+            this.$(".full-content img").each(function(idx, img) {
+                var img_size = MsgboyHelper.get_original_element_size(img);
+                if(img_size.width > $(this.el).width() && img_size.height > $(this.el).height()) {
+                    this.$("p").remove();
+                    var img = $("<img/>").attr("src", $(img).attr("src"));
+                    img.appendTo($(this.el));
+                    // Resize the image.
+                    if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
+                        this.$("img").css("max-height", "100%");
+                    } else {
+                        this.$("img").css("max-width", "100%");
+                    }
+                    this.$("h1").text(this.model.attributes.title).appendTo($(this.el));
+                    $(this.el).bind("mouseover", function() {
+                        this.$("h1").text(this.model.attributes.source.title).appendTo($(this.el));
+                    }.bind(this));
+                    $(this.el).bind("mouseout", function() {
+                        this.$("h1").text(this.model.attributes.title).appendTo($(this.el));
+                    }.bind(this));
+                }
+            }.bind(this));
+        }.bind(this), 3000); // For now, let's wait for 2 seconds. It would be much much better if we had a callback that works when images have been loaded.
+        
+        // Adding the rest of the content.
         $("<p>").html(MsgboyHelper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
         $("<h1/>").text(this.model.attributes.source.title).appendTo($(this.el));
         this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
-        this.adjust_title();
+        this.$("h1").css("width", "100%");
+        
+        // Chose a color for the box.
         var sum = 0
         _.each(this.model.attributes.source.title.split(""), function(c) {
-            // console.log(c);
             sum += c.charCodeAt(0);
         });
         $(this.el).addClass("color" + sum%7);
         this.trigger("rendered");
-    },
-    
-    adjust_title: function() {
-        // this.$("h1").css("font-size", "20px");
-        // var i = parseInt(this.$("h1").css("font-size"));
-        // while((MsgboyHelper.get_original_element_size(this.$("h1")).width + 40) > $(this.el).width() && i > 6) {
-        //     this.$("h1").css("font-size", --i+"px");
-        // }
-        this.$("h1").css("width", "100%");
     },
     
     // Message was voted up
@@ -115,8 +103,6 @@ var MessageView = Backbone.View.extend({
         $(this.el).addClass("brick-4");
         this.trigger("change");
         this.model.vote_up();
-        this.adjust_title(function() {
-        });
     },
     
     // Message was voted down
