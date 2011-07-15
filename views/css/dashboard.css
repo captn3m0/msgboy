@@ -10,7 +10,7 @@ body{
 .message {
     background: #fff;
     padding: 0px;
-    margin: 3px;
+    margin: 10px;
     overflow: hidden;
     min-height: 50px;
 }
@@ -116,6 +116,8 @@ img.thumbs:hover {
 
 
 .text {
+    background-color: #000;
+    color: #E6E6E6;
 }
 
 .text img {
@@ -128,5 +130,49 @@ img.thumbs:hover {
 }
 
 .text h1 {
+    
 }
 
+
+.brick-1 p {
+}
+
+.brick-2 p{
+    font-size:1.0em;
+}
+
+.brick-3 p{
+    font-size:2.0em;
+}
+
+.brick-4 p{
+    font-size:3.0em;
+}
+
+.grey, .color0 {
+    background-color: #646265;
+}
+
+.purple, .color1 {
+    background-color: #6E4EC8;
+}
+
+.blue, .color2 {
+    background-color: #1B8CD7;
+}
+
+.green, .color3 {
+    background-color: #7FD219;
+}
+
+.yellow, .color4 {
+    background-color: #EACB00;
+}
+
+.orange, .color5 {
+    background-color: #F49000;
+}
+
+.red, .color6 {
+    background-color: #EF0019;
+}

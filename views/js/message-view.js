@@ -6,8 +6,6 @@ var MessageView = Backbone.View.extend({
         "click" : "click",
         "click .up": "up",
         "click .down": "down",
-        "mouseover": "show_source",
-        "mouseout": "show_title"
     },
 
     initialize: function() {
@@ -59,16 +57,6 @@ var MessageView = Backbone.View.extend({
         }
     },
     
-    show_source: function() {
-        this.$("h1").text(this.model.attributes.source.title); 
-        this.adjust_title();
-    },
-    
-    show_title: function() {
-        this.$("h1").text(this.model.attributes.title);
-        this.adjust_title();
-    },
-
     image_layout: function() {
         // Let's check that the img is not too small! If it is, we may want to switch to a text view...
         var img_size = MsgboyHelper.get_original_element_size(this.$("img").get());
@@ -97,10 +85,16 @@ var MessageView = Backbone.View.extend({
     
     text_layout: function() {
         $(this.el).addClass("text");
-        $("<p>").html(MsgboyHelper.cleaner.html(this.model.text())).appendTo($(this.el));
-        $("<h1/>").text(this.model.attributes.title).appendTo($(this.el));
+        $("<p>").html(MsgboyHelper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
+        $("<h1/>").text(this.model.attributes.source.title).appendTo($(this.el));
         this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
         this.adjust_title();
+        var sum = 0
+        _.each(this.model.attributes.source.title.split(""), function(c) {
+            // console.log(c);
+            sum += c.charCodeAt(0);
+        });
+        $(this.el).addClass("color" + sum%7);
         this.trigger("rendered");
     },
     
