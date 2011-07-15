@@ -60,7 +60,7 @@ var MessageView = Backbone.View.extend({
     image_layout: function() {
         // Let's check that the img is not too small! If it is, we may want to switch to a text view...
         var img_size = MsgboyHelper.get_original_element_size(this.$("img").get());
-        if(img_size.width < $(this.el).width()) {
+        if(img_size.width < MsgboyHelper.get_original_element_size(this.el).width) {
             this.text_layout();
         }
         else {
