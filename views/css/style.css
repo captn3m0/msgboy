@@ -110,107 +110,15 @@ html, body {
     padding: 0;
 }
 
-@-webkit-keyframes signalOn {
-    from {
-        opacity: 0;
-    }
-    5% {
-        opacity: .2;
-    }
-    7% {
-        opacity: 0;
-    }
-    17% {
-        opacity: .4;
-    }
-    19% {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-html {
-    background: url(../images/buildings.png) no-repeat bottom right fixed,
-        url(../images/clouds.png) no-repeat 437px 34px fixed,
-        url(../images/page-bg.gif) repeat-x top left fixed;
-}
-
 body {
-    padding:0 0 0 29px;
-    font-family: sans-serif;
+    padding: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
     color: #191919;
 }
 
 a, a:visited {
     color: #358dc2;
     text-decoration: none;
-}
-
-#mb-signal {
-    background: url(../images/mb-signal.png) no-repeat top left;
-    -webkit-animation-name: signalOn;
-    -webkit-animation-iteration-count: 1;
-    -webkit-animation-duration: 2.5s;
-    -webkit-animation-timing-function: ease-out;
-    -webkit-animation-delay: .6s;
-    position: fixed;
-    top: 201px;
-    left: 659px;
-    height: 511px;
-    width: 343px;
-}
-
-#nav {
-    background: #025e88;
-    border: 1px solid #0375a9;
-    border-width: 0 1px;
-    margin : 0;
-    padding: 0;
-    width: 690px;
-}
-
-#nav-inner {
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#F2F3F3), to(#e6e7e7)) top left repeat-x;
-    border: 1px solid #004868;
-    border-width: 0 1px;
-    border-bottom: 1px solid #d9d9d9;
-    box-shadow: inset 0 0 1px #edf2f4;
-    height: 62px;
-    margin: 0 20px;
-    text-align: right;
-}
-
-#nav-inner h1 {
-    background: url(../images/mb-logo.png) no-repeat top left;
-    display: block;
-    font-size: 0;
-    height: 44px;
-    left: 20px;
-    position: relative;
-    top: 10px;    
-    width: 115px;
-}
-
-#inbox, #settings {
-    float:left;
-    padding:10px;
-}
-
-#nav-inner .settings {
-    background: url(../images/options.png) no-repeat top left;
-    cursor: pointer;
-    display: block;
-    float: right;
-    font-size: 0;
-    height: 20px;
-    padding: 0;
-    position: relative;
-    right: 20px;
-    text-indent: -9999px;
-    top: 10px;
-    width: 20px;
 }
 
 span.time {

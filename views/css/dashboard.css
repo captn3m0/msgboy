@@ -1,16 +1,43 @@
-body{
-    padding:0px;
+header {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0D1C22), to(#11242d));
+    color: #fff;
+    height: 56px;
+    padding: 21px 59px;
+    margin: 0;
 }
+
+header h1 {
+    background-image: url(../images/mb-logo.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    text-indent: -9999em;
+    height: 53px;
+    width: 142px;
+    float: left;
+}
+
+header h2 {
+    float: left;
+    height: 53px;
+    line-height: 53px;
+    margin-left: 13px;
+    font-weight: normal;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
 #archive {
     background: transparent;
     border: none;
-    width: 1350px;
+    padding: 0 49px;
+    width: 100%;
 }
 
 .message {
     background: #fff;
     padding: 0px;
     margin: 10px;
+    margin-left: 10px;
     overflow: hidden;
     min-height: 50px;
 }
@@ -28,6 +55,7 @@ body{
     color: #E6E6E6;
     background-color: rgba(10,10,10,0.8);
     background-size: 16px 16px;
+    text-indent: 0;
 }
 
 .votes {
