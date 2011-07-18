@@ -67,6 +67,12 @@
                 showNextMessage();
             });
             
+            view.bind("clicked", function () {
+                view.remove();
+                goToMessage(message);
+                showNextMessage();
+            });
+            
             view.bind("rendered", function () {
                 $(view.el).appendTo($("body"));
             });

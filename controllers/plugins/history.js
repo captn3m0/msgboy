@@ -63,7 +63,7 @@ Plugins.register(new function () {
                     for(var i=0; i < times.length - 1; i++) {
                         diffs[i] =  times[i+1] - times[i];
                     }
-                    if( MsgboyHelper.maths.array.normalized_deviation(diffs) < 1) && (times.slice(-1)[0] -  times[0] > 1000 * 60 * 60 * 3)) {
+                    if(MsgboyHelper.maths.array.normalized_deviation(diffs) < 1 && (times.slice(-1)[0] -  times[0] > 1000 * 60 * 60 * 3)) {
                         // This url was visited quite often. We need to check the feeds and subscribe
                         MsgboyHelper.links_to_feeds_at_url(historyItem.url, function (links) {
                             _.each(links, function (link) {
