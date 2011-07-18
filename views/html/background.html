@@ -78,7 +78,7 @@
 	var connection = new Strophe.Connection({
 	    protocol: new Strophe.Websocket(websocketEndpoint)
 	});
-	connection.max_stanzas_per_second = 3; // We limit to 3 stanzas per second.
+	connection.max_stanzas_per_second = 3; // We limit to 3 outgoing stanzas per second.
 	var password = "";
 	var jid = "";
 	var autoReconnect = false;
@@ -229,7 +229,6 @@
 	    //////////////////////////////////////////////////////////////////////////////////////
 	    connection.caps.setNode("http://download.msgboy.com/msgboy.crx")
 	    connection.caps.addDiscoCategory(extension_infos.name + " " + extension_infos.version, "client", "web", "en");
-
 	    connection.caps.addDiscoFeature("http://jabber.org/protocol/caps");
 	
 	    //////////////////////////////////////////////////////////////////////////////////////
@@ -288,7 +287,7 @@
 	            });
 	            port.postMessage(currentConnectionStatus.msg);
 	            connectionWatchers.push(port);
-	        } 
+	        }
 	    });
 
 	    // Handler for messages
@@ -380,26 +379,6 @@
 	                sendResponse({
 	                    value: result
 	                });
-	            });
-	        } else if (request.connect) {
-	            log("Request : connect")
-	            reconnect();
-	            sendResponse({
-	                value: true
-	            });
-	        } else if (request.reset) {
-	            log("Request : reset")
-	            // First, disconnect
-	            autoReconnect = false; // Let's make sure we don't the autoReconnect.
-	            connection.disconnect();
-	            // Then delete pending notifications
-	            if (currentNotification) {
-	                currentNotification.cancel();
-	            }
-	            // Finally, clean the storage.
-	            inbox = new Inbox({id: "1"});
-	            sendResponse({
-	                value: true
 	            });
 	        } else if (request.close) {
 	            log("Request : close")
