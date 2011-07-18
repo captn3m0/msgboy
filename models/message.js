@@ -60,7 +60,7 @@ var Message = Backbone.Model.extend({
             // We need to unsubscribe the feed if possible, but only if there is enough negative votes.
             var brothers = new Archive();
             brothers.for_feed(this.attributes.feed, function() {
-                var states = relevanceMath.percentages(brothers.pluck("state"), {"new":0.0, "up-ed":0.0, "down-ed": 0.0, "skipped":0.0}, function(member, index) {
+                var states = relevanceMath.percentages(brothers.pluck("state"), ["new", "up-ed", "down-ed", "skipped"], function(member, index) {
                     return 1;
                 });
                 var counts = relevanceMath.counts(brothers.pluck("state"));
@@ -112,18 +112,16 @@ var Message = Backbone.Model.extend({
             return brother.attributes.created_at;
         }
         brothers.for_feed(this.attributes.feed, function() {
-            var relevance = 1.0;
+            var relevance = 0.7; // This is the default relevance
             if(brothers.length == 0) {
                 // We can't compute relevance
             } else {
                 // So, now, we need to check the ratio of up-ed and down-ed. [TODO : limit the subset?].
-                var states = relevanceMath.percentages(brothers.pluck("state"), {"new":0.0, "up-ed":0.0, "down-ed": 0.0, "skipped":0.0}, function(member, index) {
-                    return 1;
-                });
+                var states = relevanceMath.percentages(brothers.pluck("state"), ["new", "up-ed", "down-ed", "skipped"]);
 
                 if(states["up-ed"] == 0 && states["down-ed"] == 0 && states["skipped"] == 0) {
-                    // We have no clue! So we keep the relevance at 1, because we really want to get some indication!
-                    relevance = 1.0;
+                    // We have no clue! So we put the revelance at 0.5, because we're favorable :)
+                    relevance = 0.7;
                 }
                 else {
                     relevance = relevanceMath.average(states, {
@@ -167,7 +165,7 @@ var Message = Backbone.Model.extend({
     
     /* Returns true of the message is relevant! */
     is_relevant: function() {
-        return this.attributes.relevance > 0.5;
+        return this.attributes.relevance >= 0.5;
     },
     
     main_link: function() {
@@ -316,31 +314,36 @@ var relevanceMath = {
         return counts;
     },
 
-    percentages: function(array, defaults, weight) {
-        var counts = {}, percentages = defaults, sum = 0;
+    // Returns the percentages of each element in an array.
+    percentages: function(array) {
+        var counts = {}, percentages = {}, sum = 0;
         _.each(array, function(element, index, list) {
             if(!counts[element]) {
                 counts[element] = 0;
             }
-            if(typeof(weight) != "undefined") {
-                counts[element] += weight(element, index);
-            }
-            else {
-                counts[element] += 1;
-            }
+            counts[element] += 1;
         })
         sum = _.reduce(counts, function(memo, num){ return memo + num; }, 0);
+        
         _.each(_.keys(counts), function(key) {
             percentages[key] = counts[key]/sum;
         });
+        
         return percentages;
     },
     
+    // Returns the average based on the weights and the percentages.
     average: function(percentages, weights) {
-        var sum = 0
+        var sum = 0, norm = 0;
         _.each(_.keys(percentages), function(key) {
             sum += percentages[key] * weights[key];
+            norm+= weights[key];
         });
+        if(norm == 0) {
+            return sum;
+        } else {
+            return sum/norm;
+        }
         return sum;
     },
 }
