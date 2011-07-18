@@ -1,10 +1,11 @@
 body{
     padding:0px;
+    padding: 10px 20px 10px 20px;
 }
 #archive {
-    background: transparent;
     border: none;
-    width: 1350px;
+    width:100%;
+    background: transparent;
 }
 
 .message {
