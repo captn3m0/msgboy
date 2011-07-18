@@ -146,10 +146,35 @@
             });
             inbox.fetch({
                 success: function() {
-                    archiveView = new ArchiveView({
-                        el: "#archive",
+                    if(inbox.attributes.epoch > 0) {
+                        archiveView = new ArchiveView({
+                            el: "#archive",
+                        });
+                        archiveView.render();
+                    } 
+                    else {
+                        chrome.tabs.create({
+                            url: chrome.extension.getURL('/views/html/unsignup.html'),
+                            selected: true
+                        });
+                    }
+                },
+                error: function() {
+                    // There is no such inbox!
+                    inbox.save({
+                        epoch: new Date().getTime()
+                    }, {
+                        success: function() {
+                            chrome.tabs.create({
+                                url: chrome.extension.getURL('/views/html/unsignup.html'),
+                                selected: true
+                            });
+                            window.close();
+                        },
+                        error: function() {
+                            log("We could not create a database for msgboy.")
+                        }
                     });
-                    archiveView.render();
                 }
             })
         </script>
