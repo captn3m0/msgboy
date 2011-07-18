@@ -270,14 +270,16 @@ span.time {
     display:none;
 }
 
-/*#archive {
-    background: #025e88;
-    border: 1px solid #0375a9;
-    border-width: 0 1px;
-    margin: 0 0;
-    opacity: 1;
-    width: 690px;
+#alert {
+    margin-top:100px;
+    color: #FFF;
+    background-color: rgba(255,233,0,0.7);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    text-align:center;
+    padding: 10px;
+    width: 20%;
+    margin-left: auto;
+    margin-right: auto;
 }
-*/
 
 
