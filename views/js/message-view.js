@@ -121,7 +121,7 @@ var MessageView = Backbone.View.extend({
                     unsubscribe: this.model.attributes.feed
                 };
                 chrome.extension.sendRequest(request);
-                archiveView.delete_from_feed(this.model.attributes.feed);
+                this.trigger("delete-from-feed", this.model.attributes.feed);
             }
         }.bind(this));
     },

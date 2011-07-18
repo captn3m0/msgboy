@@ -482,6 +482,7 @@
                 message.fetch({
                     success: function() {
                         message.vote_down(function(result) {
+                            console.log(result);
                             sendResponse({
                                 value: true
                             });
