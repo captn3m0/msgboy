@@ -118,19 +118,13 @@ var Message = Backbone.Model.extend({
             } else {
                 // So, now, we need to check the ratio of up-ed and down-ed. [TODO : limit the subset?].
                 var states = relevanceMath.percentages(brothers.pluck("state"), ["new", "up-ed", "down-ed", "skipped"]);
-
-                if(states["up-ed"] == 0 && states["down-ed"] == 0 && states["skipped"] == 0) {
-                    // We have no clue! So we put the revelance at 0.5, because we're favorable :)
-                    relevance = 0.7;
-                }
-                else {
-                    relevance = relevanceMath.average(states, {
-                        "new" : 0.6,
-                        "up-ed": 1.0,
-                        "down-ed": 0.0,
-                        "skipped": 0.4
-                    });
-                }
+                
+                relevance = relevanceMath.average(states, {
+                    "new" : 0.6,
+                    "up-ed": 1.0,
+                    "down-ed": 0.0,
+                    "skipped": 0.4
+                });
             }
 
             // Keywords [TODO]
@@ -337,7 +331,7 @@ var relevanceMath = {
         var sum = 0, norm = 0;
         _.each(_.keys(percentages), function(key) {
             sum += percentages[key] * weights[key];
-            norm+= weights[key];
+            norm+= percentages[key];
         });
         if(norm == 0) {
             return sum;
