@@ -41,6 +41,7 @@
         "/controllers/plugins/statusnet.js",
         "/controllers/plugins/tumblr.js",
         "/controllers/plugins/typepad.js",
+        "/controllers/plugins/blogger.js",
         "/controllers/run_plugins.js"
       ],
       "css": [

@@ -67,6 +67,11 @@
                 showNextMessage();
             });
             
+            view.bind("clicked", function () {
+                view.remove();
+                showNextMessage();
+            });
+            
             view.bind("rendered", function () {
                 $(view.el).appendTo($("body"));
             });

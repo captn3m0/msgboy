@@ -43,6 +43,7 @@
     <script src="../../controllers/plugins/github-users.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/google-reader.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/tumblr.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/blogger.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/posterous.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/statusnet.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/typepad.js" type="text/javascript"></script> 
@@ -407,106 +408,7 @@
 	            sendResponse({
 	                value: true
 	            });
-			} else if (request.unreadCount) {
-			    log("Request : unreadCount")
-				archive = new Archive();
-				archive.fetch({
-					conditions: {
-						unread_at: [inbox.attributes.epoch, new Date().getTime()]
-					},
-					success: function() {
-					    if(!inbox.attributes.max_unread || inbox.attributes.max_unread < archive.length) {
-					        inbox.save({
-					            max_unread: archive.length
-					        }, {
-					            success: function() {
-					                sendResponse({
-					                    value: archive.length/inbox.attributes.max_unread
-            			            });
-					            }
-					        });
-					    }
-					    else {
-    						sendResponse({
-    							value: archive.length/inbox.attributes.max_unread
-    			            });
-					    }
-					}.bind(this)
-				});
-			} else if (request.feedSpotted) {
-			    log("Request : feedSpotted " + request.feedSpotted);
-			    var feed = new Feed({url: request.feedSpotted});
-                feed.fetch({
-                    success: function() {
-                        feed.mark_as_seen({
-                            success: function() {
-                                // Done! We should check the seen_at
-                                if(feed.needs_suggestion()) {
-                                    sendResponse({
-                                        value: feed.attributes
-                                    });
-                                }
-                            },
-                            error: function() {
-                                // We don't really care much
-                            }
-                        });
-                    },
-                    error: function() {
-                        // Item not found. Let's add it, and then increment!
-                        feed.save({
-                            seen_at: [new Date().getTime()]
-                        }, {
-                            success: function() {
-                                // Cool. nothing to do.
-                            },
-                            error: function() {
-                                // We don't really care much
-                            }
-                        });
-                    }
-                });
-            } else if(request.suggestedFeedSkipped) {
-                log("Request : suggestedFeedSkipped " + request.suggestedFeedSkipped)
-                var feed = new Feed({url: request.suggestedFeedSkipped});
-                feed.fetch({
-                    success: function() {
-                        feed.mark_as_skipped({
-                            success: function() {
-                                sendResponse({
-                                    value: true
-                                });
-                            },
-                            error: function() {
-                                log("We couldn't mark the feed as skipped.")
-                            }
-                        });
-                    },
-                    error: function() {
-                        log("Skipped a feed that was never actually send. This is odd")
-                    }
-                }); 
-            } else if(request.suggestedFeedSubscribed) {
-                log("Request : suggestedFeedSubscribed " + request.suggestedFeedSubscribed);
-                var feed = new Feed({url: request.suggestedFeedSubscribed});
-                feed.fetch({
-                    success: function() {
-                        feed.mark_as_subscribed({
-                            success: function() {
-                                sendResponse({
-                                    value: true
-                                });
-                            },
-                            error: function() {
-                                log("We couldn't mark the feed as subscribed.")
-                            }
-                        });
-                    },
-                    error: function(e) {
-                        log("Subscribed a feed that was never actually send. This is odd")
-                    }
-                }); 
-            } else if(request.alternateNew) {
+			} else if(request.alternateNew) {
                 log("Request : alternateNew " + request.alternateNew);
                 // We need to find all feeds that match this alternate_new url!
                 var archive = new Archive();
@@ -580,6 +482,7 @@
                 message.fetch({
                     success: function() {
                         message.vote_down(function(result) {
+                            console.log(result);
                             sendResponse({
                                 value: true
                             });

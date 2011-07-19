@@ -8,7 +8,7 @@ Plugins.register(new function () {
     },
 
     this.hijack = function (follow, unfollow) {
-        // Hum. What?
+        // Hum. Nothing to do as we can't use the chrome.* apis from content scripts
     },
 
     this.listSubscriptions = function (callback) {
@@ -50,5 +50,34 @@ Plugins.register(new function () {
     this.isUsing = function (callback) {
         callback(true) // By default we will show.
     }
+    
+    this.subscribeInBackground = function(callback) {
+        chrome.history.onVisited.addListener(function(historyItem) {
+            if(historyItem.visitCount > this.visits_to_be_popular) {
+                chrome.history.getVisits({url: historyItem.url}, function(visits) {
+                    times = $.map(visits, function(visit) {
+                        return visit.visitTime;
+                    }).slice(-10);
+                    
+                    var diffs = [];
+                    for(var i=0; i < times.length - 1; i++) {
+                        diffs[i] =  times[i+1] - times[i];
+                    }
+                    if(MsgboyHelper.maths.array.normalized_deviation(diffs) < 1 && (times.slice(-1)[0] -  times[0] > 1000 * 60 * 60 * 3)) {
+                        // This url was visited quite often. We need to check the feeds and subscribe
+                        MsgboyHelper.links_to_feeds_at_url(historyItem.url, function (links) {
+                            _.each(links, function (link) {
+                                callback(link);
+                            });
+                        });
+                    }
+                    else {
+                        // No need to subscribe.
+                    }
+                })
+            }
+        }.bind(this));
+    }
+    
 
 });

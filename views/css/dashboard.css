@@ -14,7 +14,6 @@ header h1 {
     height: 53px;
     width: 142px;
     float: left;
-}
 
 header h2 {
     float: left;
@@ -27,7 +26,6 @@ header h2 {
 }
 
 #archive {
-    background: transparent;
     border: none;
     padding: 0 49px;
     width: 100%;
