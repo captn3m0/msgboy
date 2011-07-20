@@ -5,7 +5,8 @@ $.each(Plugins.all, function(index, plugin) {
         plugin.hijack(function(feed, done) {
             // Follow:
             chrome.extension.sendRequest({
-                subscribe: feed
+                signature: "subscribe",
+                params: feed
             }, function (response) {
                 done();
             });

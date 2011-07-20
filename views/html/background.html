@@ -24,12 +24,12 @@
     <script src="../../models/message.js" type="text/javascript"></script> 
     <script src="../../models/archive.js" type="text/javascript"></script> 
     <script src="../../models/inbox.js" type="text/javascript"></script> 
-    <script src="../../models/feed.js" type="text/javascript"></script> 
+    <script src="../../models/subscription.js" type="text/javascript"></script> 
 
     <!-- Controller includes -->
+    <script src="../../controllers/msgboy.js" type="text/javascript"></script> 
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     <script src="../../controllers/uploader.js" type="text/javascript"></script> 
-    
     
     <!-- Plugins includes -->
     <script src="../../controllers/plugins.js" type="text/javascript"></script> 
@@ -49,522 +49,123 @@
     <script src="../../controllers/plugins/typepad.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/quora-people.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/quora-topics.js" type="text/javascript"></script> 
+    <script src="../../controllers/events.js" type="text/javascript"></script> 
     
 </head>
 <body>
     <div id="log"></div>
     <script language='javascript'>
+    
+    // Google Analytics
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-22746593-1']);
+    _gaq.push(['_trackPageview']);
 
-	// Google Analytics
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-22746593-1']);
-	_gaq.push(['_trackPageview']);
-
-	(function () {
-	    var ga = document.createElement('script');
-	    ga.type = 'text/javascript';
-	    ga.async = true;
-	    ga.src = 'https://ssl.google-analytics.com/ga.js';
-	    var s = document.getElementsByTagName('script')[0];
-	    s.parentNode.insertBefore(ga, s);
-	})();
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	//                                Objects                                           //
-	//////////////////////////////////////////////////////////////////////////////////////
-	var inbox = new Inbox({id: "1"});
-	var logEnabled = true;
-	var currentConnectionStatus = {};
-	var websocketEndpoint = 'ws://websocket.msgboy.com:5288/ws-xmpp'
-	var connection = new Strophe.Connection({
-	    protocol: new Strophe.Websocket(websocketEndpoint)
-	});
-	connection.max_stanzas_per_second = 3; // We limit to 3 stanzas per second.
-	var password = "";
-	var jid = "";
-	var autoReconnect = false;
-	var connectionWatchers = [];
-	var currentNotification = null;
-	var connection_timeout = null;
-	var reconnectDelay = 0;
-
-	connection.rawInput = function (data) {
-        // log('RECV: ' + data);
-	};
-	connection.rawOutput = function (data) {
-        // log('SENT: ' + data);
-	};
-
-	Strophe.log = function (level, msg) {
-	    log(msg);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////
-    //                                  Functions                                       //
-    //////////////////////////////////////////////////////////////////////////////////////
-
-    // Logs messages to the console
-    function log(msg) {
-        if (logEnabled) {
-            console.log(msg);
-        }
-    }
-
-    // Handles XMPP Connections
-    function onConnect(status) {
-        var msg = currentConnectionStatus['msg'];
-        if (status == Strophe.Status.CONNECTING) {
-            msg = 'Msgboy is connecting.';
-        } else if (status == Strophe.Status.CONNFAIL) {
-            msg = 'Msgboy failed to connect.';
-            setTimeout(function () {
-                if (autoReconnect) {
-					reconnectDelay += 1;
-					connect();
-				}
-            }, fibonacci(reconnectDelay) * 1000);
-			if(connection_timeout) clearTimeout(connection_timeout);
-        } else if (status == Strophe.Status.AUTHFAIL) {
-            msg = 'Msgboy couldn\'t authenticate. Please check your credentials';
-            autoReconnect = false // We need to open the settings tab
-            chrome.tabs.create({
-                url: chrome.extension.getURL('/views/html/options.html'),
-                selected: true
-            });
-			if(connection_timeout) clearTimeout(connection_timeout);
-        } else if (status == Strophe.Status.DISCONNECTING) {
-            msg = 'Msgboy is disconnecting.'; // We may want to time this out.
-        } else if (status == Strophe.Status.DISCONNECTED) {
-            msg = 'Msgboy is disconnected. ';
-            setTimeout(function () {
-                if (autoReconnect) {
-					reconnectDelay += 1;
-					connect();
-				}
-            }, fibonacci(reconnectDelay) * 1000);
-			if(connection_timeout) clearTimeout(connection_timeout);
-        } else if (status == Strophe.Status.CONNECTED) {
-			reconnectDelay = 0
-            autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
-            msg = 'Msgboy is connected.';
-			connection.caps.sendPresenceWithCaps(); // Send presence! 
-			if(connection_timeout) clearTimeout(connection_timeout);
-        }
-
-        currentConnectionStatus['msg'] = msg;
-        currentConnectionStatus.trigger("change", msg);
-        log(msg);
-    } // function onConnect
-
-    // Connects the XMPP Client
-	// It also includes a timeout that tries to reconnect when we could not connect in less than 1 minute.
-    function connect() {
-		connection_timeout = setTimeout(function() {
-			// We add a 60 secinds reconnect when trying to connect.
-			// If connection failed. We just try again.
-			connect();
-		}, 60*1000)
-        password = inbox.attributes.password;
-        jid = inbox.attributes.jid + "@msgboy.com/extension";
-		
-        connection.connect(jid, password, onConnect);
-    }
-
-    // Disconnects to reconnect.
-    function reconnect() {
-        if (connection.status == Strophe.Status.CONNECTING || connection.status == Strophe.Status.CONNECTED || connection.status == Strophe.Status.DISCONNECTING) {
-            connection.disconnect(); // Disconnect...
-        } else if (
-        connection.status == null || connection.status == Strophe.Status.DISCONNECTED || connection.status == Strophe.Status.CONNFAIL || connection.status == Strophe.Status.AUTHFAIL) {
-            connect(); // Looks like we never tried to actually connect!
-        }
-    }
-
-    // Uploads the content of the database. this will be used for analysis of the dataset o determine a better algorithm.
-    function uploadData() {
-        var archive = new Archive();
-        archive.all({
-            created_at: [new Date().getTime(), 0]
-        },
-        function() {
-            $("#log").text(JSON.stringify(archive.toJSON()));
-            MsgboyHelper.uploader.upload(inbox.attributes.jid, archive.toJSON());
-        });
-    }
-
-    function notify(id) {
-        // Open a notification window if needed!
-		if (!currentNotification) {
-			url = chrome.extension.getURL('/views/html/notification.html');
-			webkitNotification = window.webkitNotifications.createHTMLNotification(url);
-			webkitNotification.onclose = function () {
-				currentNotification = null;
-			};
-			webkitNotification.show();
-			currentNotification = webkitNotification;
-		}
-		chrome.extension.sendRequest({
-			"notify": {
-				"message": id
-			}
-		}, function (response) {
-			// Let's notify the people who may care about this, includingthe notification popup, hopefully :)
-		});
-		return currentNotification;
-    }
-
-	inbox.bind("messages:added", function(message) {
-	    if(message.is_relevant()) {
-	        log("Relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
-    		notify(message.id);
-	    }
-	    else {
-	        log("Not relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
-	    }
-	})
-
-	chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
-
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    //                   XMPP Capabilities		                                        //
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    connection.caps.setNode("http://download.msgboy.com/msgboy.crx")
-	    connection.caps.addDiscoCategory(extension_infos.name + " " + extension_infos.version, "client", "web", "en");
-
-	    connection.caps.addDiscoFeature("http://jabber.org/protocol/caps");
-	
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    //                   Notification Received  Handler                                 //
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    $(document).bind('notification_received', function (ev, notification) {
-		    log("Notification received from " + notification.source.url);
-			var msg = connection.superfeedr.convertAtomToJson(notification.payload);
-			msg.source = notification.source;
-			msg.feed = notification.source.url;
-			if(notification.via) {
-				msg.via = notification.via
-			}
-	        var message = inbox.addMessage(msg, {
-				success: function() {
-					// Cool, message saved!
-				    log("Saved message " + msg.id);
-				}.bind(this),
-				error: function(object, error) {
-				    // Message was not saved... probably a dupe
-				    log("Could not save message " + JSON.stringify(msg));
-				    log(object);
-				    log(error);
-				}.bind(this),
-			});
-		});
-
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    //                   Connection Status                                              //
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    currentConnectionStatus['msg'] = 'Msgboy is disconnected. ';
-	    _.extend(currentConnectionStatus, Backbone.Events);
-	    currentConnectionStatus.bind("change", function (msg) {
-	        $.each(connectionWatchers, function (index, port) {
-	            try {
-	                port.postMessage(msg);
-	            } catch (error) {
-	                log("Could not post message to port : " + error)
-	            }
-	        })
-	    });
-
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    //                          Chrome Extension Handlers                               //
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    // Adds a listener on the connection status to be used in the bookmark
-	    chrome.extension.onConnect.addListener(function (port) {
-	        log("New port connected : " + port.tab.id);
-	        if (port.name == "connection") {
-	            port.onDisconnect.addListener(function () {
-	                log("This port was disconnected : " + port.tab.id)
-	                idx = connectionWatchers.indexOf(port);
-	                if (idx != -1) {
-	                    connectionWatchers.splice(idx, 1);
-	                }
-	            });
-	            port.postMessage(currentConnectionStatus.msg);
-	            connectionWatchers.push(port);
-	        } 
-	    });
-
-	    // Handler for messages
-	    chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-	        if (request.settings) { // Options
-	            if (request.settings.get) { // get them
-	                log("Request : settings.get " + JSON.stringify(request.settings.get));
-	                sendResponse({
-	                    value: inbox.get(request.settings.get[0])
-	                });
-	            } else if (request.settings.set) { // Set them
-	                log("Request : settings.set " + JSON.stringify(request.settings.set));
-	                attrs = {};
-	                attrs[request.settings.set[0]] = request.settings.set[1];
-					inbox.save(attrs, {
-						success: function() {
-							sendResponse({
-								value: true
-							});
-						}
-					});
-	            }
-	        } else if (request.notify) {
-	            log("Request : notify", request.notify);
-	            notify(request.notify);
-	            sendResponse({
-					value: true
-				});
-	        } else if (request.tab) { // Open tab
-	            log("Request : tab " + request.tab.url)
-		
-				var active_window = null
-				
-				chrome.windows.getAll({}, function(windows) {
-					windows = _.select(windows, function(win) {
-						return win.type == "normal" && win.focused
-					}, this)
-					// If no window is focused and "normal"
-					if(windows.length == 0) {
-						window.open(request.tab.url); // Can't use Chrome's API as it's buggy :(
-					}
-					else {
-						// Just open an extra tab.
-						options = request.tab
-						options.windowId = windows[0].id
-						chrome.tabs.create(options, function() {
-							sendResponse({
-								value: true
-							});
-						});
-					}
-				})
-	        } else if (request.subscribe) { // Subscribes to more feeds
-	            log("Request : subscribe " + request.subscribe.url);
-	            connection.superfeedr.subscribe(request.subscribe.url, function (result, feed) {
-	                log("Request : subscribed " + request.subscribe.url);
-	                if(typeof(request.subscribe.notify) == "undefined" || request.subscribe.notify) {
-    	                var atom_id = "tag:msgboy.com," + (new Date()).format("yyyy-mm-dd") + "/internal/subscriptions/" + escape(request.subscribe.url);
-    	                var title = feed.title || request.subscribe.title
-    					var msg = {
-    	                    id: MD5.hexdigest(atom_id + Math.random() * 11),
-    	                    atom_id: atom_id,
-    	                    title: "Following " + title,
-    	                    summary: "You're now following " + title,
-    	                    read_at: new Date().getTime(),
-    						unread_at: 0,
-    	                    starred_at: 0,
-    	                    content: null,
-    	                    links: {},
-    	                    source: null
-    	                };
-    	                message = inbox.addMessage(msg, {
-    						success: function() {
-    							// Cool, message saved!
-    						},
-    						error: function() {
-    						    // Probably a dupe.
-    						}
-    					});
-	                }
-	                sendResponse({
-                        value: result
-                    });
-	            })
-	        } else if (request.unsubscribe) { // Unsubscribes from feeds
-	            log("Request : unsubscribe "  + request.unsubscribe);
-	            connection.superfeedr.unsubscribe(request.unsubscribe, function (result) {
-    	            log("Request : unsubscribed "  + request.unsubscribe);
-	                sendResponse({
-	                    value: result
-	                });
-	            });
-	        } else if (request.connect) {
-	            log("Request : connect")
-	            reconnect();
-	            sendResponse({
-	                value: true
-	            });
-	        } else if (request.reset) {
-	            log("Request : reset")
-	            // First, disconnect
-	            autoReconnect = false; // Let's make sure we don't the autoReconnect.
-	            connection.disconnect();
-	            // Then delete pending notifications
-	            if (currentNotification) {
-	                currentNotification.cancel();
-	            }
-	            // Finally, clean the storage.
-	            inbox = new Inbox({id: "1"});
-	            sendResponse({
-	                value: true
-	            });
-	        } else if (request.close) {
-	            log("Request : close")
-	            currentNotification = null;
-	            sendResponse({
-	                value: true
-	            });
-			} else if(request.alternateNew) {
-                log("Request : alternateNew " + request.alternateNew);
-                // We need to find all feeds that match this alternate_new url!
-                var archive = new Archive();
-                archive.fetch({
-                    conditions: {
-                        alternate_new: request.alternateNew
-                    },
-                    success: function() {
-                        sendResponse({
-                            value: archive.models
-                        });
-                    },
-                    error: function() {
-                        sendResponse({
-                            value: []
-                        });
-                    }
-                });
-	        } else if(request.markAsRead) {
-                log("Request : markAsRead " + request.markAsRead);
-                var message = new Message({id: request.markAsRead});
-                message.fetch({
-                    success: function() {
-                        message.mark_as_read(function(result) {
-                            sendResponse({
-                                value: result
-                            });
-                        });
-                    },
-                    error: function() {
-                        message.mark_as_read(function(result) {
-                            sendResponse({
-                                value: false
-                            });
-                        });
-                    }
-                })
-	        } else if(request.message) {
-                log("Request : message " + request.message);
-                var message = new Message({id: request.message});
-                message.fetch({
-                    success: function() {
-                        sendResponse({
-                            value: message.toJSON()
-                        });
-                    },
-                    error: function() {
-                        // Dang. We could not retrieve that message :(
-                    }
-                });
-            } else if(request.up) {
-                log("Request : up " + request.up);
-                var message = new Message({id: request.up});
-                message.fetch({
-                    success: function() {
-                        message.vote_up(function() {
-                            sendResponse({
-                                value: true
-                            });
-                        });
-                    },
-                    error: function() {
-                        sendResponse({
-                            value: false
-                        });
-                    }
-                });
-            } else if(request.down) {
-                log("Request : down " + request.down);
-                var message = new Message({id: request.down});
-                message.fetch({
-                    success: function() {
-                        message.vote_down(function(result) {
-                            console.log(result);
-                            sendResponse({
-                                value: true
-                            });
-                        });
-                    },
-                    error: function() {
-                        sendResponse({
-                            value: false
-                        });
-                    }
-                });
-            } else if(request.skip) {
-                log("Request : skip " + request.skip);
-                var message = new Message({id: request.skip});
-                message.fetch({
-                    success: function() {
-                        message.skip(function(result) {
-                            sendResponse({
-                                value: true
-                            });
-                        });
-                    },
-                    error: function() {
-                        sendResponse({
-                            value: false
-                        });
-                    }
-                });
-            } 
-	        else {
-	            log("Could not handle message : " +  JSON.stringify(request))
-	        }
-	    });
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
 
 
-	    //////////////////////////////////////////////////////////////////////////////////////
-	    //                                        Main                                      //
-	    //////////////////////////////////////////////////////////////////////////////////////
-		inbox.fetch({
-			success: function() {
-				// Nothing to do. The change event should have been triggered
-				if (inbox.attributes.jid && inbox.attributes.jid != "" && inbox.attributes.password && inbox.attributes.password != "") { 
-			        connect();
-			    } else {
-			        // We need the user to enter its settings
-			        chrome.tabs.create({
-			            url: chrome.extension.getURL('/views/html/unsignup.html'),
-			            selected: true
-			        });
-			    }
-			},
-			error: function() {
-				// Looks like there is no such inbox.
-				inbox.save({
-					epoch: new Date().getTime()
-				}, {
-					success: function() {
-				        chrome.tabs.create({
-				            url: chrome.extension.getURL('/views/html/unsignup.html'),
-				            selected: true
-				        });
-					},
-					error: function() {
-						log("We could not create a database for msgboy.")
-					}
-				});
-			}
-		})
-	});
-	
-	// Plugins management
-	$.each(Plugins.all, function(index, plugin) {
-	    if(typeof(plugin.subscribeInBackground) != "undefined") {
-    	    plugin.subscribeInBackground(function(feed) {
-    	        log("Request : subscribe " + feed.href);
-    	        connection.superfeedr.subscribe(feed.href, function (result, f) {
-        	        log("Request : subscribed " + feed.href);
-	            })
-    	    });
-	    }
+    var inbox = new Inbox({id: "1"});
+    
+    Msgboy.logEnabled = true;
+    var websocketEndpoint = 'ws://websocket.msgboy.com:5288/ws-xmpp'
+    var connection = new Strophe.Connection({
+        protocol: new Strophe.Websocket(websocketEndpoint)
     });
-	
-	
-	</script>
+    connection.max_stanzas_per_second = 3; // We limit to 3 outgoing stanzas per second.
+
+    connection.rawInput = function (data) {
+        // log('RECV: ' + data);
+    };
+    connection.rawOutput = function (data) {
+        // log('SENT: ' + data);
+    };
+
+    Strophe.log = function (level, msg) {
+        Msgboy.log(msg);
+    }
+
+    inbox.bind("messages:added", function (message) {
+        if (message.is_relevant()) {
+            Msgboy.log("Relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
+            Msgboy.notify(message.id);
+        } else {
+            Msgboy.log("Not relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
+        }
+    })
+
+    // when the inbox is ready
+    inbox.bind("ready", function () {
+        Msgboy.connect();
+    });
+
+    // When the inbox is new.
+    inbox.bind("new", function () {
+        Plugins.import(function(subs) {
+            Msgboy.subscribe(subs, function() {
+                // Cool. Not much to do.
+            })
+        })
+    });
+
+    $(document).bind('notification_received', function (ev, notification) {
+        Msgboy.log("Notification received from " + notification.source.url);
+        var msg = connection.superfeedr.convertAtomToJson(notification.payload);
+        msg.source = notification.source;
+        msg.feed = notification.source.url;
+        if (notification.via) {
+            msg.via = notification.via
+        }
+        var message = inbox.add_message(msg, {
+            success: function () {
+                // Cool, message saved!
+                Msgboy.log("Saved message " + msg.id);
+            }.bind(this),
+            error: function (object, error) {
+                // Message was not saved... probably a dupe
+                Msgboy.log("Could not save message " + JSON.stringify(msg));
+            }.bind(this),
+        });
+    });
+
+    // Chrome specific. We want to turn any Chrome API callback into a DOM event. It will greatly improve portability.
+    chrome.extension.onRequest.addListener(function (_request, _sender, _sendResponse) {
+        $(document).trigger(_request.signature, {
+            request: _request,
+            sender: _sender,
+            sendResponse: _sendResponse
+        });
+    });
+
+    connection.caps.setNode("http://download.msgboy.com/msgboy.crx")
+    connection.caps.addDiscoFeature("http://jabber.org/protocol/caps");
+
+    // Let's go :)
+    chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
+        connection.caps.addDiscoCategory(extension_infos.name + " " + extension_infos.version, "client", "web", "en");
+        inbox.fetch_and_prepare();
+    });
+
+    // Plugins management
+    $.each(Plugins.all, function (index, plugin) {
+        if (typeof (plugin.subscribeInBackground) != "undefined") {
+            plugin.subscribeInBackground(function (feed) {
+                Msgboy.log("Request : subscribe " + feed.href);
+                connection.superfeedr.subscribe(feed.href, function (result, f) {
+                    Msgboy.log("Request : subscribed " + feed.href);
+                })
+            });
+        }
+    });
+    
+    // Makes sure there is no missing subscription.
+    Msgboy.resume_subscriptions();
+    
+    </script>
 </body>

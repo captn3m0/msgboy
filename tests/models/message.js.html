@@ -43,19 +43,12 @@
     <script>
         module("relevanceMath.percentages");
         test("It should return the percentage for each element in the array", function() {
-            deepEqual(relevanceMath.percentages(["hello", "salut", "hello", "hello", "salut", "ciao", "hallo", "salut", "hello", "hallo"]), {"hello": 0.4, "salut": 0.3, "ciao": 0.1, "hallo": 0.2});
-        });
-        
-        test("It should return the weighted_percentages for each element in the array", function() {
-            deepEqual(relevanceMath.percentages(["hello", "salut", "hello", "hello", "salut", "ciao", "hallo", "salut", "hello", "hallo"], function(element, index) {
-                return 1;
-            }), {"hello": 0.4, "salut": 0.3, "ciao": 0.1, "hallo": 0.2});
-        });
-
-        test("It should return the percentages for each element in the array", function() {
-            deepEqual(relevanceMath.percentages(["hello", "salut", "salut", "hello", "salut", "hello", "hello", "hallo"], function(element, index) {
-                return index;
-            }), {"hello": 0.5, "salut": 0.25, "hallo": 0.25});
+            deepEqual(relevanceMath.percentages(["hello", "salut", "hello", "hello", "salut", "ciao", "hallo", "salut", "hello", "hallo"], ["hello", "salut", "ciao", "hallo"]),{
+              "hello": 0.4,
+              "salut": 0.3,
+              "ciao": 0.1,
+              "hallo": 0.2
+            });
         });
         
         module("relevanceMath.average");
@@ -66,7 +59,6 @@
             equals(relevanceMath.average({"good": 0, "average": 1, "bad": 1}, {"good": 6, "average": 1, "bad": 1}), 0.25);
             equals(relevanceMath.average({"good": 10, "average": 5, "bad": 0}, {"good": 2, "average": 1, "bad": 0}),  8.333333333333334);
         });
-        
         
         module("initialize");
         

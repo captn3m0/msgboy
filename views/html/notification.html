@@ -35,7 +35,8 @@
 
     function goToMessage(model) {
         chrome.extension.sendRequest({
-            "tab": {
+            signature: "tab",
+            params: {
                 url: model.main_link(),
                 selected: true
             }
@@ -46,7 +47,8 @@
         var message = messages.pop();
         if (!message) {
             chrome.extension.sendRequest({
-                close: true
+                signature: "close",
+                params: null
             }, function (response) {
                 window.close();
             });
@@ -102,9 +104,9 @@
 
     $(document).ready(function () {
         chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-            if (request.notify && request.notify.message) {
+            if (request.signature == "notify" && request.params.message) {
                 var message = new Message({
-                    'id': request.notify.message
+                    'id': request.params.message
                 });
                 message.fetch({
                     success: function() {

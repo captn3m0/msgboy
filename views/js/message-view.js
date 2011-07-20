@@ -43,9 +43,15 @@ var MessageView = Backbone.View.extend({
     click: function(evt) {
         if(!$(evt.target).hasClass("vote")) {
             if(evt.shiftKey) {
-                chrome.extension.sendRequest({notify: this.model.id});
+                chrome.extension.sendRequest({
+                    signature: "notify",
+                    params: this.model.id
+                });
             } else {
-                chrome.extension.sendRequest({"tab": {url: this.model.main_link(), selected: false}});
+                chrome.extension.sendRequest({
+                    signature: "tab",
+                    params: {url: this.model.main_link(), selected: false}
+                });
                 this.trigger("clicked");
             }
         }
@@ -118,7 +124,8 @@ var MessageView = Backbone.View.extend({
         this.model.vote_down(function(result) {
             if(result.unsubscribe) {
                 var request = {
-                    unsubscribe: this.model.attributes.feed
+                    signature: "unsubscribe",
+                    params: this.model.attributes.feed
                 };
                 chrome.extension.sendRequest(request);
                 this.trigger("delete-from-feed", this.model.attributes.feed);

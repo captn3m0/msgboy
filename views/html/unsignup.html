@@ -87,7 +87,7 @@
     // This function makes sure we're connected.
     function connect(done) {
         chrome.extension.sendRequest({
-            connect: true
+            signature: "connect"
         }, function (response) {
             // Now let's see what the connection status is!
             chrome.extension.connect({
@@ -113,7 +113,8 @@
                         }
                         _.each(subscriptions, function(subscription) {
                             chrome.extension.sendRequest({
-                                subscribe: {
+                                signature: "subscribe",
+                                params: {
                                     url: subscription.url,
                                     title: subscription.title,
                                     notify: false
@@ -148,12 +149,14 @@
             });
             if(success) {
                 chrome.extension.sendRequest({
-                    "settings": {
+                    signature: "settings",
+                    params: {
                         "set": ["jid", data.user.username]
                     }
                 }, function (response) {
                     chrome.extension.sendRequest({
-                        "settings": {
+                        signature: "settings",
+                        params: {
                             "set": ["password", params["user[password]"]]
                         }
                     }, function (response) {
@@ -171,7 +174,8 @@
     // Let's go
     $(document).ready(function() {
         chrome.extension.sendRequest({
-            "settings": {
+            signature: "settings",
+            params: {
                 "get": ["jid"]
             }
         }, function (response) {

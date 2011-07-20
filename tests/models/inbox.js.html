@@ -26,6 +26,11 @@
     <script src="../../models/archive.js" type="text/javascript"></script>
     <script src="../../models/inbox.js" type="text/javascript"></script>
     
+    
+    <!-- Fixtures -->
+    <script src="../fixtures/messages.js" type="text/javascript"></script>
+    
+    
     <title>Inbox QUnit test</title>
 </head>
 <body>
@@ -37,311 +42,101 @@
     <div id="log" style=""></div>
     
     <script>
-    
-        module("addMessage");
-        
-        asyncTest("it should set the created_at attribute", function() {
-            var inbox = new Inbox({id: 1});
-            
-            var msg = {
-            };
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    ok(message.attributes.created_at > new Date().getTime()-1000, "");
-                    message.destroy();
-                }
+        module("create_credentials");
+
+        asyncTest("it should yield a login and password", function () {
+            var inbox = new Inbox({
+                id: 1
+            });
+            inbox.create_credentials(function() {
+                start();
+                console.log(inbox.attributes)
+                ok(inbox.attributes.jid != null, "there should be a jid");
+                ok(inbox.attributes.password != null, "there should be a password");
             });
         });
-        
-        asyncTest("it should set the unread_at attribute", function() {
-            var inbox = new Inbox({id: 1});
-            var msg = {
-            };
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    ok(message.attributes.unread_at > new Date().getTime()-1000, "");
-                    message.destroy();
-                }
+
+        module("fetch_and_prepare");
+
+        module("add_message");
+
+        asyncTest("it should create a message if none already exists with that id", function () {
+            var inbox = new Inbox({
+                id: 1
             });
-        });
-        
-        asyncTest("it should set the alternate attribute to  msg.source.links.alternate['text/html'][0].href", function() {
-            var inbox = new Inbox({id: 1});
-            var url = "http://blog.superfeedr.com/atom.xml";
-            var msg = {
-            };
-            msg.source = {};
-            msg.source.links = {};
-            msg.source.links.alternate = {};
-            msg.source.links.alternate['text/html'] = [];
-            msg.source.links.alternate['text/html'][0] = {
-                href: url,
-                title: "title",
-                rel:'alternate'
-            };
-            
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    equal(message.attributes.alternate, url, "");
-                    message.destroy();
-                }
-            });
-        });
-        
-        asyncTest("it should set the alternate_new attribute to msg.source.links.alternate['text/html'][0].href", function() {
-            var inbox = new Inbox({id: 1});
-            var url = "http://blog.superfeedr.com/atom.xml";
-            var msg = {
-            };
-            msg.source = {};
-            msg.source.links = {};
-            msg.source.links.alternate = {};
-            msg.source.links.alternate['text/html'] = [];
-            msg.source.links.alternate['text/html'][0] = {
-                href: url,
-                title: "title",
-                rel:'alternate'
-            };
-            
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    equal(message.attributes.alternate_new, url, "");
-                    message.destroy();
-                }
-            });
-        });
-        
-        asyncTest("it should set the alternate_new attribute to a normalized msg.source.links.alternate['text/html'][0].href", function() {
-            var inbox = new Inbox({id: 1});
-            var url = "http://blog.superfeedr.com";
-            var msg = {
-            };
-            msg.source = {};
-            msg.source.links = {};
-            msg.source.links.alternate = {};
-            msg.source.links.alternate['text/html'] = [];
-            msg.source.links.alternate['text/html'][0] = {
-                href: url,
-                title: "title",
-                rel:'alternate'
-            };
-            
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    equal(message.attributes.alternate_new, url + "/", "");
-                    message.destroy();
-                }
-            });
-        });
-        
-        asyncTest("it should not fail to set the alternate attribute if  msg.source.links.alternate['text/html'][0] is missing", function() {
-            var inbox = new Inbox({id: 1});
-            var msg = {
-            };
-            msg.source = {};
-            msg.source.links = {};
-            msg.source.links.alternate = {};
-            msg.source.links.alternate['text/html'] = [];
-            
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    equal(message.attributes.alternate, "", "");
-                    message.destroy();
-                }
-            });
-        });
-        
-        asyncTest("it should not fail to set the alternate attribute if  msg.source.links.alternate['text/html'] is missing", function() {
-            var inbox = new Inbox({id: 1});
-            var msg = {
-            };
-            msg.source = {};
-            msg.source.links = {};
-            msg.source.links.alternate = {};
-            
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    equal(message.attributes.alternate, "", "");
-                    message.destroy();
-                }
-            });
-            
-        });
-        
-        asyncTest("it should not fail to set the alternate attribute if  msg.source.links.alternate is missing", function() {
-            var inbox = new Inbox({id: 1});
-            var msg = {
-            };
-            msg.source = {};
-            msg.source.links = {};
-        
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    equal(message.attributes.alternate, "", "");
-                    message.destroy();
-                }
-            });    
-        });
-        
-        asyncTest("it should not fail to set the alternate attribute if  msg.source.links is missing", function() {
-            var inbox = new Inbox({id: 1});
-            var msg = {
-            };
-            msg.source = {};
-        
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    equal(message.attributes.alternate, "", "");
-                    message.destroy();
-                }
-            });    
-        });
-        
-        asyncTest("it should not fail to set the alternate attribute if  msg.source is missing", function() {
-            var inbox = new Inbox({id: 1});
-            var msg = {
-            };
-        
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    start();
-                    equal(message.attributes.alternate, "", "");
-                    message.destroy();
-                }
-            });
-        });
-        
-        asyncTest("it should not create a message if one already exists with that id", function() {
-            var inbox = new Inbox({id: 1});
             var msg = {
                 id: "123"
             };
-            message = new Message(msg);
-            message.destroy({
-                success: function(object) {
-                    inbox.addMessage(msg, {
-                        success: function(message) {
-                            var msg2 = {
-                                id: "123"
-                            };
-                            inbox.addMessage(msg2, {
-                                success: function(message2) {
-                                    start();
-                                    equal(message2, null, "it should yield null");
-                                    message.destroy();
-                                }, 
-                                error: function() {
-                                    start();
-                                    ok(false, "it should be able to save the message");
-                                }
-                            });
-                        },
-                        error: function() {
-                            // Dang!
-                            start();
-                            ok(false, "it should be able to save the message");
+            messageFixtures.clean_all(function () {
+                inbox.add_message(msg, {
+                    success: function (message) {
+                        start();
+                        for (var attr in msg) {
+                            equal(msg[attr], message.attributes[attr]);
                         }
-                    });
-                },
-                error: function(object) {
-                    inbox.addMessage(msg, {
-                        success: function(message) {
-                            var msg2 = {
-                                id: "123"
-                            };
-                            inbox.addMessage(msg2, {
-                                success: function(message2) {
-                                    start();
-                                    equal(message2, null, "it should yield null");
-                                    message.destroy();
-                                }, 
-                                error: function() {
-                                    start();
-                                    ok(false, "it should be able to save the message");
-                                }
-                            });
-                        },
-                        error: function() {
-                            // Dang!
-                            start();
-                            ok(false, "it should be able to save the message");
-                        }
-                    });
-                }
-            })
+                    },
+                    error: function () {
+                        start();
+                        ok(false)
+                    }
+                });
+            });
         });
 
-        asyncTest("it should save a message with all the right attributes if none exists with that id", function() {
-            var inbox = new Inbox({id: 1});
-            var msg = {
-                id: "123",
-                title: "hello world",
-                content: "bonjour PAris, je suis content d'etre ici",
-                author: "Julien"
-            };
-            message = new Message(msg);
-            message.destroy({
-                success: function(object) {
-                    inbox.addMessage(msg, {
-                        success: function(message) {
-                            start();
-                            for(var attr in msg) {
-                                equal(msg[attr], message.attributes[attr]);
-                            }
-                        },
-                        error: function() {
-                            // Dang!
-                            start();
-                            ok(false, "it should be able to save the message");
-                        }
-                    });
-                },
-                error: function(object) {
-                    inbox.addMessage(msg, {
-                        success: function(message) {
-                            start();
-                            for(var attr in msg) {
-                                equal(msg[attr], message.attributes[attr]);
-                            }
-                        },
-                        error: function() {
-                            // Dang!
-                            start();
-                            ok(false, "it should be able to save the first message");
-                        }
-                    });
-                }
+        asyncTest("it should trigger messages:added", function () {
+            var inbox = new Inbox({
+                id: 1
             });
-        });
-        
-        asyncTest("it should trigger messages:added", function() {
-            var inbox = new Inbox({id: 1});
             var msg = {
-                id: 12345,
-                title: "hello"
+                id: "123"
             };
-            
-            inbox.bind("messages:added", function(message) {
+            inbox.bind("messages:added", function (message) {
                 start();
-                equal(message, msg, "");
+                equal(message.id, msg.id, "");
             });
-            
-            inbox.addMessage(msg, {
-                success: function(message) {
-                    message.destroy();
-                }
+
+            messageFixtures.clean_all(function () {
+                inbox.add_message(msg, {
+                    success: function (message) {
+                        // Done.
+                    },
+                    error: function () {
+                        start();
+                        ok(false)
+                    }
+                });
             });
         });
-        
+
+
+        asyncTest("it should not create a message if none already exists with that id", function () {
+            var inbox = new Inbox({
+                id: 1
+            });
+            var msg = {
+                id: "123"
+            };
+            messageFixtures.clean_all(function () {
+                inbox.add_message(msg, {
+                    success: function (message) {
+                        inbox.add_message(msg, {
+                            success: function (message2) {
+                                start();
+                                equals(message2, null, "the second message should be null");
+                            },
+                            error: function () {
+                                start();
+                                ok(false)
+                            }
+                        });
+                    },
+                    error: function () {
+                        start();
+                        ok(false)
+                    }
+                });
+            });
+        });
     </script>
     
 </body>
