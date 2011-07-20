@@ -25,7 +25,7 @@ $(document).bind('unsubscribe', function(element, object) {
 
 $(document).bind('notify', function(element, object) {
     log("Request : notify", object.request.params);
-    notify(object.request.params);
+    Msgboy.notify(object.request.params);
     object.sendResponse({
         value: true
     });
