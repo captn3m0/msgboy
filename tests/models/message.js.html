@@ -50,7 +50,6 @@
               "hallo": 0.2
             });
         });
-
         
         module("relevanceMath.average");
         test("It should return the computed average for the object", function() {
@@ -60,7 +59,6 @@
             equals(relevanceMath.average({"good": 0, "average": 1, "bad": 1}, {"good": 6, "average": 1, "bad": 1}), 0.25);
             equals(relevanceMath.average({"good": 10, "average": 5, "bad": 0}, {"good": 2, "average": 1, "bad": 0}),  8.333333333333334);
         });
-        
         
         module("initialize");
         

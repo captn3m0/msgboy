@@ -248,5 +248,15 @@ var msgboyDatabase = {
                 });
             }
         }
+    }, {
+        version: "0.0.9",
+        migrate: function(db, versionRequest, next) {
+            var subscriptions = db.createObjectStore("subscriptions");
+            subscriptions.createIndex("urlIndex", "url", {unique: true});
+            subscriptions.createIndex("stateIndex", "state", {unique: false});
+            subscriptions.createIndex("subscribedAtIndex", "subscribed_at", {unique: false});
+            subscriptions.createIndex("unsubscribedAtIndex", "unsubscribed_at", {unique: false});
+            next();
+        }
     }]
 };

@@ -17,6 +17,7 @@ var Message = Backbone.Model.extend({
         "alternate":    "",
         "alternate_new":"",
         "state":        "new",
+        "feed":         "",
         "relevance":    0.3
     },
     
@@ -34,6 +35,7 @@ var Message = Backbone.Model.extend({
         if(this.attributes.created_at == 0) {
             this.attributes.created_at = new Date().getTime();
         }
+        return this;
     },
     
     /* 
