@@ -1,5 +1,9 @@
 var Msgboy = new function () {
-    this.logEnabled = true,
+    this.logEnabled = false,
+    this.autoReconnect = true,
+    this.currentNotification = null,
+    this.connectionTimeout = null,
+    this.reconnectDelay = 0,
     
     // Logs messages to the console
     this.log = function(msg) {
@@ -15,37 +19,37 @@ var Msgboy = new function () {
         } else if (status == Strophe.Status.CONNFAIL) {
             msg = 'Msgboy failed to connect.';
             setTimeout(function () {
-                if (autoReconnect) {
-                    reconnectDelay += 1;
+                if (Msgboy.autoReconnect) {
+                    Msgboy.reconnectDelay += 1;
                     Msgboy.connect();
                 }
-            }, fibonacci(reconnectDelay) * 1000);
-            if (connection_timeout) clearTimeout(connection_timeout);
+            }, fibonacci(Msgboy.reconnectDelay) * 1000);
+            if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
         } else if (status == Strophe.Status.AUTHFAIL) {
             msg = 'Msgboy couldn\'t authenticate. Please check your credentials';
-            autoReconnect = false // We need to open the settings tab
+            Msgboy.autoReconnect = false // We need to open the settings tab
             chrome.tabs.create({
                 url: chrome.extension.getURL('/views/html/options.html'),
                 selected: true
             });
-            if (connection_timeout) clearTimeout(connection_timeout);
+            if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
         } else if (status == Strophe.Status.DISCONNECTING) {
             msg = 'Msgboy is disconnecting.'; // We may want to time this out.
         } else if (status == Strophe.Status.DISCONNECTED) {
             msg = 'Msgboy is disconnected. ';
             setTimeout(function () {
-                if (autoReconnect) {
-                    reconnectDelay += 1;
+                if (Msgboy.autoReconnect) {
+                    Msgboy.reconnectDelay += 1;
                     Msgboy.connect();
                 }
-            }, fibonacci(reconnectDelay) * 1000);
-            if (connection_timeout) clearTimeout(connection_timeout);
+            }, fibonacci(Msgboy.reconnectDelay) * 1000);
+            if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
         } else if (status == Strophe.Status.CONNECTED) {
-            reconnectDelay = 0
-            autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
+            Msgboy.reconnectDelay = 0
+            Msgboy.autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
             msg = 'Msgboy is connected.';
             connection.caps.sendPresenceWithCaps(); // Send presence! 
-            if (connection_timeout) clearTimeout(connection_timeout);
+            if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
         }
         Msgboy.log(msg);
     },
@@ -53,7 +57,7 @@ var Msgboy = new function () {
     // Connects the XMPP Client
     // It also includes a timeout that tries to reconnect when we could not connect in less than 1 minute.
     this.connect = function() {
-        connection_timeout = setTimeout(function () {
+        Msgboy.connectionTimeout = setTimeout(function () {
             // We add a 60 secinds reconnect when trying to connect.
             // If connection failed. We just try again.
             Msgboy.connect();
@@ -77,14 +81,14 @@ var Msgboy = new function () {
 
     this.notify = function(id) {
         // Open a notification window if needed!
-        if (!currentNotification) {
+        if (!Msgboy.currentNotification) {
             url = chrome.extension.getURL('/views/html/notification.html');
             webkitNotification = window.webkitNotifications.createHTMLNotification(url);
             webkitNotification.onclose = function () {
-                currentNotification = null;
+                Msgboy.currentNotification = null;
             };
             webkitNotification.show();
-            currentNotification = webkitNotification;
+            Msgboy.currentNotification = webkitNotification;
         }
         chrome.extension.sendRequest({
             signature: "notify",
@@ -94,7 +98,7 @@ var Msgboy = new function () {
         }, function (response) {
             // Let's notify the people who may care about this, includingthe notification popup, hopefully :)
         });
-        return currentNotification;
+        return Msgboy.currentNotification;
     },
 
     this.subscribe = function(subs, callback) {

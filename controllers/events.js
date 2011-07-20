@@ -1,5 +1,5 @@
 $(document).bind('subscribe', function(element, object) {
-    log("Request : subscribe " + object.request.params.url);
+    Msgboy.log("Request : subscribe " + object.request.params.url);
     subscribe(object.request.params, function(result) {
         object.sendResponse({
             value: result
@@ -8,13 +8,13 @@ $(document).bind('subscribe', function(element, object) {
 });
 
 $(document).bind('unsubscribe', function(element, object) {
-    log("Request : unsubscribe " + object.request.params.url);
+    Msgboy.log("Request : unsubscribe " + object.request.params.url);
     var subscription = new Subscription({url: object.request.params.url});
     subscription.fetch_or_create(function() {
         subscription.set_state("unsubscribing", function() {
             connection.superfeedr.unsubscribe(object.request.params.url, function (result) {
                 subscription.set_state("unsubscribed");
-                log("Request : unsubscribed " + object.request.params.url);
+                Msgboy.log("Request : unsubscribed " + object.request.params.url);
                 object.sendResponse({
                     value: result
                 });
@@ -24,7 +24,7 @@ $(document).bind('unsubscribe', function(element, object) {
 });
 
 $(document).bind('notify', function(element, object) {
-    log("Request : notify", object.request.params);
+    Msgboy.log("Request : notify", object.request.params);
     Msgboy.notify(object.request.params);
     object.sendResponse({
         value: true
@@ -32,7 +32,7 @@ $(document).bind('notify', function(element, object) {
 });
 
 $(document).bind('tab', function(element, object) {
-    log("Request : tab " + object.request.params.url)
+    Msgboy.log("Request : tab " + object.request.params.url)
     var active_window = null
     chrome.windows.getAll({}, function(windows) {
         windows = _.select(windows, function(win) {
@@ -56,33 +56,12 @@ $(document).bind('tab', function(element, object) {
 });
 
 $(document).bind('close', function(element, object) {
-    log("Request : close ");
-    currentNotification = null;
+    Msgboy.log("Request : close ");
+    Msgboy.currentNotification = null;
     object.sendResponse({
         value: true
     });
 });
-
-$(document).bind('up', function(element, object) {
-    console.log('up');
-    console.log(object);
-});
-
-$(document).bind('down', function(element, object) {
-    console.log('down');
-    console.log(object);
-});
-
-$(document).bind('skip', function(element, object) {
-    console.log('skip');
-    console.log(object);
-});
-
-$(document).bind('settings', function(element, object) {
-    console.log('settings');
-    console.log(object);
-});
-
 
 // chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
 //     if (request.settings) { // Options

@@ -71,19 +71,14 @@
     })();
 
 
-    var inbox = new Inbox({
-        id: "1"
-    });
-    var logEnabled = true;
+    var inbox = new Inbox({id: "1"});
+    
+    Msgboy.logEnabled = true;
     var websocketEndpoint = 'ws://websocket.msgboy.com:5288/ws-xmpp'
     var connection = new Strophe.Connection({
         protocol: new Strophe.Websocket(websocketEndpoint)
     });
     connection.max_stanzas_per_second = 3; // We limit to 3 outgoing stanzas per second.
-    var autoReconnect = false;
-    var currentNotification = null;
-    var connection_timeout = null;
-    var reconnectDelay = 0;
 
     connection.rawInput = function (data) {
         // log('RECV: ' + data);
