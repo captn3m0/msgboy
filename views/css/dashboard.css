@@ -14,6 +14,7 @@ header h1 {
     height: 53px;
     width: 142px;
     float: left;
+}
 
 header h2 {
     float: left;
@@ -47,13 +48,15 @@ header h2 {
     margin:0px;
     display:block;
     position: absolute;
-    bottom:0px;
+    top:0px;
     white-space: nowrap; 
     vertical-align: middle;
     color: #E6E6E6;
     background-color: rgba(10,10,10,0.8);
     background-size: 16px 16px;
     text-indent: 0;
+    font-size: .6em;
+    font-weight: normal;
 }
 
 .votes {
@@ -71,7 +74,6 @@ img.thumbs:hover {
 }
 
 .time {
-    
 }
 
 .page_nav {
@@ -79,14 +81,48 @@ img.thumbs:hover {
 }
 
 .controls {
-    position: absolute;
-    top:0px;
+    position:absolute;
+    bottom:0px;
     right:0px;
     display:none;
+    width:100%;
 }
 
 .message:hover .controls {
     display:block;
+}
+
+.controls button {
+    -webkit-appearance: none;
+    background: none;
+    background-color: rgba(0,0,0,.5);
+    border: none;
+    outline: none;
+    width: 49.5%;
+    margin: 0;
+    color: #fff;
+    height: 32px;
+    padding: 0 6px 2px;
+    font-size: 26px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+}
+
+.controls button:first-child {
+    border-top-right-radius: 4px;
+    left: 0;
+    text-align: left;
+}
+.controls button:last-child {
+    border-top-left-radius: 4px;
+    right: 0;
+    text-align: right;
+}
+
+.controls button:hover {
+    background-color: rgba(0,0,0,.7);
 }
 
 .brick-1 {
@@ -98,19 +134,19 @@ img.thumbs:hover {
 
 .brick-2 {
     font-size:0.8em;
-    width: 200px;
+    width: 100px;
     height: 100px
 }
 
 .brick-3 {
     font-size:1.0em;
-    width: 300px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
 }
 
 .brick-4 {
     font-size:1.2em;
-    width: 500px;
+    width: 300px;
     height: 300px;
 }
 
@@ -152,7 +188,7 @@ img.thumbs:hover {
 }
 
 .text p {
-    padding: 5px;
+    padding: 20px 5px 5px;
 }
 
 .text h1 {
