@@ -1,6 +1,6 @@
 $(document).bind('subscribe', function(element, object) {
     Msgboy.log("Request : subscribe " + object.request.params.url);
-    subscribe(object.request.params, function(result) {
+    Msgboy.subscribe(object.request.params, function(result) {
         object.sendResponse({
             value: result
         });

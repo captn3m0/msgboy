@@ -79,6 +79,7 @@ var Msgboy = new function () {
         });
     },
 
+    // Shows a popup notification
     this.notify = function(id) {
         // Open a notification window if needed!
         if (!Msgboy.currentNotification) {
@@ -101,6 +102,7 @@ var Msgboy = new function () {
         return Msgboy.currentNotification;
     },
 
+    // Subscribes to a feed.
     this.subscribe = function(subs, callback) {
         // First, let's check if we have a subscription for this.
         var subscription = new Subscription({url: subs.url});
@@ -120,6 +122,34 @@ var Msgboy = new function () {
             else {
                 Msgboy.log("Nothing to do for " + JSON.stringify(subscription.attributes))
                 callback(false);
+            }
+        });
+    }
+
+    // Makes sure there is no 'pending' susbcriptions.
+    this.resume_subscriptions = function() {
+        var pending  = new Subscriptions();
+        pending.fetch({
+            conditions: {state: "subscribing"},
+            success: function() {
+                if(pending.length > 0) {
+                    _.each(pending.models, function(subs) {
+                        Msgboy.subscribe({url: subs.attributes.url}, function() {
+                            // Not much.
+                        });
+                    });
+                    setTimeout(function() {
+                        Msgboy.resume_subscriptions(); // Let's retry in 10 minutes.
+                    }, 1000 * 60 * 10); 
+                }
+                else {
+                    // All cool.
+                }
+            }, 
+            error: function() {
+                setTimeout(function() {
+                    Msgboy.resume_subscriptions(); // Let's retry in 10 minutes.
+                }, 1000 * 60 * 10); 
             }
         });
     }
