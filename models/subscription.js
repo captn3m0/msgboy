@@ -44,17 +44,32 @@ var Subscription = Backbone.Model.extend({
         switch(_state) {
             case "subscribed":
             this.save({state: _state, subscribed_at: new Date().getTime()}, {
-                success: callback, error: callback
+                success: function() {
+                    callback();
+                }, 
+                error: function() {
+                    callback();
+                }
             });
             break;
             case "unsubscribed":
             this.save({state: _state, unsubscribed_at: new Date().getTime()}, {
-                success: callback, error: callback
+                success: function() {
+                    callback();
+                }, 
+                error: function() {
+                    callback();
+                }
             });
             break;
             default:
             this.save({state: _state}, {
-                success: callback, error: callback
+                success: function() {
+                    callback();
+                }, 
+                error: function() {
+                    callback();
+                }
             });
         }
     }
