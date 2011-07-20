@@ -47,7 +47,7 @@ var Subscription = Backbone.Model.extend({
                 success: function() {
                     callback();
                 }, 
-                error: function() {
+                error: function(o, e) {
                     callback();
                 }
             });

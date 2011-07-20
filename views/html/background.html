@@ -108,7 +108,7 @@
     // When the inbox is new.
     inbox.bind("new", function () {
         Plugins.import(function(subs) {
-            subscribe(subs, function() {
+            Msgboy.subscribe(subs, function() {
                 // Cool. Not much to do.
             })
         })
