@@ -8,17 +8,10 @@ $(document).bind('subscribe', function(element, object) {
 });
 
 $(document).bind('unsubscribe', function(element, object) {
-    Msgboy.log("Request : unsubscribe " + object.request.params.url);
-    var subscription = new Subscription({url: object.request.params.url});
-    subscription.fetch_or_create(function() {
-        subscription.set_state("unsubscribing", function() {
-            connection.superfeedr.unsubscribe(object.request.params.url, function (result) {
-                subscription.set_state("unsubscribed");
-                Msgboy.log("Request : unsubscribed " + object.request.params.url);
-                object.sendResponse({
-                    value: result
-                });
-            });
+    Msgboy.log("Request : unsubscribe " + object.request.params);
+    Msgboy.unsubscribe(object.request.params, function(result) {
+        object.sendResponse({
+            value: result
         });
     });
 });

@@ -67,7 +67,7 @@ var Message = Backbone.Model.extend({
                 });
                 var counts = relevanceMath.counts(brothers.pluck("state"));
                 
-                if(brothers.length > 3 && states["up-ed"] < 0.05 && (states["down-ed"] > 0.3 || counts["down-ed"] > 10)) {
+                if(brothers.length > 3 && (!states["up-ed"] || states["up-ed"] < 0.05) && (states["down-ed"] > 0.5 || counts["down-ed"] > 10)) {
                     callback({unsubscribe: true});
                 }
                 else {
