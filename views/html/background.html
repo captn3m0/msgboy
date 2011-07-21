@@ -78,7 +78,7 @@
     var connection = new Strophe.Connection({
         protocol: new Strophe.Websocket(websocketEndpoint)
     });
-    connection.max_stanzas_per_second = 3; // We limit to 3 outgoing stanzas per second.
+    connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
 
     connection.rawInput = function (data) {
         // log('RECV: ' + data);
@@ -116,8 +116,8 @@
         Plugins.import(function(subs) {
             Msgboy.subscribe(subs, function() {
                 // Cool. Not much to do.
-            })
-        })
+            });
+        });
     });
 
     $(document).bind('notification_received', function (ev, notification) {
