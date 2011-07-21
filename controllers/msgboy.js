@@ -110,7 +110,7 @@ var Msgboy = new function () {
         var subscription = new Subscription({url: subs.url});
         subscription.fetch_or_create(function() {
             // Looks like there is a subscription.
-            if(subscription.needs_refresh()) {
+            if(subscription.needs_refresh() && subscription.attributes.state == "unsubscribed") {
                 subscription.set_state("subscribing", function() {
                     Msgboy.log("subscribing to " + subs.url);
                     connection.superfeedr.subscribe(subs.url, function (result, feed) {

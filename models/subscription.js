@@ -5,7 +5,7 @@ var Subscription = Backbone.Model.extend({
     defaults: {
         subscribed_at: 0,
         unsubscribed_at:0,
-        state: "subscribing",
+        state: "unsubscribed",
     },
     
     initialize: function(attributes) {
