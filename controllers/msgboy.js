@@ -4,6 +4,7 @@ var Msgboy = new function () {
     this.currentNotification = null,
     this.connectionTimeout = null,
     this.reconnectDelay = 0,
+    this.connection = null,
     
     // Logs messages to the console
     this.log = function(msg) {
@@ -48,7 +49,7 @@ var Msgboy = new function () {
             Msgboy.reconnectDelay = 0
             Msgboy.autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
             msg = 'Msgboy is connected.';
-            connection.caps.sendPresenceWithCaps(); // Send presence! 
+            Msgboy.connection.caps.sendPresenceWithCaps(); // Send presence! 
             if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
             // Makes sure there is no missing subscription.
             Msgboy.resume_subscriptions();
@@ -67,7 +68,7 @@ var Msgboy = new function () {
         var password = inbox.attributes.password;
         var jid = inbox.attributes.jid + "@msgboy.com/extension";
 
-        connection.connect(jid, password, this.onConnect);
+        Msgboy.connection.connect(jid, password, this.onConnect);
     },
 
     // Uploads the content of the database. this will be used for analysis of the dataset o determine a better algorithm.
@@ -113,7 +114,7 @@ var Msgboy = new function () {
             if(subscription.needs_refresh() && subscription.attributes.state == "unsubscribed") {
                 subscription.set_state("subscribing", function() {
                     Msgboy.log("subscribing to " + subs.url);
-                    connection.superfeedr.subscribe(subs.url, function (result, feed) {
+                    Msgboy.connection.superfeedr.subscribe(subs.url, function (result, feed) {
                         Msgboy.log("subscribed to " + subs.url);
                         subscription.set_state("subscribed", function() {
                             callback(true);
@@ -133,10 +134,11 @@ var Msgboy = new function () {
         var subscription = new Subscription({url: url});
         subscription.fetch_or_create(function() {
             subscription.set_state("unsubscribing", function() {
-                connection.superfeedr.unsubscribe(url, function (result) {
-                    subscription.set_state("unsubscribed");
-                    Msgboy.log("Request : unsubscribed " + object.request.params);
-                    callback(true);
+                Msgboy.connection.superfeedr.unsubscribe(url, function (result) {
+                    Msgboy.log("Request : unsubscribed " + url);
+                    subscription.set_state("unsubscribed", function() {
+                        callback(true);
+                    });
                 });
             });
         });
