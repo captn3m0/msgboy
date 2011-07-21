@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <title>
+            README
+        </title>
+        <meta name="application-name" content="Msgboy" />
+        
+        <!-- Lib includes -->
+        <script src="../../lib/jquery/jquery.js" type="text/javascript"></script>
+        <script src="../../lib/showdown.js" type="text/javascript"></script>
+    </head>
+    
+    
+    <body>
+    </body>
+    <script>
+    $(document).ready(function() {
+        $.get("../../README.markdown", function(data) {
+            converter = new Showdown.converter();
+            $("body").html(converter.makeHtml(data));
+            
+        });
+    });
+    </script>
+
+</html>

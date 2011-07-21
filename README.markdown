@@ -20,7 +20,7 @@ When installing the msgboy, it will look at several existing services where the 
 
 Similarly, when the user continues to use his favorite web services, he may subscribe/follow/watch additional resources. The msgboy then maps these new subscriptions and subscribes to the corresponding feeds.
 
-All this is done with the help of the *plugins*. We have already implemented [several plugins](https://github.com/superfeedr/msgboy//tree/master/controllers/plugins) for some well known services. There is one for [Tumblr](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/tumblr.js), [Github's Repo](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/github-repos.js), or [Google Reader](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/google-reader.js), but also for the [browser bookmarks](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/bookmarks.js), the [browser history](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/history.js)... etc.
+All this is done with the help of the *plugins*. We have already implemented [several plugins](https://github.com/superfeedr/msgboy/tree/master/controllers/plugins) for some well known services. There is one for [Tumblr](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/tumblr.js), [Github's Repo](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/github-repos.js), or [Google Reader](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/google-reader.js), but also for the [browser bookmarks](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/bookmarks.js), the [browser history](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/history.js)... etc.
 We have also implemented a [generic](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/generic.js) bookmark that uses HTML5's data attributes to add a source to the msgboy when the user interacts with a page element.
 For example, if you have the msgboy installed and <a href="" class="msgboy-follow" data-msgboy-url="http://blog.msgboy.com/rss" >click on this link</a>, the msgboy will have a subscription for our blog.
 
@@ -59,5 +59,5 @@ Here are a few tips and tricks to make it easier for people to subscribe.
     * Implement PubSubHubbub for realtime notifications (users are notified as soon as you update the content). [Superfeedr](http://superfeedr.com/publisher) hosts most of the hubs out there.
 
 - Tricks
-    * Listen to msgboy triggered events to keep track of your visitors who use msgboy, or who subscribe to your feeds. Listen to the events <code>msgboy-bookmark-loaded</code> and <code>msgboy-subscribed</code> on the body.
+    * Listen to msgboy triggered events to keep track of your visitors who use msgboy, or who subscribe to your feeds. Listen to the events  <code>msgboy-subscribed</code> on the body.
 
