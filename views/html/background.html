@@ -109,7 +109,7 @@
     inbox.bind("new", function () {
         // Let's open the splash screen
         chrome.tabs.create({
-            url: chrome.extension.getURL('/views/html/unsignup.html'),
+            url: chrome.extension.getURL('/views/html/splash.html'),
             selected: true
         });
         // And import all plugins.
