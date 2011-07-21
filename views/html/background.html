@@ -107,6 +107,12 @@
 
     // When the inbox is new.
     inbox.bind("new", function () {
+        // Let's open the splash screen
+        chrome.tabs.create({
+            url: chrome.extension.getURL('/views/html/unsignup.html'),
+            selected: true
+        });
+        // And import all plugins.
         Plugins.import(function(subs) {
             Msgboy.subscribe(subs, function() {
                 // Cool. Not much to do.
