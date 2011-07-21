@@ -26,6 +26,20 @@ header h2 {
     letter-spacing: 1px;
 }
 
+header a.options {
+    display: block;
+    float: right;
+    position: absolute;
+    top: 15px;
+    right: 50px;
+    background-image: url(../images/gear.png);
+    background-position: top right;
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    text-indent: -999em;
+}
+
 #archive {
     border: none;
     padding: 0 49px;
@@ -90,12 +104,13 @@ img.thumbs:hover {
 
 .message:hover .controls {
     display:block;
+    z-index: 10;
 }
 
 .controls button {
     -webkit-appearance: none;
     background: none;
-    background-color: rgba(0,0,0,.5);
+    background-color: rgba(0,0,0,.7);
     border: none;
     outline: none;
     width: 49.5%;
@@ -108,6 +123,7 @@ img.thumbs:hover {
     cursor: pointer;
     position: absolute;
     bottom: 0;
+    text-shadow: 0 1px 1px rgba(235,235,235,.55);
 }
 
 .controls button:first-child {
@@ -122,7 +138,9 @@ img.thumbs:hover {
 }
 
 .controls button:hover {
-    background-color: rgba(0,0,0,.7);
+    background-color: rgba(0,0,0,.85);
+    text-shadow: 0 -1px 1px rgba(235,235,235,.75);
+    box-shadow: 0 1px 2px rgba(160,160,160,.75);
 }
 
 .brick-1 {
@@ -188,27 +206,34 @@ img.thumbs:hover {
 }
 
 .text p {
-    padding: 20px 5px 5px;
+    padding: 20px 10px 10px;
+    z-index: 1;
 }
 
 .text h1 {
     
 }
 
-
 .brick-1 p {
+
 }
 
 .brick-2 p{
     font-size:1.0em;
+    position: absolute;
+    bottom: 0;
 }
 
 .brick-3 p{
-    font-size:2.0em;
+    font-size:1.2em;
+    position: absolute;
+    bottom: 0;
 }
 
 .brick-4 p{
-    font-size:3.0em;
+    font-size:1.5em;
+    position: absolute;
+    bottom: 0;
 }
 
 .grey, .color0 {
