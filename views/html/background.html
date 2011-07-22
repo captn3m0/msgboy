@@ -74,17 +74,16 @@
     var inbox = new Inbox({id: "1"});
     
     Msgboy.logEnabled = true;
-    var websocketEndpoint = 'ws://websocket.msgboy.com:5288/ws-xmpp'
-    var connection = new Strophe.Connection({
-        protocol: new Strophe.Websocket(websocketEndpoint)
+    Msgboy.connection = new Strophe.Connection({
+        protocol: new Strophe.Websocket('ws://websocket.msgboy.com:5288/ws-xmpp')
     });
-    connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
+    Msgboy.connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
 
-    connection.rawInput = function (data) {
-        // log('RECV: ' + data);
+    Msgboy.connection.rawInput = function (data) {
+        // Msgboy.log('RECV: ' + data);
     };
-    connection.rawOutput = function (data) {
-        // log('SENT: ' + data);
+    Msgboy.connection.rawOutput = function (data) {
+        // Msgboy.log('SENT: ' + data);
     };
 
     Strophe.log = function (level, msg) {
@@ -122,7 +121,7 @@
 
     $(document).bind('notification_received', function (ev, notification) {
         Msgboy.log("Notification received from " + notification.source.url);
-        var msg = connection.superfeedr.convertAtomToJson(notification.payload);
+        var msg = Msgboy.connection.superfeedr.convertAtomToJson(notification.payload);
         msg.source = notification.source;
         msg.feed = notification.source.url;
         if (notification.via) {
@@ -149,12 +148,12 @@
         });
     });
 
-    connection.caps.setNode("http://download.msgboy.com/msgboy.crx")
-    connection.caps.addDiscoFeature("http://jabber.org/protocol/caps");
+    Msgboy.connection.caps.setNode("http://download.msgboy.com/msgboy.crx")
+    Msgboy.connection.caps.addDiscoFeature("http://jabber.org/protocol/caps");
 
     // Let's go :)
     chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
-        connection.caps.addDiscoCategory(extension_infos.name + " " + extension_infos.version, "client", "web", "en");
+        Msgboy.connection.caps.addDiscoCategory(extension_infos.name + " " + extension_infos.version, "client", "web", "en");
         inbox.fetch_and_prepare();
     });
 
@@ -163,7 +162,7 @@
         if (typeof (plugin.subscribeInBackground) != "undefined") {
             plugin.subscribeInBackground(function (feed) {
                 Msgboy.log("Request : subscribe " + feed.href);
-                connection.superfeedr.subscribe(feed.href, function (result, f) {
+                Msgboy.connection.superfeedr.subscribe(feed.href, function (result, f) {
                     Msgboy.log("Request : subscribed " + feed.href);
                 })
             });
