@@ -40,189 +40,437 @@
     
     
     <script>
-        module("relevanceMath.percentages");
-        test("It should return the percentage for each element in the array", function() {
-            deepEqual(relevanceMath.percentages(["hello", "salut", "hello", "hello", "salut", "ciao", "hallo", "salut", "hello", "hallo"], ["hello", "salut", "ciao", "hallo"]),{
-              "hello": 0.4,
-              "salut": 0.3,
-              "ciao": 0.1,
-              "hallo": 0.2
-            });
+    module("relevanceMath.percentages");
+    test("It should return the percentage for each element in the array", function () {
+        deepEqual(relevanceMath.percentages(["hello", "salut", "hello", "hello", "salut", "ciao", "hallo", "salut", "hello", "hallo"], ["hello", "salut", "ciao", "hallo"]), {
+            "hello": 0.4,
+            "salut": 0.3,
+            "ciao": 0.1,
+            "hallo": 0.2
         });
-        
-        module("relevanceMath.average");
-        test("It should return the computed average for the object", function() {
-            equals(relevanceMath.average({"good": 1, "average": 1, "bad": 1}, {"good": 1, "average": 1, "bad": 1}), 1);
-            equals(relevanceMath.average({"good": 4, "average": 1, "bad": 1}, {"good": 1, "average": 1, "bad": 1}), 2);
-            equals(relevanceMath.average({"good": 1, "average": 1, "bad": 1}, {"good": 4, "average": 1, "bad": 1}), 1);
-            equals(relevanceMath.average({"good": 0, "average": 1, "bad": 1}, {"good": 6, "average": 1, "bad": 1}), 0.25);
-            equals(relevanceMath.average({"good": 10, "average": 5, "bad": 0}, {"good": 2, "average": 1, "bad": 0}),  8.333333333333334);
-        });
-        
-        module("initialize");
-        
-        asyncTest("it should set the created_at timestamp", function() {
-            // Looks like now!
-            var message = new Message();
-            var now = new Date().getTime();
-            start();
-            ok(message.attributes.created_at <= now, "Created at should be very recent");
-            ok(message.attributes.created_at >= now - 1000, "Created at should be very recent");
-        });
-        
-        asyncTest("it should have the 'new' state", function() {
-            // Looks like now!
-            var message = new Message();
-            start();
-            equals(message.state(), "new");
-        });
+    });
 
-        asyncTest("it should have the right alternate", function() {
-            // Looks like now!
+    module("relevanceMath.average");
+    test("It should return the computed average for the object", function () {
+        equals(relevanceMath.average({
+            "good": 1,
+            "average": 1,
+            "bad": 1
+        }, {
+            "good": 1,
+            "average": 1,
+            "bad": 1
+        }), 1);
+        equals(relevanceMath.average({
+            "good": 4,
+            "average": 1,
+            "bad": 1
+        }, {
+            "good": 1,
+            "average": 1,
+            "bad": 1
+        }), 1);
+        equals(relevanceMath.average({
+            "good": 1,
+            "average": 1,
+            "bad": 1
+        }, {
+            "good": 4,
+            "average": 1,
+            "bad": 1
+        }), 2);
+        equals(relevanceMath.average({
+            "good": 0,
+            "average": 1,
+            "bad": 1
+        }, {
+            "good": 6,
+            "average": 1,
+            "bad": 1
+        }), 1);
+        equals(relevanceMath.average({
+            "good": 10,
+            "average": 5,
+            "bad": 0
+        }, {
+            "good": 2,
+            "average": 1,
+            "bad": 0
+        }), 1.6666666666666667);
+    });
+
+    module("initialize");
+
+    asyncTest("it should set the created_at timestamp", function () {
+        // Looks like now!
+        var message = new Message();
+        var now = new Date().getTime();
+        start();
+        ok(message.attributes.created_at <= now, "Created at should be very recent");
+        ok(message.attributes.created_at >= now - 1000, "Created at should be very recent");
+    });
+
+    asyncTest("it should have the 'new' state", function () {
+        // Looks like now!
+        var message = new Message();
+        start();
+        equals(message.state(), "new");
+    });
+
+    asyncTest("it should have the right alternate", function () {
+        // Looks like now!
+        var message = new Message({
+            source: {
+                links: {
+                    alternate: {
+                        "text/html": [{
+                            href: "http://alternate.com"
+                        }]
+                    }
+                }
+            }
+        });
+        start();
+        equals(message.attributes.alternate, "http://alternate.com");
+    });
+
+    asyncTest("i should set the created_at only when creating the message", function () {
+        messageFixtures.clean_add(function () {
+            var _id = Math.floor(Math.random() * 100000000000);
             var message = new Message({
-                source: {
-                    links: {
-                        alternate: {
-                            "text/html": [{
-                                href: "http://alternate.com"
-                            }]
-                        }
-                    } 
+                id: _id
+            });
+            var created_at = message.attributes.created_at;
+            message.save({}, {
+                success: function () {
+                    var saved = new Message({
+                        id: _id
+                    });
+                    setTimeout(function () {
+                        saved.fetch({
+                            success: function () {
+                                start();
+                                equals(created_at, saved.attributes.created_at);
+                                saved.destroy();
+                            }
+                        });
+                    }, 10);
                 }
             });
-            start();
-            equals(message.attributes.alternate, "http://alternate.com");
         });
+    });
 
-        asyncTest("i should set the created_at only when creating the message", function() {
-            messageFixtures.clean_add(function() {
-                var _id = Math.floor(Math.random()*100000000000);
-                var message = new Message({id: _id});
-                var created_at = message.attributes.created_at;
-                message.save({}, {
-                    success: function() {
-                        var saved = new Message({id: _id});
-                        setTimeout(function() {
-                            saved.fetch({
-                                success: function() {
-                                    start();
-                                    equals(created_at, saved.attributes.created_at);
-                                    saved.destroy();
-                                }
-                            });
-                        },10);
-                    }
-                });
+    module("vote_up");
+    asyncTest("it should set the state", function () {
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "123"
             });
-        });
-        
-        module("vote_up");
-        asyncTest("it should set the state", function() {
-            messageFixtures.clean_add(function() {
-                // Looks like now!
-                var message = new Message({id: "123"});
-                message.vote_up(function() {
-                    start();
-                    equals(message.state(), "up-ed");
-                });
-            });
-        });
-        
-        module("vote_down");
-        asyncTest("it should set the state", function() {
-            messageFixtures.clean_add(function() {
-                // Looks like now!
-                var message = new Message({id: "123"});
-                message.vote_down(function() {
-                    start();
-                    equals(message.state(), "down-ed");
-                });
-            });
-        });
-        
-        module("skip");
-        asyncTest("it should set the state", function() {
-            messageFixtures.clean_add(function() {
-                // Looks like now!
-                var message = new Message({id: "123"});
-                message.skip(function() {
-                    start();
-                    equals(message.state(), "skipped");
-                });
-            });
-        });
-        
-        module("set_state");
-        asyncTest("it should set the state", function() {
-            messageFixtures.clean_add(function() {
-                // Looks like now!
-                var message = new Message({id: "123"});
-                message.set_state("cool", function() {
-                    start();
-                    equals(message.state(), "cool");
-                });
-            });
-        });
-        
-        module("keywords");
-        asyncTest("it should set return all the keywords", function() {
-            messageFixtures.clean_add(function() {
-                // Looks like now!
-                var message = new Message({id: "123"});
-                var keywords = message.keywords();
+            message.vote_up(function () {
                 start();
-                deepEqual(keywords, []);
+                equals(message.state(), "up-ed");
             });
         });
-        
-        module("number_of_links");
-        asyncTest("it should set return the number of links", function() {
-            messageFixtures.clean_add(function() {
-                // Looks like now!
-                var message = new Message({id: "123"});
+    });
+
+    module("vote_down");
+    asyncTest("it should set the state", function () {
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "123"
+            });
+            message.vote_down(function () {
                 start();
-                equals(message.number_of_links(), 5);
+                equals(message.state(), "down-ed");
             });
         });
-        
-        module("media_included");
-        asyncTest("it should return the links to media", function() {
-            messageFixtures.clean_add(function() {
-                // Looks like now!
-                var message = new Message({id: "123"});
+    });
+
+    module("skip");
+    asyncTest("it should set the state", function () {
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "123"
+            });
+            message.skip(function () {
                 start();
-                deepEqual(message.media_included(), []);
+                equals(message.state(), "skipped");
             });
         });
-        
-        module("title_keywords");
-        asyncTest("it should return the keywords in the title", function() {
-            messageFixtures.clean_add(function() {
-                // Looks like now!
-                var message = new Message({id: "123"});
+    });
+
+    module("set_state");
+    asyncTest("it should set the state", function () {
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "123"
+            });
+            message.set_state("cool", function () {
                 start();
-                deepEqual(message.title_keywords(), []);
+                equals(message.state(), "cool");
             });
         });
-        
-        module("calculate_relevance");
-        asyncTest("it should yield a relevance between 0.0 and 1.0", function() {
-            messageFixtures.clean_add(function() {
-                // Looks like now!
-                var message = new Message({id: "131"});
-                message.fetch({
-                    success: function() {
-                        message.calculate_relevance(function(relevance) {
-                            start();
-                            ok(relevance >= 0.0);
-                            ok(relevance <= 1.0);
-                        });
-                    }
-                })
+    });
+
+    module("keywords");
+    asyncTest("it should set return all the keywords", function () {
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "123"
             });
+            var keywords = message.keywords();
+            start();
+            deepEqual(keywords, []);
         });
-        
-        
+    });
+
+    module("number_of_links");
+    asyncTest("it should set return the number of links", function () {
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "123"
+            });
+            start();
+            equals(message.number_of_links(), 5);
+        });
+    });
+
+    module("media_included");
+    asyncTest("it should return the links to media", function () {
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "123"
+            });
+            start();
+            deepEqual(message.media_included(), []);
+        });
+    });
+
+    module("title_keywords");
+    asyncTest("it should return the keywords in the title", function () {
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "123"
+            });
+            start();
+            deepEqual(message.title_keywords(), []);
+        });
+    });
+
+    module("calculate_relevance");
+    asyncTest("it should yield a relevance between 0.0 and 1.0", function () {
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "131"
+            });
+            message.fetch({
+                success: function () {
+                    message.calculate_relevance(function (relevance) {
+                        start();
+                        ok(relevance >= 0.0);
+                        ok(relevance <= 1.0);
+                    });
+                }
+            })
+        });
+    });
+
+
+    asyncTest("it should yield a relevance of 0.0 if everything was downed", function () {
+        $.each(messageFixtures.messages, function (i, message) {
+            message.feed = "http://blog.msgboy.com/rss"
+        })
+        messageFixtures.messages[0].state = "down-ed";
+        messageFixtures.messages[1].state = "down-ed";
+        messageFixtures.messages[2].state = "down-ed";
+        messageFixtures.messages[3].state = "down-ed";
+        messageFixtures.messages[4].state = "down-ed";
+        messageFixtures.messages[5].state = "down-ed";
+        messageFixtures.messages[6].state = "down-ed";
+        messageFixtures.messages[7].state = "down-ed";
+        messageFixtures.messages[8].state = "down-ed";
+        messageFixtures.messages[9].state = "down-ed";
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "131"
+            });
+            message.fetch({
+                success: function () {
+                    message.calculate_relevance(function (relevance) {
+                        start();
+                        equals(relevance, 0.0);
+                    });
+                }
+            })
+        });
+    });
+
+    asyncTest("it should yield a relevance of 1.1 if everything was up-ed", function () {
+        $.each(messageFixtures.messages, function (i, message) {
+            message.feed = "http://blog.msgboy.com/rss"
+        })
+        messageFixtures.messages[0].state = "up-ed";
+        messageFixtures.messages[1].state = "up-ed";
+        messageFixtures.messages[2].state = "up-ed";
+        messageFixtures.messages[3].state = "up-ed";
+        messageFixtures.messages[4].state = "up-ed";
+        messageFixtures.messages[5].state = "up-ed";
+        messageFixtures.messages[6].state = "up-ed";
+        messageFixtures.messages[7].state = "up-ed";
+        messageFixtures.messages[8].state = "up-ed";
+        messageFixtures.messages[9].state = "up-ed";
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "131"
+            });
+            message.fetch({
+                success: function () {
+                    message.calculate_relevance(function (relevance) {
+                        start();
+                        equals(relevance, 1.0);
+                    });
+                }
+            })
+        });
+    });
+
+    asyncTest("it should yield a relevance of 0.5 if half was upped and half was downed", function () {
+        $.each(messageFixtures.messages, function (i, message) {
+            message.feed = "http://blog.msgboy.com/rss"
+        })
+        messageFixtures.messages[0].state = "up-ed";
+        messageFixtures.messages[1].state = "down-ed";
+        messageFixtures.messages[2].state = "up-ed";
+        messageFixtures.messages[3].state = "down-ed";
+        messageFixtures.messages[4].state = "up-ed";
+        messageFixtures.messages[5].state = "down-ed";
+        messageFixtures.messages[6].state = "up-ed";
+        messageFixtures.messages[7].state = "down-ed";
+        messageFixtures.messages[8].state = "up-ed";
+        messageFixtures.messages[9].state = "down-ed";
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "131"
+            });
+            message.fetch({
+                success: function () {
+                    message.calculate_relevance(function (relevance) {
+                        start();
+                        equals(relevance, 0.5);
+                    });
+                }
+            })
+        });
+    });
+
+    asyncTest("it should yield a relevance of 0.7 if half was upped and half was skipped", function () {
+        $.each(messageFixtures.messages, function (i, message) {
+            message.feed = "http://blog.msgboy.com/rss"
+        })
+        messageFixtures.messages[0].state = "up-ed";
+        messageFixtures.messages[1].state = "skipped";
+        messageFixtures.messages[2].state = "up-ed";
+        messageFixtures.messages[3].state = "skipped";
+        messageFixtures.messages[4].state = "up-ed";
+        messageFixtures.messages[5].state = "skipped";
+        messageFixtures.messages[6].state = "up-ed";
+        messageFixtures.messages[7].state = "skipped";
+        messageFixtures.messages[8].state = "up-ed";
+        messageFixtures.messages[9].state = "skipped";
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "131"
+            });
+            message.fetch({
+                success: function () {
+                    message.calculate_relevance(function (relevance) {
+                        start();
+                        equals(relevance, 0.7);
+                    });
+                }
+            })
+        });
+    });
+
+    asyncTest("it should yield a relevance of 0.46 if half only one up and many skipped", function () {
+        $.each(messageFixtures.messages, function (i, message) {
+            message.feed = "http://blog.msgboy.com/rss"
+        })
+        messageFixtures.messages[0].state = "up-ed";
+        messageFixtures.messages[1].state = "skipped";
+        messageFixtures.messages[2].state = "skipped";
+        messageFixtures.messages[3].state = "skipped";
+        messageFixtures.messages[4].state = "skipped";
+        messageFixtures.messages[5].state = "skipped";
+        messageFixtures.messages[6].state = "skipped";
+        messageFixtures.messages[7].state = "skipped";
+        messageFixtures.messages[8].state = "skipped";
+        messageFixtures.messages[9].state = "skipped";
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "131"
+            });
+            message.fetch({
+                success: function () {
+                    message.calculate_relevance(function (relevance) {
+                        start();
+                        equals(relevance, 0.4600000000000001);
+                    });
+                }
+            })
+        });
+    });
+
+    asyncTest("it should yield a relevance of 0.64 if half only one up and many skipped", function () {
+        $.each(messageFixtures.messages, function (i, message) {
+            message.feed = "http://blog.msgboy.com/rss"
+        })
+        messageFixtures.messages[0].state = "up-ed";
+        messageFixtures.messages[1].state = "new";
+        messageFixtures.messages[2].state = "new";
+        messageFixtures.messages[3].state = "new";
+        messageFixtures.messages[4].state = "new";
+        messageFixtures.messages[5].state = "new";
+        messageFixtures.messages[6].state = "new";
+        messageFixtures.messages[7].state = "new";
+        messageFixtures.messages[8].state = "new";
+        messageFixtures.messages[9].state = "new";
+        messageFixtures.clean_add(function () {
+            // Looks like now!
+            var message = new Message({
+                id: "131"
+            });
+            message.fetch({
+                success: function () {
+                    message.calculate_relevance(function (relevance) {
+                        start();
+                        equals(relevance, 0.64);
+                    });
+                }
+            })
+        });
+    });
+
+    module("when building a series")
+    
+    asyncTest("it should yield a relevance of 1.0  for the first message of any given feed", function () {
+       console.log(Message.relevance_based_on_brothers([]));
+    });
+    
     </script>
     
 </body>

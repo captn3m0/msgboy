@@ -119,14 +119,7 @@ var Message = Backbone.Model.extend({
                 // We can't compute relevance
             } else {
                 // So, now, we need to check the ratio of up-ed and down-ed. [TODO : limit the subset?].
-                var states = relevanceMath.percentages(brothers.pluck("state"), ["new", "up-ed", "down-ed", "skipped"]);
-                
-                relevance = relevanceMath.average(states, {
-                    "new" : 0.6,
-                    "up-ed": 1.0,
-                    "down-ed": 0.0,
-                    "skipped": 0.4
-                });
+                relevance =  this.relevance_based_on_brothers(brothers.pluck("state"))
             }
 
             // Keywords [TODO]
@@ -137,6 +130,22 @@ var Message = Backbone.Model.extend({
                 callback(relevance);
             } 
         });
+    },
+    
+    relevance_based_on_brothers: function(states) {
+        if(states.length == 0) {
+            return 1;
+        }
+        else {
+            var percentages = relevanceMath.percentages(states, ["new", "up-ed", "down-ed", "skipped"]);
+
+            return relevanceMath.average(percentages, {
+                "new" : 0.6,
+                "up-ed": 1.0,
+                "down-ed": 0.0,
+                "skipped": 0.4
+            });
+        }
     },
     
     /* this returns all the keywords in this message. */
