@@ -56,6 +56,8 @@ header a.options {
 }
 
 .message h1 {
+    background-color: rgba(10,10,10,0.8);
+    background-size: 16px 16px;
     background-repeat:no-repeat;
     background-position: 7px 50%; 
     padding:5px 10px 5px 30px;
@@ -63,14 +65,12 @@ header a.options {
     display:block;
     position: absolute;
     top:0px;
-    white-space: nowrap; 
     vertical-align: middle;
     color: #E6E6E6;
-    background-color: rgba(10,10,10,0.8);
-    background-size: 16px 16px;
     text-indent: 0;
     font-size: .6em;
     font-weight: normal;
+    width: auto;
 }
 
 .votes {
@@ -210,8 +210,12 @@ img.thumbs:hover {
 }
 
 .text p {
-    padding: 20px 10px 10px;
+    padding: 10px;
     z-index: 1;
+}
+
+.text p.darkened {
+    background-color: #222;
 }
 
 .text h1 {

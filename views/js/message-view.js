@@ -69,7 +69,8 @@ var MessageView = Backbone.View.extend({
             this.$(".full-content img").each(function(idx, img) {
                 var img_size = MsgboyHelper.get_original_element_size(img);
                 if(img_size.width > $(this.el).width() && img_size.height > $(this.el).height()) {
-                    this.$("p").remove();
+                    //this.$("p").remove();
+                    this.$("p").addClass("darkened");
                     var img = $("<img/>").attr("src", $(img).attr("src"));
                     img.appendTo($(this.el));
                     // Resize the image.
@@ -78,13 +79,18 @@ var MessageView = Backbone.View.extend({
                     } else {
                         this.$("img").css("max-width", "100%");
                     }
-                    this.$("h1").text(this.model.attributes.title).appendTo($(this.el));
-                    $(this.el).bind("mouseover", function() {
+                    
+                    // trying something here. -eric
+                    //this.$("h1").text(this.model.attributes.title).appendTo($(this.el));
+                    this.$("h1").text(this.model.attributes.source.title).appendTo($(this.el));
+                    /*
+$(this.el).bind("mouseover", function() {
                         this.$("h1").text(this.model.attributes.source.title).appendTo($(this.el));
                     }.bind(this));
                     $(this.el).bind("mouseout", function() {
                         this.$("h1").text(this.model.attributes.title).appendTo($(this.el));
                     }.bind(this));
+*/
                 }
             }.bind(this));
         }.bind(this), 3000); // For now, let's wait for 2 seconds. It would be much much better if we had a callback that works when images have been loaded.
@@ -93,7 +99,7 @@ var MessageView = Backbone.View.extend({
         $("<p>").html(MsgboyHelper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
         $("<h1/>").text(this.model.attributes.source.title).appendTo($(this.el));
         this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
-        this.$("h1").css("width", "100%");
+        //this.$("h1").css("width", "100%");
         
         // Chose a color for the box.
         var sum = 0
