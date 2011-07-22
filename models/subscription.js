@@ -20,7 +20,7 @@ var Subscription = Backbone.Model.extend({
             error: function() {
                 // There is no such subscription.
                 // Let's save it, then!
-                this.save({}, {
+                this.save(this.attributes, {
                     success: function() {
                         callback();
                     },

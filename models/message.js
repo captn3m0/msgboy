@@ -129,7 +129,7 @@ var Message = Backbone.Model.extend({
             if(typeof(callback) != "undefined" && callback) {
                 callback(relevance);
             } 
-        });
+        }.bind(this));
     },
     
     relevance_based_on_brothers: function(states) {

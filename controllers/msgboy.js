@@ -108,14 +108,14 @@ var Msgboy = new function () {
     // Subscribes to a feed.
     this.subscribe = function(subs, callback) {
         // First, let's check if we have a subscription for this.
-        var subscription = new Subscription({url: subs.url});
+        var subscription = new Subscription({id: subs.url});
         subscription.fetch_or_create(function() {
             // Looks like there is a subscription.
             if(subscription.needs_refresh() && subscription.attributes.state == "unsubscribed") {
                 subscription.set_state("subscribing", function() {
-                    Msgboy.log("subscribing to " + subs.url);
-                    Msgboy.connection.superfeedr.subscribe(subs.url, function (result, feed) {
-                        Msgboy.log("subscribed to " + subs.url);
+                    Msgboy.log("subscribing to " + subscription.id);
+                    Msgboy.connection.superfeedr.subscribe(subscription.id, function (result, feed) {
+                        Msgboy.log("subscribed to " + subscription.id);
                         subscription.set_state("subscribed", function() {
                             callback(true);
                         });
@@ -123,7 +123,7 @@ var Msgboy = new function () {
                 });
             }
             else {
-                Msgboy.log("Nothing to do for " + JSON.stringify(subscription.attributes))
+                Msgboy.log("Nothing to do for " + subscription.id)
                 callback(false);
             }
         });
@@ -131,7 +131,7 @@ var Msgboy = new function () {
     
     // Unsubscribes from a feed.
     this.unsubscribe = function(url, callback) {
-        var subscription = new Subscription({url: url});
+        var subscription = new Subscription({id: url});
         subscription.fetch_or_create(function() {
             subscription.set_state("unsubscribing", function() {
                 Msgboy.connection.superfeedr.unsubscribe(url, function (result) {

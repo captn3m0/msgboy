@@ -39,7 +39,7 @@
     <script>
         module("fetch_or_create");
         asyncTest("it should create a subscription when there is none", function() {
-            var subscription = new Subscription({url: "http://blog.superfeedr.com/atom2.xml"});
+            var subscription = new Subscription({id: "http://blog.superfeedr.com/atom2.xml"});
             subscription.fetch_or_create(function() {
                 start();
                 ok(true, true);

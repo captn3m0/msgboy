@@ -32,10 +32,12 @@ var Inbox = Backbone.Model.extend({
                     password: params["user[password]"]
                 }, {
                     success: function () {
+                        Msgboy.log("Inbox created for " + data.user.username);
                         callback();
                     },
                     error: function () {
                         // WTF? This is bad. 
+                        Msgboy.log("Failed to create inbox for " + data.user.username);
                     }
                 });
             } else {
@@ -51,8 +53,10 @@ var Inbox = Backbone.Model.extend({
         this.fetch({
             success: function () {
                 if (this.attributes.jid && this.attributes.jid != "" && this.attributes.password && this.attributes.password != "") {
+                    Msgboy.log("Loading inbox for " + this.attributes.jid);
                     this.trigger("ready", this);
                 } else {
+                    Msgboy.log("Creating new inbox");
                     this.create_credentials(function () {
                         this.trigger("ready", this);
                         this.trigger("new", this);

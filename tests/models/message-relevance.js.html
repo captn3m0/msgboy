@@ -61,7 +61,6 @@
        equals(new Message().relevance_based_on_brothers(["skipped", "new", "skipped", "new", "skipped", "new", "skipped", "new", "skipped", "new", "skipped", "new", "skipped", "new", "skipped"]), 0.4933333333333333);
     });
     
-    
     test("when the user always votes up, the relevance should stick to 1.", function () {
        equals(new Message().relevance_based_on_brothers(["up-ed"]), 1);
        equals(new Message().relevance_based_on_brothers(["up-ed", "up-ed"]), 1);
