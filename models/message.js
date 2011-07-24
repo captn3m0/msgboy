@@ -56,7 +56,7 @@ var Message = Backbone.Model.extend({
     },
 
     /* Votes the message down */
-    /* TODO : we may want to unsubscribe from this source if it has too many downvotes! */
+    /* TODO : we may want to unsubscribe from this source if it has too many downvotes, but we don't want to do it here. The question is : how? where? */
     vote_down: function(callback) {
         this.set_state("down-ed", function(result) {
             // We need to unsubscribe the feed if possible, but only if there is enough negative votes.
