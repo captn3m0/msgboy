@@ -116,6 +116,10 @@ body {
     color: #191919;
 }
 
+body.splash {
+    background: url(../images/page-bg.gif) top left no-repeat;
+}
+
 a, a:visited {
     color: #358dc2;
     text-decoration: none;
