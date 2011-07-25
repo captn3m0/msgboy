@@ -12,22 +12,20 @@ Plugins.register(new function () {
     },
 
     this.listSubscriptions = function (callback) {
-        var feeds = [];
-        var pending = 0;
+        var seen = [];
         chrome.bookmarks.getRecent(1000, 
         function (bookmarks) {
             _.each(bookmarks, function (bookmark) {
-                pending += 1;
                 MsgboyHelper.links_to_feeds_at_url(bookmark.url, function (links) {
-                    pending -= 1;
+                    var feeds = [];
                     _.each(links, function (link) {
-                        feeds.push({
-                            title: link.title,
-                            url: link.href,
-                        });
+                        if(seen.indexOf(link.href) == -1) {
+                            feeds.push({title: link.title, url: link.href});
+                            seen.push(link.href);
+                        }
                     });
-                    if(pending == 0) {
-                        callback(_.uniq(feeds));
+                    if(feeds.length > 0) {
+                        callback(feeds);
                     }
                 });
             });
