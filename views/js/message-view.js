@@ -1,4 +1,4 @@
-woowvar MessageView = Backbone.View.extend({
+var MessageView = Backbone.View.extend({
     tagName: "div",
     className: "message",
     
@@ -27,7 +27,7 @@ woowvar MessageView = Backbone.View.extend({
         $(this.el).attr("data-msgboy-relevance", this.model.attributes.relevance);
         $(this.el).attr("data-msgboy-state", this.model.attributes.state);
         
-        if(Math.ceil(this.model.attributes.relevance * 4) == 1 || this.model.attributes.state == "down-ed") {
+        if(this.model.attributes.state == "down-ed") {
             $(this.el).addClass("brick-1");
         } else if(this.model.attributes.state == "up-ed"){
             $(this.el).addClass("brick-4");
@@ -44,7 +44,7 @@ woowvar MessageView = Backbone.View.extend({
             if(evt.shiftKey) {
                 chrome.extension.sendRequest({
                     signature: "notify",
-                    params: this.model.id
+                    params: this.model.toJSON()
                 });
             } else {
                 chrome.extension.sendRequest({
@@ -107,6 +107,7 @@ $(this.el).bind("mouseover", function() {
         });
         //$(this.el).addClass("color" + sum%7);
         $(this.el).css("background-color", "hsl(240,0%," + sum%7 + "%)");
+        $("<p>").html(MsgboyHelper.cleaner.html(sum%7)).appendTo($(this.el));
         this.trigger("rendered");
     },
     

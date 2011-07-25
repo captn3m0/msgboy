@@ -2,7 +2,7 @@
 <html lang="en-US">
 <head>
     <meta charset="UTF-8">
-    <title>Notification</title>
+    <title>Msgboy Notification</title>
     <meta name="application-name" content="Msgboy"/>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/notification.css" />
@@ -48,21 +48,23 @@
         notification.mouse_over = false;
     });
 
-    $(document).ready(function () {
+    $(document).ready(function() {
+        // Tell everyone we're ready.
+        chrome.extension.sendRequest({
+            signature: "notification_ready",
+            params: {}
+        }, function() {
+            // We should start to receive notifications soon!
+        })
+        
         chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-            if (request.signature == "notify" && request.params.message) {
-                var message = new Message({
-                    'id': request.params.message
-                });
-                message.fetch({
-                    success: function() {
-                        notification.messages.push(message);
-                        if (!notification.started) {
-                            notification.started = true // Initiate the loop.
-                            notification.show_next_message();
-                        }
-                    }
-                });
+            if (request.signature == "notify" && request.params) {
+                var message = new Message(request.params);
+                notification.messages.push(message);
+                if (!notification.started) {
+                    notification.started = true // Initiate the loop.
+                    notification.show_next_message();
+                }
             }
         });
     });
