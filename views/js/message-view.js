@@ -1,4 +1,4 @@
-var MessageView = Backbone.View.extend({
+woowvar MessageView = Backbone.View.extend({
     tagName: "div",
     className: "message",
     
@@ -105,7 +105,8 @@ $(this.el).bind("mouseover", function() {
         _.each(this.model.attributes.source.title.split(""), function(c) {
             sum += c.charCodeAt(0);
         });
-        $(this.el).addClass("color" + sum%7);
+        //$(this.el).addClass("color" + sum%7);
+        $(this.el).css("background-color", "hsl(240,0%," + sum%7 + "%)");
         this.trigger("rendered");
     },
     
