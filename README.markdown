@@ -32,6 +32,7 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 
 * Add per-site unread list
 * Add snooze
+* Add support for unsubscription in plugins.
 * Add support for ActivityStreams, 
 * When subscribing to a feed on a page, check for rel="me" links and suggest corresponding feeds if they apply.
 * Rewrite the about:blank page with inbox.
