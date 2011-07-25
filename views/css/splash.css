@@ -6,15 +6,17 @@ body.splash {
     padding: 20px;
     width: 400px;
     color: #222;
-    background-color: rgba(255,255,255,0.7);
+    background-color: rgb(185,185,185);
     -webkit-border-radius: 5px 5px 5px 5px;
     text-align:center;
     text-shadow: 0 1px 0 #ddd;
     position: absolute;
     top: 235px;
-    left: 75px;
+    right: 675px;
     box-shadow: 0 0 10px rgba(255,255,255,.4);
     border: 1px solid #fff;
+    min-height: 400px;
+    z-index: 4;
 }
 
 #info p {
@@ -36,4 +38,10 @@ body.splash {
     top: 0;
     right: 0;  
     z-index: 2; 
+}
+
+#signal {
+    top: 150px;
+    right: 400px;
+    z-index: 3;
 }
