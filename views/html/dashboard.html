@@ -59,7 +59,7 @@
               itemSelector : '.message',
               filter: '.brick-1 .brick-2 .brick-3 .brick-4',
               masonry: {
-                 columnWidth: 1,
+                 columnWidth: 10,
                },
             });
             
@@ -71,6 +71,7 @@
             
             archive.bind("up-ed", function(message) {
                 BayesianFilter.train_with_message(message)
+                $('#container').isotope('reLayout');
             });
             
             archive.bind("down-ed", function(message) {
