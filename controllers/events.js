@@ -24,6 +24,23 @@ $(document).bind('notify', function(element, object) {
     });
 });
 
+$(document).bind('notification_ready', function(element, object) {
+    Msgboy.log("Request : notification_ready", {});
+    Msgboy.currentNotification.ready = true;
+    // We should then start sending all notifications.
+    while(Msgboy.messageStack.length > 0) {
+        chrome.extension.sendRequest({
+            signature: "notify",
+            params: Msgboy.messageStack.pop()
+        }, function (response) {
+            // Let's notify the people who may care about this, includingthe notification popup, hopefully :)
+        });
+    }
+    object.sendResponse({
+        value: true
+    });
+});
+
 $(document).bind('tab', function(element, object) {
     Msgboy.log("Request : tab " + object.request.params.url)
     var active_window = null

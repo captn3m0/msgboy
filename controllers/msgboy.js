@@ -2,6 +2,7 @@ var Msgboy = new function () {
     this.logEnabled = false,
     this.autoReconnect = true,
     this.currentNotification = null,
+    this.messageStack = [],
     this.connectionTimeout = null,
     this.reconnectDelay = 0,
     this.connection = null,
@@ -83,25 +84,26 @@ var Msgboy = new function () {
     },
 
     // Shows a popup notification
-    this.notify = function(id) {
+    this.notify = function(message) {
         // Open a notification window if needed!
         if (!Msgboy.currentNotification) {
             url = chrome.extension.getURL('/views/html/notification.html');
-            webkitNotification = window.webkitNotifications.createHTMLNotification(url);
-            webkitNotification.onclose = function () {
+            Msgboy.currentNotification = window.webkitNotifications.createHTMLNotification(url);
+            Msgboy.currentNotification.onclose = function () {
                 Msgboy.currentNotification = null;
             };
-            webkitNotification.show();
-            Msgboy.currentNotification = webkitNotification;
+            Msgboy.currentNotification.ready = false;
+            Msgboy.currentNotification.show();
+            Msgboy.messageStack.push(message);
         }
-        chrome.extension.sendRequest({
-            signature: "notify",
-            params: {
-                "message": id
-            }
-        }, function (response) {
-            // Let's notify the people who may care about this, includingthe notification popup, hopefully :)
-        });
+        else {
+            chrome.extension.sendRequest({
+                signature: "notify",
+                params: message.toJSON()
+            }, function (response) {
+                // Let's notify the people who may care about this, includingthe notification popup, hopefully :)
+            });
+        }
         return Msgboy.currentNotification;
     },
 

@@ -44,7 +44,7 @@ var MessageView = Backbone.View.extend({
             if(evt.shiftKey) {
                 chrome.extension.sendRequest({
                     signature: "notify",
-                    params: this.model.id
+                    params: this.model.toJSON()
                 });
             } else {
                 chrome.extension.sendRequest({
