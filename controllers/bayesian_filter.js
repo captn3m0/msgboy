@@ -25,7 +25,7 @@ var BayesianFilter = new function () {
     
     this.train_with_message = function(message) {
         if(message.attributes.state == "up-ed" || message.attributes.state == "down-ed") {
-            var txt = this.prepare_text(message.attributes.title + message.text());
+            var txt = this.prepare_text(message.attributes.title + " " + message.text());
             this.bayes.train(txt, message.attributes.state, function() {
                 // Hum, what?
             });
@@ -33,12 +33,12 @@ var BayesianFilter = new function () {
     },
     
     this.rate = function(message) {
-        var txt = this.prepare_text(message.attributes.title + message.text());
+        var txt = this.prepare_text(message.attributes.title + " " + message.text());
         return BayesianFilter.bayes.classify(txt);
     },
     
     this.prepare_text = function(string) {
-        var words = string.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z]+/g,' ').toLowerCase().split(" ");
+        var words =  $("<div/>").html(string.replace(/(<([^>]+)>)/ig,' ')).text().replace(/[^a-zA-Z]+/g,' ').toLowerCase().split(' ');
         words = _.compact(_.map(words, function(word) {
             if(word.length > 3) {
                 return stemmer(word);
