@@ -1,16 +1,39 @@
+body.splash {
+    background: url(../images/page-bg.gif) top left repeat-x;
+}
+
 #info {
-    margin-left:auto;
-    margin-right: auto;
-    margin-top:200px;
     padding: 20px;
-    width: 500px;
-    color: #FFF;
-    background-color: rgba(255,233,0,0.7);
+    width: 400px;
+    color: #222;
+    background-color: rgba(255,255,255,0.7);
     -webkit-border-radius: 5px 5px 5px 5px;
     text-align:center;
+    text-shadow: 0 1px 0 #ddd;
+    position: absolute;
+    top: 235px;
+    left: 75px;
+    box-shadow: 0 0 10px rgba(255,255,255,.4);
+    border: 1px solid #fff;
 }
 
 #info p {
     line-height: 20px;
     margin: 10px 0px 10px 0px;
+}
+
+#buildings, #clouds, #signal {
+    position: fixed;
+}
+
+#buildings {
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+}
+
+#clouds {
+    top: 0;
+    right: 0;  
+    z-index: 2; 
 }
