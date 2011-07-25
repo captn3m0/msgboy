@@ -1,6 +1,6 @@
 Plugins.register(new function () {
 
-    this.name = 'Browsing History', this.visits_to_be_popular = 3,
+    this.name = 'Browsing History', this.visits_to_be_popular = 3, this.deviation = 1, this.elapsed = 1000 * 60 * 60 * 3,
 
     this.onSubscriptionPage = function () {
         // This method returns true if the plugin needs to be applied on this page.
@@ -13,37 +13,32 @@ Plugins.register(new function () {
 
     this.listSubscriptions = function (callback) {
         var seen = [];
-        var feeds = [];
         var pending = 0;
         chrome.history.search({
             'text': '',
             // Return every history item....
             'startTime': ((new Date).getTime() - 1000 * 60 * 60 * 24 * 31),
-            // that was accessed less than one week ago.
+            // that was accessed less than one month ago.
             'maxResults': 10000
         }, function (historyItems) {
             _.each(historyItems, function (item) {
                 if (item.visitCount > this.visits_to_be_popular) {
-                    if (seen.indexOf(item.url)) {
-                        seen.push(item.url);
-                    }
-                }
-            }.bind(this));
-            _.each(seen.sort(), function (item) {
-                pending += 1;
-                MsgboyHelper.links_to_feeds_at_url(item, function (links) {
-                    pending -= 1;
-                    _.each(links, function (link) {
-                        feeds.push({
-                            title: link.title,
-                            url: link.href,
+                    this.visits_regularly(item.url, function(result) {
+                        MsgboyHelper.links_to_feeds_at_url(item.url, function (links) {
+                            var feeds = [];
+                            _.each(links, function (link) {
+                                if(seen.indexOf(link.href) == -1) {
+                                    feeds.push({title: link.title, url: link.href});
+                                    seen.push(link.href);
+                                }
+                            });
+                            if(feeds.length > 0) {
+                                callback(feeds);
+                            }
                         });
                     });
-                    if(pending == 0) {
-                        callback(_.uniq(feeds));
-                    }
-                });
-            });
+                }
+            }.bind(this));
         }.bind(this));
     },
 
@@ -51,30 +46,33 @@ Plugins.register(new function () {
         callback(true) // By default we will show.
     }
     
+    this.visits_regularly = function(url, callback) {
+        chrome.history.getVisits({url: url}, function(visits) {
+            times = $.map(visits, function(visit) {
+                return visit.visitTime;
+            }).slice(-10); // We check the last 10 visits.
+            
+            var diffs = [];
+            for(var i=0; i < times.length - 1; i++) {
+                diffs[i] =  times[i+1] - times[i];
+            }
+            // Check the regularity and if it is regular + within a certain timeframe, then, we validate.
+            if(MsgboyHelper.maths.array.normalized_deviation(diffs) < this.deviation && (times.slice(-1)[0] -  times[0] > this.elapsed)) {
+                callback();
+            }
+        }.bind(this));        
+    }
+    
     this.subscribeInBackground = function(callback) {
         chrome.history.onVisited.addListener(function(historyItem) {
             if(historyItem.visitCount > this.visits_to_be_popular) {
-                chrome.history.getVisits({url: historyItem.url}, function(visits) {
-                    times = $.map(visits, function(visit) {
-                        return visit.visitTime;
-                    }).slice(-10);
-                    
-                    var diffs = [];
-                    for(var i=0; i < times.length - 1; i++) {
-                        diffs[i] =  times[i+1] - times[i];
-                    }
-                    if(MsgboyHelper.maths.array.normalized_deviation(diffs) < 1 && (times.slice(-1)[0] -  times[0] > 1000 * 60 * 60 * 3)) {
-                        // This url was visited quite often. We need to check the feeds and subscribe
-                        MsgboyHelper.links_to_feeds_at_url(historyItem.url, function (links) {
-                            _.each(links, function (link) {
-                                callback(link);
-                            });
+                this.visits_regularly(historyItem.url, function(result) {
+                    MsgboyHelper.links_to_feeds_at_url(historyItem.url, function (links) {
+                        _.each(links, function (link) {
+                            callback(link); 
                         });
-                    }
-                    else {
-                        // No need to subscribe.
-                    }
-                })
+                    });
+                });
             }
         }.bind(this));
     }
