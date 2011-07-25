@@ -12,8 +12,6 @@ var ArchiveView = Backbone.View.extend({
         _.bindAll(this, 'render', 'delete_from_feed', 'show_new', 'complete_page', 'load_next');
         $(document).scroll(this.complete_page);
         
-        this.collection = new Archive();
-        
         this.collection.comparator = function(message) {
           return -message.attributes.created_at;
         };

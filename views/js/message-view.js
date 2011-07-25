@@ -10,9 +10,8 @@ var MessageView = Backbone.View.extend({
 
     initialize: function() {
         _.bindAll(this, "render", "up", "down", "format");
-        
         this.model.view = this;
-        
+
         var controls = $("<span>", {
             class:"controls"
         }).appendTo($(this.el));

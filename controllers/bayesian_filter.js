@@ -3,7 +3,7 @@ var BayesianFilter = new function () {
         backend: {
             type: 'localStorage',
             options: {
-                name: 'emailspam'
+                name: 'msgboy-bayes-filter'
             } 
         }
     }),
@@ -24,7 +24,7 @@ var BayesianFilter = new function () {
     },
     
     this.train_with_message = function(message) {
-        if(message.attributes.state == "up-ed" || message.attributes == "down-ed") {
+        if(message.attributes.state == "up-ed" || message.attributes.state == "down-ed") {
             var txt = this.prepare_text(message.attributes.title + message.text());
             this.bayes.train(txt, message.attributes.state, function() {
                 // Hum, what?

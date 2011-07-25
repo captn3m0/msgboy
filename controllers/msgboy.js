@@ -14,7 +14,7 @@ var Msgboy = new function () {
     },
 
     // Handles XMPP Connections
-    this.onConnect = function(status) {
+    this.on_connect = function(status) {
         if (status == Strophe.Status.CONNECTING) {
             msg = 'Msgboy is connecting.';
         } else if (status == Strophe.Status.CONNFAIL) {
@@ -68,7 +68,7 @@ var Msgboy = new function () {
         var password = inbox.attributes.password;
         var jid = inbox.attributes.jid + "@msgboy.com/extension";
 
-        Msgboy.connection.connect(jid, password, this.onConnect);
+        Msgboy.connection.connect(jid, password, this.on_connect);
     },
 
     // Uploads the content of the database. this will be used for analysis of the dataset o determine a better algorithm.
@@ -171,4 +171,5 @@ var Msgboy = new function () {
             }
         });
     }
+
 }

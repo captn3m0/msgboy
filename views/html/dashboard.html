@@ -66,17 +66,29 @@
             var inbox = new Inbox({
                 id: "1"
             });
+            
+            var archive =  new Archive();
+            
+            archive.bind("up-ed", function(message) {
+                BayesianFilter.train_with_message(message)
+            });
+            
+            archive.bind("down-ed", function(message) {
+                BayesianFilter.train_with_message(message)
+            });
+            
             inbox.fetch({
                 success: function() {
                     var archiveView = new ArchiveView({
                         el: "#archive",
+                        collection : archive,
                     });
                     archiveView.render(); 
                 },
                 error: function() {
                     // We have a serious problem here.
                 }
-            })
+            });
         </script>
     </body>
 

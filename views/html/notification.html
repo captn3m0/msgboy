@@ -28,6 +28,7 @@
     <script src="../../controllers/msgboy.js" type="text/javascript"></script> 
     <script src="../../controllers/events.js" type="text/javascript"></script> 
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
+    <script src="../../controllers/notification.js" type="text/javascript"></script> 
     <script src="../../controllers/bayesian_filter.js" type="text/javascript"></script> 
 
     <!-- Views includes -->
@@ -35,80 +36,16 @@
 
 </head>
 <body>
-
     <script>
-    var view    = null;
-    var started = false;
-    var messages = [];
-    var mouse_in = false;
-
-    function goToMessage(model) {
-        chrome.extension.sendRequest({
-            signature: "tab",
-            params: {
-                url: model.main_link(),
-                selected: true
-            }
-        });
-    };
-
-    function showNextMessage() {
-        var message = messages.pop();
-        if (!message) {
-            chrome.extension.sendRequest({
-                signature: "close",
-                params: null
-            }, function (response) {
-                window.close();
-            });
-        } else {
-            window.focus(); // Put this alert in front!
-            view = new MessageView({
-                model: message
-            });
-            
-            message.bind("up-ed", function() {
-                view.remove();
-                goToMessage(message);
-                showNextMessage();
-            });
-            
-            message.bind("down-ed", function() {
-                view.remove();
-                showNextMessage();
-            });
-            
-            view.bind("clicked", function () {
-                view.remove();
-                showNextMessage();
-            });
-            
-            view.bind("rendered", function () {
-                $(view.el).appendTo($("body"));
-            });
-            
-            view.render(); // builds the HTML
-        }
-    }
     
-    function rotate() {
-        setTimeout(function() {
-            if(!mouse_in) {
-                if(view) {
-                    view.remove();
-                }
-                showNextMessage();
-            }
-            rotate();
-        }, 8000);
-    }
+    var notification =  new MsgboyNotification();
     
     $("body").mouseover(function() {
-        mouse_in = true;
+        notification.mouse_over = true;
     });
     
     $("body").mouseout(function() {
-        mouse_in = false;
+        notification.mouse_over = false;
     });
 
     $(document).ready(function () {
@@ -119,10 +56,10 @@
                 });
                 message.fetch({
                     success: function() {
-                        messages.push(message);
-                        if (!started) {
-                            started = true // Initiate the loop.
-                            showNextMessage();
+                        notification.messages.push(message);
+                        if (!notification.started) {
+                            notification.started = true // Initiate the loop.
+                            notification.show_next_message();
                         }
                     }
                 });
@@ -130,7 +67,7 @@
         });
     });
     
-    rotate();
+    notification.rotate();
     
     </script>
 </body>
