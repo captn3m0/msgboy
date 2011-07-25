@@ -27,7 +27,7 @@ var MessageView = Backbone.View.extend({
         $(this.el).attr("data-msgboy-relevance", this.model.attributes.relevance);
         $(this.el).attr("data-msgboy-state", this.model.attributes.state);
         
-        if(Math.ceil(this.model.attributes.relevance * 4) == 1 || this.model.attributes.state == "down-ed") {
+        if(this.model.attributes.state == "down-ed") {
             $(this.el).addClass("brick-1");
         } else if(this.model.attributes.state == "up-ed"){
             $(this.el).addClass("brick-4");
