@@ -197,6 +197,8 @@ MsgboyHelper.links_to_feeds_at_url = function(_url, callback) {
 // This function, which requires JQUERY cleans up the HTML that it includes
 MsgboyHelper.cleaner = {};
 MsgboyHelper.cleaner.html = function(string) {
+    // We must remove the <script> tags from the string first.
+    string = string.replace(/(<script([^>]+)>.*<\/script>)/ig, ' ');
     var div = $("<div/>").html(string);
     var cleaned = $(MsgboyHelper.cleaner.dom(div.get()));
     return cleaned.html();
@@ -240,6 +242,12 @@ MsgboyHelper.cleaner.dom = function(element) {
                 }
             }
         }
+        else if(child.nodeName == "NOSCRIPT") {
+            MsgboyHelper.cleaner.remove(child);
+        }
+        else if(child.nodeName == "IFRAME") {
+            MsgboyHelper.cleaner.remove(child);
+        }
         else if(child.nodeName == "DIV") {
             if(child.childNodes.length == 0) {
                 MsgboyHelper.cleaner.remove(child);
@@ -267,6 +275,12 @@ MsgboyHelper.cleaner.dom = function(element) {
         else if(child.nodeName == "BR") {
             MsgboyHelper.cleaner.remove(child);
         }
+        else if(child.nodeName == "OBJECT") {
+            MsgboyHelper.cleaner.remove(child);
+        }
+        else if(child.nodeName == "SCRIPT") {
+            MsgboyHelper.cleaner.remove(child);
+        }
         else if($(child).hasClass("mf-viral") || $(child).hasClass("feedflare")) {
             MsgboyHelper.cleaner.remove(child);
         }
@@ -285,8 +299,8 @@ MsgboyHelper.cleaner.dom = function(element) {
         $(child).removeAttr("cellspacing");
         $(child).removeAttr("valign");
         $(child).removeAttr("border");
-        
-        
+        $(child).removeAttr("hspace");
+        $(child).removeAttr("vspace");
         
         MsgboyHelper.cleaner.dom(child);
     })
