@@ -68,13 +68,13 @@
 
             // When a message was voted-up
             archive.bind("up-ed", function (message) {
-                BayesianFilter.train_with_message(message);
+                // BayesianFilter.train_with_message(message);
                 $('#container').isotope('reLayout');
             });
 
             // When a message was voted-down
             archive.bind("down-ed", function (message) {
-                BayesianFilter.train_with_message(message)
+                // BayesianFilter.train_with_message(message)
             });
 
             $("#new_messages").click(function() {
