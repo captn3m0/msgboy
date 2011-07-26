@@ -54,77 +54,42 @@
         </div>
         
         <script type="text/javascript">
-<<<<<<< HEAD
-            $(document).ready(function() {
-                $('#container').isotope({
-                  itemSelector : '.message',
-                  filter: '.brick-1 .brick-2 .brick-3 .brick-4',
-                  masonry: {
-                     columnWidth: 1,
-                   },
-                });
+        $(document).ready(function () {
 
-                var archive =  new Archive();
-
-                // When a message was voted-up
-                archive.bind("up-ed", function(message) {
-                    BayesianFilter.train_with_message(message)
-                });
-
-                // When a message was voted-down
-                archive.bind("down-ed", function(message) {
-                    BayesianFilter.train_with_message(message)
-                });
-                
-                var archiveView = new ArchiveView({
-                    el: "#archive",
-                    collection : archive,
-                });
-                archiveView.render(); 
-                
-                chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-                    if (request.signature == "notify" && request.params) {
-                        // Cool, we have a new message. Let's see if we add it to the top, or reload the page.
-                    }
-                });
-=======
-            
             $('#container').isotope({
-              itemSelector : '.message',
-              filter: '.brick-1 .brick-2 .brick-3 .brick-4',
-              masonry: {
-                 columnWidth: 10,
-               },
+                itemSelector: '.message',
+                filter: '.brick-1 .brick-2 .brick-3 .brick-4',
+                masonry: {
+                    columnWidth: 10,
+                },
             });
-            
-            var inbox = new Inbox({
-                id: "1"
-            });
-            
-            var archive =  new Archive();
-            
-            archive.bind("up-ed", function(message) {
-                BayesianFilter.train_with_message(message)
+
+            var archive = new Archive();
+
+            // When a message was voted-up
+            archive.bind("up-ed", function (message) {
+                BayesianFilter.train_with_message(message);
                 $('#container').isotope('reLayout');
             });
-            
-            archive.bind("down-ed", function(message) {
+
+            // When a message was voted-down
+            archive.bind("down-ed", function (message) {
                 BayesianFilter.train_with_message(message)
             });
-            
-            inbox.fetch({
-                success: function() {
-                    var archiveView = new ArchiveView({
-                        el: "#archive",
-                        collection : archive,
-                    });
-                    archiveView.render(); 
-                },
-                error: function() {
-                    // We have a serious problem here.
-                }
->>>>>>> frontend
+
+            var archiveView = new ArchiveView({
+                el: "#archive",
+                collection: archive,
             });
+            archiveView.render();
+
+            chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
+                if (request.signature == "notify" && request.params) {
+                    // Cool, we have a new message. Let's see if we add it to the top, or reload the page.
+                }
+            });
+
+        });
         </script>
     </body>
 
