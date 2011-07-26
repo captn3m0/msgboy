@@ -2,6 +2,54 @@ body.splash {
     background: url(../images/page-bg.gif) top left repeat-x;
 }
 
+header {
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0D1C22), to(#11242d));
+    color: #ddd;
+    padding: 10px;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+header h1 {
+    background-image: url(../icons/icon16.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    text-indent: -9999em;
+    height: 16px;
+    width: 16px;
+    float: left;
+    display: block;
+}
+
+header h2 {
+    float: left;
+    margin-left: 10px;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+header a.options, header a.help {
+    display: block;
+    float: left;
+    background-image: url(../images/gear-help.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    text-indent: -999em;
+}
+
+header a.help {
+    background-position: -20px 0;
+    margin-left: 5px;
+}
+
 #info {
     padding: 20px;
     width: 400px;

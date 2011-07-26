@@ -41,8 +41,8 @@
         
         <header>
             <h1>msgboy</h1>
-            <h2>|&nbsp;&nbsp;Dashboard</h2>
-            <a href="options.html" class="options">Options</a>
+            <h2>|&nbsp;&nbsp;Dashboard&nbsp;&nbsp;|</h2>
+            <a href="options.html" class="options">Options</a><a href="splash.html" class="help">Help</a>
         </header>
         
 
@@ -74,7 +74,8 @@
 
             // When a message was voted-down
             archive.bind("down-ed", function (message) {
-                BayesianFilter.train_with_message(message)
+                BayesianFilter.train_with_message(message);
+                $('#container').isotope('reLayout');
             });
 
             $("#new_messages").click(function() {

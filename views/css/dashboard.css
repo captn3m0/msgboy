@@ -27,24 +27,28 @@ header h2 {
     float: left;
     height: 40px;
     line-height: 40px;
-    margin-left: 0px;
+    margin-left: -26px;
     font-weight: normal;
     font-size: 16px;
     letter-spacing: 1px;
 }
 
-header a.options {
+header a.options, header a.help {
     display: block;
-    float: right;
-    position: absolute;
-    top: 20px;
-    right: 50px;
-    background-image: url(../images/gear.png);
-    background-position: top right;
+    float: left;
+    background-image: url(../images/gear-help.png);
+    background-position: top left;
     background-repeat: no-repeat;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
+    margin-left: 10px;
+    margin-top: 12px;
     text-indent: -999em;
+}
+
+header a.help {
+    background-position: -20px 0;
+    margin-left: 5px;
 }
 
 #archive {
@@ -202,7 +206,7 @@ img.thumbs:hover {
 .isotope,
 .isotope .isotope-item {
   /* change duration value to whatever you like */
-  -webkit-transition-duration: .65s;
+  -webkit-transition-duration: .5s;
   -webkit-animation-timing-function: ease-out;
 }
 
@@ -234,7 +238,7 @@ img.thumbs:hover {
 .text p {
     padding: 10px;
     z-index: 1;
-    max-height: 46%;
+    max-height: 40%;
     overflow: hidden;
     text-overflow: ellipsis;
 }
