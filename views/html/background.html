@@ -94,7 +94,7 @@
     }
 
     inbox.bind("messages:added", function (message) {
-        if (message.is_relevant()) {
+        if (message.attributes.relevance > inbox.attributes.options.relevance) {
             Msgboy.log("Relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
             Msgboy.notify(message);
         } else {

@@ -68,18 +68,18 @@
 
             // When a message was voted-up
             archive.bind("up-ed", function (message) {
-                BayesianFilter.train_with_message(message);
+                // BayesianFilter.train_with_message(message);
                 $('#container').isotope('reLayout');
             });
 
             // When a message was voted-down
             archive.bind("down-ed", function (message) {
-                BayesianFilter.train_with_message(message);
+                // BayesianFilter.train_with_message(message)
                 $('#container').isotope('reLayout');
             });
 
             $("#new_messages").click(function() {
-                // Refresh the page!
+                // Refresh the page! Maybe it would actually be fancier to add the elements to the archive and then push them in front. TODO
                 window.location.reload(true);
             }) 
 
