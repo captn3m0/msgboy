@@ -4,6 +4,11 @@ header {
     height: 56px;
     padding: 10px;
     margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 header h1 {
@@ -43,6 +48,8 @@ header a.options {
 #archive {
     border: none;
     padding: 5px;
+    margin-top: 76px;
+    z-index: 500;
 }
 
 .message {
@@ -113,7 +120,7 @@ img.thumbs:hover {
 .controls button {
     -webkit-appearance: none;
     background: none;
-    background-color: rgba(0,0,0,.7);
+    background-color: rgba(53,141,194,.85);
     border: none;
     outline: none;
     width: 49.5%;
@@ -126,7 +133,7 @@ img.thumbs:hover {
     cursor: pointer;
     position: absolute;
     bottom: 0;
-    text-shadow: 0 1px 1px rgba(235,235,235,.55);
+    text-shadow: 0 1px 1px rgba(0,0,0,.85);
 }
 
 .controls button:first-child {
@@ -141,8 +148,8 @@ img.thumbs:hover {
 }
 
 .controls button:hover {
-    background-color: rgba(0,0,0,.85);
-    text-shadow: 0 -1px 1px rgba(235,235,235,.75);
+    background-color: rgba(53,141,194,1);
+    text-shadow: 0 -1px 1px rgba(0,0,0,.85);
     box-shadow: 0 1px 2px rgba(160,160,160,.75);
 }
 
@@ -206,6 +213,9 @@ img.thumbs:hover {
 .text p {
     padding: 10px;
     z-index: 1;
+    max-height: 46%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .text p.darkened {
@@ -221,19 +231,19 @@ img.thumbs:hover {
 }
 
 .brick-2 p{
-    font-size:1.0em;
+    font-size: 0.85em;
     position: absolute;
     bottom: 0;
 }
 
 .brick-3 p{
-    font-size:1.2em;
+    font-size: 1.2em;
     position: absolute;
     bottom: 0;
 }
 
 .brick-4 p{
-    font-size:1.5em;
+    font-size: 1.5em;
     position: absolute;
     bottom: 0;
 }
