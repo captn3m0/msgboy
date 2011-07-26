@@ -168,11 +168,6 @@ var Message = Backbone.Model.extend({
         return [];
     },
     
-    /* Returns true of the message is relevant! */
-    is_relevant: function() {
-        return this.attributes.relevance >= 0.5;
-    },
-    
     main_link: function() {
         if(this.attributes.links["alternate"]) {
             if(this.attributes.links["alternate"]["text/html"]) {

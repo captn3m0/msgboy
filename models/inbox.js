@@ -1,7 +1,12 @@
 var Inbox = Backbone.Model.extend({
     storeName: "inbox",
     database: msgboyDatabase,
-
+    defaults: {
+        options: {
+            relevance: 0.5
+        }
+    },
+     
     initialize: function () {
         this.id = 1;
         this.fetch();
