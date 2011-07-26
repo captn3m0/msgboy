@@ -105,7 +105,9 @@ $(this.el).bind("mouseover", function() {
         _.each(this.model.attributes.source.title.split(""), function(c) {
             sum += c.charCodeAt(0);
         });
-        $(this.el).addClass("color" + sum%7);
+        //$(this.el).addClass("color" + sum%7);
+        $(this.el).css("background-color", "hsl(240,0%," + (sum%7)*10 + "%)");
+        //$("<p>").html(MsgboyHelper.cleaner.html(sum%7)).appendTo($(this.el));
         this.trigger("rendered");
     },
     

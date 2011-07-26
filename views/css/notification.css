@@ -1,15 +1,14 @@
 html {
-    background: none;
+    background: url(../images/page-bg.gif) top left repeat-x;
 }
 
 body {
     padding:0;
     font-family: sans-serif;
-    color: #191919;
+    color: #fff;
 }
 
 .message {
-    background: #fff;
     padding: 0px;
     margin: 0px;
     overflow: hidden;
@@ -26,10 +25,15 @@ body {
     margin:0px;
     display:block;
     position: absolute;
-    bottom:0px;
-    white-space: nowrap; 
+    bottom: 0px;
+    /*
+white-space: nowrap;
     vertical-align: middle;
-    color: #E6E6E6;
+*/
+    color: #fff;
+    font-size: .6em;
+    font-weight: normal;
+    width: auto;
     background-color: rgba(10,10,10,0.8);
     background-size: 16px 16px;
 }
@@ -61,14 +65,52 @@ img.thumbs:hover {
     top:0px;
     right:0px;
     display:none;
+    width: 100%;
 }
 
 .message:hover .controls {
     display:block;
+    z-index: 10;
+}
+
+.controls button {
+    -webkit-appearance: none;
+    background: none;
+    background-color: rgba(0,0,0,.7);
+    border: none;
+    outline: none;
+    width: 49.5%;
+    margin: 0;
+    color: #fff;
+    height: 32px;
+    padding: 0 6px 2px;
+    font-size: 26px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    text-shadow: 0 1px 1px rgba(235,235,235,.55);
+}
+
+.controls button:first-child {
+    border-top-right-radius: 4px;
+    left: 0;
+    text-align: left;
+}
+.controls button:last-child {
+    border-top-left-radius: 4px;
+    right: 0;
+    text-align: right;
+}
+
+.controls button:hover {
+    background-color: rgba(0,0,0,.85);
+    text-shadow: 0 -1px 1px rgba(235,235,235,.75);
+    box-shadow: 0 1px 2px rgba(160,160,160,.75);
 }
 
 .brick-1 {
-    font-size:0.8em;
+
 }
 
 .brick-2 {

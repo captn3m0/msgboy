@@ -43,6 +43,8 @@
             <h1>msgboy</h1>
             <h2>|&nbsp;&nbsp;stream</h2>
             <a href="options.html" class="options">Options</a>
+            <br />
+            <a href="splash.html">splash</a>
         </header>
 
         <div id="archive">
@@ -52,6 +54,7 @@
         </div>
         
         <script type="text/javascript">
+<<<<<<< HEAD
             $(document).ready(function() {
                 $('#container').isotope({
                   itemSelector : '.message',
@@ -84,6 +87,43 @@
                         // Cool, we have a new message. Let's see if we add it to the top, or reload the page.
                     }
                 });
+=======
+            
+            $('#container').isotope({
+              itemSelector : '.message',
+              filter: '.brick-1 .brick-2 .brick-3 .brick-4',
+              masonry: {
+                 columnWidth: 10,
+               },
+            });
+            
+            var inbox = new Inbox({
+                id: "1"
+            });
+            
+            var archive =  new Archive();
+            
+            archive.bind("up-ed", function(message) {
+                BayesianFilter.train_with_message(message)
+                $('#container').isotope('reLayout');
+            });
+            
+            archive.bind("down-ed", function(message) {
+                BayesianFilter.train_with_message(message)
+            });
+            
+            inbox.fetch({
+                success: function() {
+                    var archiveView = new ArchiveView({
+                        el: "#archive",
+                        collection : archive,
+                    });
+                    archiveView.render(); 
+                },
+                error: function() {
+                    // We have a serious problem here.
+                }
+>>>>>>> frontend
             });
         </script>
     </body>

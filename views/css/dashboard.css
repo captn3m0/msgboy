@@ -2,8 +2,13 @@ header {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0D1C22), to(#11242d));
     color: #fff;
     height: 56px;
-    padding: 21px 59px;
+    padding: 10px;
     margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 header h1 {
@@ -42,15 +47,16 @@ header a.options {
 
 #archive {
     border: none;
-    padding: 0 49px;
-    width: 100%;
+    padding: 5px;
+    margin-top: 76px;
+    z-index: 500;
 }
 
 .message {
     background: #fff;
     padding: 0px;
-    margin: 10px;
-    margin-left: 10px;
+    margin: 5px;
+    margin-left: 5px;
     overflow: hidden;
     min-height: 50px;
 }
@@ -114,7 +120,7 @@ img.thumbs:hover {
 .controls button {
     -webkit-appearance: none;
     background: none;
-    background-color: rgba(0,0,0,.7);
+    background-color: rgba(53,141,194,.85);
     border: none;
     outline: none;
     width: 49.5%;
@@ -127,7 +133,7 @@ img.thumbs:hover {
     cursor: pointer;
     position: absolute;
     bottom: 0;
-    text-shadow: 0 1px 1px rgba(235,235,235,.55);
+    text-shadow: 0 1px 1px rgba(0,0,0,.85);
 }
 
 .controls button:first-child {
@@ -142,8 +148,8 @@ img.thumbs:hover {
 }
 
 .controls button:hover {
-    background-color: rgba(0,0,0,.85);
-    text-shadow: 0 -1px 1px rgba(235,235,235,.75);
+    background-color: rgba(53,141,194,1);
+    text-shadow: 0 -1px 1px rgba(0,0,0,.85);
     box-shadow: 0 1px 2px rgba(160,160,160,.75);
 }
 
@@ -156,40 +162,35 @@ img.thumbs:hover {
 
 .brick-2 {
     font-size:0.8em;
-    width: 100px;
-    height: 100px
+    width: 90px;
+    height: 90px;
 }
 
 .brick-3 {
     font-size:1.0em;
-    width: 200px;
-    height: 200px;
+    width: 190px;
+    height: 190px;
 }
 
 .brick-4 {
     font-size:1.2em;
-    width: 300px;
-    height: 300px;
+    width: 390px;
+    height: 390px;
 }
 
 .isotope,
 .isotope .isotope-item {
   /* change duration value to whatever you like */
-  -webkit-transition-duration: 0.8s;
-     -moz-transition-duration: 0.8s;
-          transition-duration: 0.8s;
+  -webkit-transition-duration: .65s;
+  -webkit-animation-timing-function: ease-out;
 }
 
 .isotope {
   -webkit-transition-property: height, width;
-     -moz-transition-property: height, width;
-          transition-property: height, width;
 }
 
 .isotope .isotope-item {
   -webkit-transition-property: -webkit-transform, opacity;
-     -moz-transition-property:    -moz-transform, opacity;
-          transition-property:         transform, opacity;
 }
 
 .image h1 {
@@ -212,6 +213,9 @@ img.thumbs:hover {
 .text p {
     padding: 10px;
     z-index: 1;
+    max-height: 46%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .text p.darkened {
@@ -227,19 +231,19 @@ img.thumbs:hover {
 }
 
 .brick-2 p{
-    font-size:1.0em;
+    font-size: 0.85em;
     position: absolute;
     bottom: 0;
 }
 
 .brick-3 p{
-    font-size:1.2em;
+    font-size: 1.2em;
     position: absolute;
     bottom: 0;
 }
 
 .brick-4 p{
-    font-size:1.5em;
+    font-size: 1.5em;
     position: absolute;
     bottom: 0;
 }
