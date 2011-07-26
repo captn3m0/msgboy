@@ -54,7 +54,25 @@ header a.options {
     z-index: 500;
 }
 
+#new_messages {
+    display:none;
+    width: 20%;
+    text-align: center;
+    margin: 5px;
+    margin-left:auto;
+    margin-right: auto;
+    background-color: rgba(48, 122, 170, 0.5);
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    font-size: 0.8em;
+    border-radius: 5px;
+    border: solid 1px rgba(48, 122, 170, 0.7);
+    cursor: pointer;
+}
+
 .message {
+    border-radius: 2px;
     background: #fff;
     padding: 0px;
     margin: 5px;
@@ -64,6 +82,7 @@ header a.options {
 }
 
 .message h1 {
+    border-top-left-radius: 2px;
     background-color: rgba(10,10,10,0.8);
     background-size: 16px 16px;
     background-repeat:no-repeat;

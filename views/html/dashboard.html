@@ -41,11 +41,13 @@
         
         <header>
             <h1>msgboy</h1>
-            <h2>|&nbsp;&nbsp;Dashboard</h2><span id="new_messages"></span>
+            <h2>|&nbsp;&nbsp;Dashboard</h2>
             <a href="options.html" class="options">Options</a>
         </header>
+        
 
         <div id="archive">
+            <div id="new_messages"></div>
             <div id="container" class="isotope">
                 <!-- Messages will be added here when loaded -->
             </div>
@@ -75,6 +77,11 @@
                 BayesianFilter.train_with_message(message)
             });
 
+            $("#new_messages").click(function() {
+                // Refresh the page!
+                window.location.reload(true);
+            }) 
+
             var archiveView = new ArchiveView({
                 el: "#archive",
                 collection: archive,
@@ -84,7 +91,13 @@
             chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
                 if (request.signature == "notify" && request.params) {
                     // Cool, we have a new message. Let's see if we add it to the top, or reload the page.
-                    
+                    // Let's get the content of $("#new_messages")
+                    if($("#new_messages").text()) {
+                        $("#new_messages").text(parseInt($("#new_messages").text()) + 1 + " new messages");
+                    } else {
+                        $("#new_messages").show();
+                        $("#new_messages").text("1 new message");
+                    }
                 }
             });
 
