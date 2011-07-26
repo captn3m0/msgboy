@@ -41,10 +41,8 @@
         
         <header>
             <h1>msgboy</h1>
-            <h2>|&nbsp;&nbsp;stream</h2>
+            <h2>|&nbsp;&nbsp;Dashboard</h2><span id="new_messages"></span>
             <a href="options.html" class="options">Options</a>
-            <br />
-            <a href="splash.html">splash</a>
         </header>
 
         <div id="archive">
@@ -86,6 +84,7 @@
             chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
                 if (request.signature == "notify" && request.params) {
                     // Cool, we have a new message. Let's see if we add it to the top, or reload the page.
+                    
                 }
             });
 
