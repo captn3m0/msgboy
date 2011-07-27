@@ -40,35 +40,35 @@ var Subscription = Backbone.Model.extend({
         return false;
     },
     
-    set_state: function(_state, callback) {
+    set_state: function(_state) {
         switch(_state) {
             case "subscribed":
             this.save({state: _state, subscribed_at: new Date().getTime()}, {
                 success: function() {
-                    callback();
-                }, 
+                    this.trigger("subscribed");
+                }.bind(this), 
                 error: function(o, e) {
-                    callback();
+                    // Dang
                 }
             });
             break;
             case "unsubscribed":
             this.save({state: _state, unsubscribed_at: new Date().getTime()}, {
                 success: function() {
-                    callback();
-                }, 
-                error: function() {
-                    callback();
+                    this.trigger("unsubscribed");
+                }.bind(this), 
+                error: function(o, e) {
+                    // Dang
                 }
             });
             break;
             default:
             this.save({state: _state}, {
                 success: function() {
-                    callback();
-                }, 
-                error: function() {
-                    callback();
+                    this.trigger(_state);
+                }.bind(this), 
+                error: function(o, e) {
+                    // Dang
                 }
             });
         }
@@ -79,5 +79,20 @@ var Subscription = Backbone.Model.extend({
 var Subscriptions = Backbone.Collection.extend({
     storeName: "subscriptions",
     database: msgboyDatabase,
-    model: Subscription
+    model: Subscription,
+    
+    pending: function() {
+        this.fetch({
+            conditions: {state: "subscribing"},
+            addIndividually: true,
+            limit: 100
+        });
+    },
+
+    clear: function() {
+        this.fetch({
+            delete: true,
+        });
+    }
+    
 });
