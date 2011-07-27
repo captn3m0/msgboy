@@ -48,7 +48,7 @@
 
             initialize: function() {
                 _.bindAll(this, "render");
-                this.model = new Inbox({id: "1"});
+                this.model = new Inbox();
                 this.model.bind("change", function() {
                     view.render();
                 });

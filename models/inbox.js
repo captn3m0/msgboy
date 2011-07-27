@@ -2,13 +2,13 @@ var Inbox = Backbone.Model.extend({
     storeName: "inbox",
     database: msgboyDatabase,
     defaults: {
+        id: "1",
         options: {
             relevance: 0.5
         }
     },
      
     initialize: function () {
-        this.id = 1;
     },
 
     // Create credentials and saves them.
