@@ -43,11 +43,11 @@
             <h1>msgboy</h1>
             <h2>|&nbsp;&nbsp;Dashboard&nbsp;&nbsp;|</h2>
             <a href="options.html" class="options">Options</a><a href="splash.html" class="help">Help</a>
+            <div id="new_messages"></div>
         </header>
         
 
         <div id="archive">
-            <div id="new_messages"></div>
             <div id="container" class="isotope">
                 <!-- Messages will be added here when loaded -->
             </div>
@@ -97,7 +97,7 @@
                     if($("#new_messages").text()) {
                         $("#new_messages").text(parseInt($("#new_messages").text()) + 1 + " new messages");
                     } else {
-                        $("#new_messages").show();
+                        $("#new_messages").css("top","0");
                         $("#new_messages").text("1 new message");
                     }
                 }

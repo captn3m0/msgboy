@@ -54,20 +54,21 @@ header a.help {
 }
 
 #new_messages {
-    display:none;
-    width: 20%;
+    width: 100%;
     text-align: center;
-    margin: 5px;
+    margin: 0;
     margin-left:auto;
     margin-right: auto;
-    background-color: rgba(48, 122, 170, 0.5);
+    background-color: rgba(20,20,20,0.6);
     color: white;
     font-weight: bold;
+    text-transform: uppercase;
     padding: 10px;
-    font-size: 0.8em;
-    border-radius: 5px;
-    border: solid 1px rgba(48, 122, 170, 0.7);
+    border: solid 1px rgba(0,0,0,0.7);
     cursor: pointer;
+    position: absolute;
+    top: -36px;
+    -webkit-transition: top 0.5s ease-out;
 }
 
 .message {
@@ -82,23 +83,24 @@ header a.help {
 
 .message h1 {
     border-top-left-radius: 2px;
-    background-color: rgba(10,10,10,0.8);
+    background-color: rgba(10,10,10,0.4);
     background-size: 16px 16px;
     background-repeat:no-repeat;
-    background-position: 2px 2px; 
-    padding: 0 3px 5px 22px;
+    background-position: 0 0; 
+    padding: 0 3px 0 22px;
     margin: 0px;
-    line-height: 200%;
-    height: 15px;
+    line-height: 150%;
+    height: 16px;
     display: block;
     position: absolute;
     top:0px;
     color: #E6E6E6;
     text-indent: 0;
-    font-size: .6em;
+    font-size: 11px;
     font-weight: normal;
     overflow: hidden;
     width: 100%;
+    text-shadow: 0 1px 0 #111;
 }
 
 .votes {
@@ -281,29 +283,29 @@ img.thumbs:hover {
 }
 
 .grey, .color0 {
-    background-color: #646265;
+    background-color: #6c6b6b;
 }
 
 .purple, .color1 {
-    background-color: #6E4EC8;
+    background-color: #11232c;
 }
 
 .blue, .color2 {
-    background-color: #1B8CD7;
+    background-color: #358dc2;
 }
 
 .green, .color3 {
-    background-color: #7FD219;
+    background-color: #7d9100;
 }
 
 .yellow, .color4 {
-    background-color: #EACB00;
+    background-color: #e1ab04;
 }
 
 .orange, .color5 {
-    background-color: #F49000;
+    background-color: #e17103;
 }
 
 .red, .color6 {
-    background-color: #EF0019;
+    background-color: #a40637;
 }

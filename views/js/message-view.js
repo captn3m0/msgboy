@@ -76,7 +76,7 @@ var MessageView = Backbone.View.extend({
                     if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
                         this.$("img").css("max-height", "100%");
                     } else {
-                        this.$("img").css("max-width", "100%");
+                        this.$("img").css("width", "100%");
                     }
                     
                     // show the source title.
@@ -96,19 +96,27 @@ var MessageView = Backbone.View.extend({
         _.each(this.model.attributes.source.title.split(""), function(c) {
             sum += c.charCodeAt(0);
         });
-        //$(this.el).addClass("color" + sum%7);
+        $(this.el).addClass("color" + sum%7);
         // using grayscale for the time being. pending new color palette. -&yet:eric
-        $(this.el).css("background-color", "hsl(240,0%," + (sum%7)*10 + "%)");
+        //$(this.el).css("background-color", "hsl(240,0%," + (sum%7)*10 + "%)");
         //$("<p>").html(MsgboyHelper.cleaner.html(sum%7)).appendTo($(this.el));
         this.trigger("rendered");
     },
     
     // Message was voted up
     up: function() {
-        $(this.el).removeClass("brick-1");
-        $(this.el).removeClass("brick-2");
-        $(this.el).removeClass("brick-3");
-        $(this.el).addClass("brick-4");
+        if ($(this.el).hasClass("brick-1")) {
+            $(this.el).removeClass("brick-1");
+            $(this.el).addClass("brick-2");
+        }
+        else if ($(this.el).hasClass("brick-2")) {
+            $(this.el).removeClass("brick-2");
+            $(this.el).addClass("brick-3");   
+        }
+        else if ($(this.el).hasClass("brick-3")) {
+            $(this.el).removeClass("brick-3");
+            $(this.el).addClass("brick-4");
+        }
         this.trigger("change");
         this.model.vote_up();
     },
