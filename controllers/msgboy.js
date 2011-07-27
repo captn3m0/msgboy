@@ -53,7 +53,7 @@ var Msgboy = new function () {
             Msgboy.connection.caps.sendPresenceWithCaps(); // Send presence! 
             if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
             // Makes sure there is no missing subscription.
-            Msgboy.resume_subscriptions();
+            // Msgboy.resume_subscriptions();
         }
         Msgboy.log(msg);
     },
