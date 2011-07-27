@@ -1,7 +1,6 @@
 header {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0D1C22), to(#11242d));
-    color: #fff;
-    height: 40px;
+    color: #aaa;
     padding: 10px;
     margin: 0;
     position: fixed;
@@ -13,24 +12,21 @@ header {
 }
 
 header h1 {
-    background-image: url(../images/mb-logo.png);
+    background-image: url(../icons/icon16.png);
     background-position: top left;
     background-repeat: no-repeat;
-    background-size: 75%;
     text-indent: -9999em;
-    height: 53px;
-    width: 142px;
+    height: 16px;
+    width: 16px;
     float: left;
+    display: block;
 }
 
 header h2 {
     float: left;
-    height: 40px;
-    line-height: 40px;
-    margin-left: -26px;
+    margin-left: 10px;
     font-weight: normal;
-    font-size: 16px;
-    letter-spacing: 1px;
+    font-size: 14px;
 }
 
 header a.options, header a.help {
@@ -42,7 +38,6 @@ header a.options, header a.help {
     width: 16px;
     height: 16px;
     margin-left: 10px;
-    margin-top: 12px;
     text-indent: -999em;
 }
 
@@ -54,7 +49,7 @@ header a.help {
 #archive {
     border: none;
     padding: 5px;
-    margin-top: 60px;
+    margin-top: 36px;
     z-index: 500;
 }
 
@@ -90,18 +85,20 @@ header a.help {
     background-color: rgba(10,10,10,0.8);
     background-size: 16px 16px;
     background-repeat:no-repeat;
-    background-position: 7px 50%; 
-    padding:5px 10px 5px 30px;
-    margin:0px;
-    display:block;
+    background-position: 2px 2px; 
+    padding: 0 3px 5px 22px;
+    margin: 0px;
+    line-height: 200%;
+    height: 15px;
+    display: block;
     position: absolute;
     top:0px;
-    vertical-align: middle;
     color: #E6E6E6;
     text-indent: 0;
     font-size: .6em;
     font-weight: normal;
-    width: auto;
+    overflow: hidden;
+    width: 100%;
 }
 
 .votes {
@@ -127,7 +124,7 @@ img.thumbs:hover {
 
 .controls {
     position:absolute;
-    bottom:0px;
+    top:0px;
     right:0px;
     display:none;
     width:100%;
@@ -135,11 +132,16 @@ img.thumbs:hover {
 
 .message:hover {
     box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    cursor: pointer;
 }
 
 .message:hover .controls {
     display:block;
     z-index: 10;
+}
+
+.message:hover h1 {
+    display: none;
 }
 
 .controls button {
@@ -157,17 +159,20 @@ img.thumbs:hover {
     font-weight: bold;
     cursor: pointer;
     position: absolute;
-    bottom: 0;
+    top: 0;
     text-shadow: 0 1px 1px rgba(0,0,0,.85);
+    z-index: 100000000000010000000;
 }
 
 .controls button:first-child {
-    border-top-right-radius: 4px;
+    border-bottom-right-radius: 2px;
+    border-top-left-radius: 2px;
     left: 0;
     text-align: left;
 }
 .controls button:last-child {
-    border-top-left-radius: 4px;
+    border-bottom-left-radius: 2px;
+    border-top-right-radius: 2px;
     right: 0;
     text-align: right;
 }
@@ -175,32 +180,31 @@ img.thumbs:hover {
 .controls button:hover {
     background-color: rgba(53,141,194,1);
     text-shadow: 0 -1px 1px rgba(0,0,0,.85);
-    box-shadow: 0 1px 2px rgba(160,160,160,.75);
 }
 
 .brick-1 {
     /* These shouldn't be displayed anyway...*/
-    display:none;
-    width:0px;
-    height:0px;
+    /*display:none;
+    width: 0;
+    height: 0;*/
 }
 
-.brick-2 {
+.brick-2, .brick-1 {     
     font-size:0.8em;
-    width: 90px;
-    height: 90px;
+    width: 100px;
+    height: 210px;
 }
 
 .brick-3 {
     font-size:1.0em;
-    width: 190px;
-    height: 190px;
+    width: 210px;
+    height: 210px;
 }
 
 .brick-4 {
     font-size:1.2em;
-    width: 390px;
-    height: 390px;
+    width: 430px;
+    height: 430px;
 }
 
 .isotope,
@@ -238,9 +242,8 @@ img.thumbs:hover {
 .text p {
     padding: 10px;
     z-index: 1;
-    max-height: 40%;
+    max-height: 33%;
     overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .text p.darkened {
@@ -252,25 +255,29 @@ img.thumbs:hover {
 }
 
 .brick-1 p {
-
+    padding: 0;
+    max-height: 0;
 }
 
 .brick-2 p{
     font-size: 0.85em;
     position: absolute;
     bottom: 0;
+    width: 80px;
 }
 
 .brick-3 p{
-    font-size: 1.2em;
+    font-size: 1em;
     position: absolute;
     bottom: 0;
+    width: 190px;
 }
 
 .brick-4 p{
     font-size: 1.5em;
     position: absolute;
     bottom: 0;
+    width: 410px;
 }
 
 .grey, .color0 {

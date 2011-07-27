@@ -67,6 +67,7 @@ var ArchiveView = Backbone.View.extend({
         
         view.bind("delete-from-feed", function(url) {
             this.delete_from_feed(url);
+            $('#container').isotope('reLayout');
         }.bind(this));
         
         view.render(); // builds the HTML
