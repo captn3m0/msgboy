@@ -184,9 +184,13 @@ img.thumbs:hover {
 
 .brick-1 {
     /* These shouldn't be displayed anyway...*/
-    display:none;
+    display: none;
     width: 0;
     height: 0;
+    max-height: 0;
+    max-width: 0;
+    margin: 0;
+    line-height: 0;
 }
 
 .brick-2 {     
@@ -258,7 +262,7 @@ img.thumbs:hover {
 }
 
 .brick-1 p {
- 
+    padding: 0;
 }
 
 .brick-2 p, .brick-1 p {
