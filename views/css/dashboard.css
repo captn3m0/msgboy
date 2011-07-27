@@ -184,12 +184,12 @@ img.thumbs:hover {
 
 .brick-1 {
     /* These shouldn't be displayed anyway...*/
-    /*display:none;
+    display:none;
     width: 0;
-    height: 0;*/
+    height: 0;
 }
 
-.brick-2, .brick-1 {     
+.brick-2 {     
     font-size:0.8em;
     width: 100px;
     height: 210px;
@@ -244,6 +244,9 @@ img.thumbs:hover {
     z-index: 1;
     max-height: 33%;
     overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    text-overflow: ellipsis;
 }
 
 .text p.darkened {
@@ -255,28 +258,21 @@ img.thumbs:hover {
 }
 
 .brick-1 p {
-    padding: 0;
-    max-height: 0;
+ 
 }
 
-.brick-2 p{
-    font-size: 0.85em;
-    position: absolute;
-    bottom: 0;
+.brick-2 p, .brick-1 p {
+    font-size: 0.9em;
     width: 80px;
 }
 
-.brick-3 p{
+.brick-3 p {
     font-size: 1em;
-    position: absolute;
-    bottom: 0;
     width: 190px;
 }
 
-.brick-4 p{
+.brick-4 p {
     font-size: 1.5em;
-    position: absolute;
-    bottom: 0;
     width: 410px;
 }
 
