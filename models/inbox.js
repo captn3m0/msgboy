@@ -9,8 +9,6 @@ var Inbox = Backbone.Model.extend({
      
     initialize: function () {
         this.id = 1;
-        this.fetch();
-        this.messages = new Archive();
     },
 
     // Create credentials and saves them.
@@ -58,7 +56,7 @@ var Inbox = Backbone.Model.extend({
         this.fetch({
             success: function () {
                 if (this.attributes.jid && this.attributes.jid != "" && this.attributes.password && this.attributes.password != "") {
-                    Msgboy.log("Loading inbox for " + this.attributes.jid);
+                    Msgboy.log("Loaded inbox for " + this.attributes.jid);
                     this.trigger("ready", this);
                 } else {
                     Msgboy.log("Creating new inbox");

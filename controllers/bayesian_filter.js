@@ -10,17 +10,7 @@ var BayesianFilter = new function () {
     
     // This loads all the recent messages and trains the filter
     this.load = function() {
-        var archive = new Archive();
-        archive.fetch({
-            addIndividually: true,
-            limit: 100
-        })
-        archive.bind("add", function(e) {
-            
-        }.bind(this));
-        archive.bind("reset", function() {
-            // This means that we're done loading all elements.
-        })
+        // Nothing to do.
     },
     
     this.train_with_message = function(message) {

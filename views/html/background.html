@@ -100,7 +100,7 @@
         } else {
             Msgboy.log("Not relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
         }
-    })
+    });
 
     // when the inbox is ready
     inbox.bind("ready", function () {
@@ -109,19 +109,19 @@
 
     // When the inbox is new.
     inbox.bind("new", function () {
-        // Let's open the splash screen
-        chrome.tabs.create({
-            url: chrome.extension.getURL('/views/html/splash.html'),
-            selected: true
-        });
-        // And import all plugins.
-        Plugins.import(function(subs) {
-            Msgboy.subscribe(subs, function() {
-                // Cool. Not much to do.
+            // Let's open the splash screen
+            chrome.tabs.create({
+                url: chrome.extension.getURL('/views/html/splash.html'),
+                selected: true
+            });
+            // And import all plugins.
+            Plugins.import(function(subs) {
+                Msgboy.subscribe(subs, function() {
+                    // Cool. Not much to do.
+                });
             });
         });
-    });
-
+    
     $(document).bind('notification_received', function (ev, notification) {
         Msgboy.log("Notification received from " + notification.source.url);
         var msg = Msgboy.connection.superfeedr.convertAtomToJson(notification.payload);
