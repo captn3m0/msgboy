@@ -2,66 +2,6 @@ body.splash {
     background: url(../images/page-bg.gif) top left repeat-x;
 }
 
-header {
-    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0D1C22), to(#11242d));
-    color: #ddd;
-    padding: 4px 0 3px;
-    margin: 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-}
-
-header h1 {
-    background-image: url(../icons/icon16.png);
-    background-position: top left;
-    background-repeat: no-repeat;
-    background-size: contain;
-    text-indent: -9999em;
-    height: 22px;
-    width: 22px;
-    float: left;
-    display: block;
-    margin-left: 10px;
-    position: relative;
-    z-index: 1000;
-}
-
-header h2 {
-    float: left;
-    margin: 3px 0 3px 10px;
-    font-weight: normal;
-    font-size: 14px;
-    position: relative;
-    z-index: 1000;
-    border: 1px solid #a9a9a9;
-    border-width: 0 1px;
-    padding: 1px 12px;
-}
-
-header a.options, header a.help {
-    display: block;
-    float: left;
-    background-image: url(../images/gear-help.png);
-    background-position: top left;
-    background-repeat: no-repeat;
-    width: 16px;
-    height: 16px;
-    margin-left: 10px;
-    text-indent: -999em;
-    position: relative;
-    z-index: 1000;
-    top: 3px;
-}
-
-header a.help {
-    background-position: -20px 0;
-    margin-left: 5px;
-}
-
 #info {
     background-color: #11232c;
     box-shadow: 0 0 5px rgba(0,0,0,.8);
