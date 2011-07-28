@@ -95,11 +95,14 @@
                 if (request.signature == "notify" && request.params) {
                     // Cool, we have a new message. Let's see if we add it to the top, or reload the page.
                     // Let's get the content of $("#new_messages")
-                    if($("#new_messages").text()) {
-                        $("#new_messages").text(parseInt($("#new_messages").text()) + 1 + " new");
+                    var count = parseInt($("#new_messages").attr("data-unread"));
+                    if(count) {
+                        $("#new_messages").attr("data-unread", count + 1);
+                        $("#new_messages").text("view " + (count + 1) + " new messages");
                     } else {
                         $("#new_messages").css("top","0");
-                        $("#new_messages").text("view 1 new");
+                        $("#new_messages").attr("data-unread", "1");
+                        $("#new_messages").text("view 1 new message");
                     }
                 }
             });
