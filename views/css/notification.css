@@ -31,7 +31,7 @@ body {
     color: #fff;
     font-size: .6em;
     font-weight: normal;
-    /*width: auto;*/
+    width: 100%;
 }
 
 .page_nav {
@@ -111,12 +111,13 @@ body {
 }
 
 .text p {
-    padding: 10px;
+    padding: 5px 10px;
     z-index: 1;
     text-overflow: ellipsis;
     font-size: 1.2em;
     position: absolute;
     top: 20px;
+    background-color: rgba(0,0,0,0.7);
 }
 
 /*.grey, .color0 {
