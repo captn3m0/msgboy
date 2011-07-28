@@ -6,12 +6,13 @@
     <meta name="application-name" content="Msgboy"/>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/splash.css" />
+    <link rel="stylesheet" href="../css/options.css" />
     
     <!-- Lib includes -->
+    <script src="../../lib/jquery/jquery.js" type="text/javascript"></script> 
     <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script> 
     <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script> 
     <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script> 
-    <script src="../../lib/jquery/jquery.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/base64.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/md5.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/2.2.0-crypto-sha1.js" type="text/javascript"></script> 
@@ -30,11 +31,21 @@
     <script src="../../models/inbox.js" type="text/javascript"></script> 
     <script src="../../models/subscription.js" type="text/javascript"></script> 
     
+    
+    <!-- Views includes -->
+    <script src="../../views/js/options-view.js" type="text/javascript"></script>
+
 </head>
 <body class="splash">
     <div id="info">
         <h1>Options</h1>
         <div id="options">
+            <label for="relevance">Notifications : </label><br />
+            <input type="range" min="0" max="100" value="50" step="5" id="relevance" name="relevance" />
+            <div class="scale"><div class="mini">No message</div> <div class="maxi">All messages</div></div>
+            <br />
+            <small>Don't forget to train the msgboy to see more accurate messages</small>
+            
         </div>
         <img id="buildings" src="../images/buildings.png" />
         <img id="clouds" src="../images/clouds.png" />
@@ -42,28 +53,9 @@
     </div>
     <script>
         
-        var OptionsView = Backbone.View.extend({
-            events: {
-            },
-
-            initialize: function() {
-                _.bindAll(this, "render");
-                this.model = new Inbox();
-                this.model.bind("change", function() {
-                    view.render();
-                });
-                this.model.fetch();
-            },
-            
-            render: function() {
-                console.log("Awesome");
-            }
-        });
-        
-        
         $(document).ready(function() {
             // Let's load the inbox now.
-            var view  = new OptionsView({});
+            var view  = new OptionsView();
         });
         
         
