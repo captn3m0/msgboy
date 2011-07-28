@@ -1,7 +1,7 @@
 header {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0D1C22), to(#11242d));
-    color: #aaa;
-    padding: 10px 0;
+    color: #ddd;
+    padding: 4px 0 3px;
     margin: 0;
     position: fixed;
     top: 0;
@@ -15,9 +15,10 @@ header h1 {
     background-image: url(../icons/icon16.png);
     background-position: top left;
     background-repeat: no-repeat;
+    background-size: contain;
     text-indent: -9999em;
-    height: 16px;
-    width: 16px;
+    height: 22px;
+    width: 22px;
     float: left;
     display: block;
     margin-left: 10px;
@@ -27,11 +28,14 @@ header h1 {
 
 header h2 {
     float: left;
-    margin-left: 10px;
+    margin: 3px 0 3px 10px;
     font-weight: normal;
     font-size: 14px;
     position: relative;
     z-index: 1000;
+    border: 1px solid #a9a9a9;
+    border-width: 0 1px;
+    padding: 1px 12px;
 }
 
 header a.options, header a.help {
@@ -46,6 +50,7 @@ header a.options, header a.help {
     text-indent: -999em;
     position: relative;
     z-index: 1000;
+    top: 3px;
 }
 
 header a.help {
@@ -56,7 +61,7 @@ header a.help {
 #archive {
     border: none;
     padding: 5px;
-    margin-top: 36px;
+    margin-top: 30px;
     z-index: 500;
 }
 
@@ -64,19 +69,18 @@ header a.help {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#59A1CD), to(#3284b5));
     color: white;
     cursor: pointer;
-    margin: 0;
-    margin-left:auto;
-    margin-right: auto;
+    font-weight: bold;
+    font-style: italic;
+    height: 10px;
+    margin: 0 auto;
     padding: 10px 0;
     position: absolute;
     text-align: center;
     text-transform: lowercase;
-    top: -36px;
+    top: -30px;
     width: 100%;
-    -webkit-transition: top 0.5s ease-out;
-    font-weight: bold;
-    font-style: italic;
     z-index: 500;
+    -webkit-transition: top 0.5s ease-out;
 }
 
 .message {
