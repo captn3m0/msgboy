@@ -42,7 +42,7 @@
         <header>
             <h1>msgboy</h1>
             <h2>Dashboard</h2>
-            <a href="options.html" class="options">Options</a><a href="splash.html" class="help">Help</a>
+            <a href="options.html" class="options">Options</a><a href="help.html" class="help">Help</a>
             <div id="new_messages"></div>
         </header>
         
@@ -58,7 +58,8 @@
 
             $('#container').isotope({
                 itemSelector: '.message',
-                filter: '.brick-1 .brick-2 .brick-3 .brick-4',
+                //filter: '.brick-1 .brick-2 .brick-3 .brick-4',
+                filter: '.brick-2 .brick-3 .brick-4',
                 masonry: {
                     columnWidth: 10,
                 },
@@ -95,7 +96,7 @@
                     // Cool, we have a new message. Let's see if we add it to the top, or reload the page.
                     // Let's get the content of $("#new_messages")
                     if($("#new_messages").text()) {
-                        $("#new_messages").text("view " + parseInt($("#new_messages").text()) + 1 + " new");
+                        $("#new_messages").text(parseInt($("#new_messages").text()) + 1 + " new");
                     } else {
                         $("#new_messages").css("top","0");
                         $("#new_messages").text("view 1 new");

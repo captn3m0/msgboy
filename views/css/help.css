@@ -5,7 +5,7 @@ body.splash {
 header {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0D1C22), to(#11242d));
     color: #ddd;
-    padding: 10px;
+    padding: 4px 0 3px;
     margin: 0;
     position: fixed;
     top: 0;
@@ -19,18 +19,27 @@ header h1 {
     background-image: url(../icons/icon16.png);
     background-position: top left;
     background-repeat: no-repeat;
+    background-size: contain;
     text-indent: -9999em;
-    height: 16px;
-    width: 16px;
+    height: 22px;
+    width: 22px;
     float: left;
     display: block;
+    margin-left: 10px;
+    position: relative;
+    z-index: 1000;
 }
 
 header h2 {
     float: left;
-    margin-left: 10px;
+    margin: 3px 0 3px 10px;
     font-weight: normal;
     font-size: 14px;
+    position: relative;
+    z-index: 1000;
+    border: 1px solid #a9a9a9;
+    border-width: 0 1px;
+    padding: 1px 12px;
 }
 
 header a.options, header a.help {
@@ -43,6 +52,9 @@ header a.options, header a.help {
     height: 16px;
     margin-left: 10px;
     text-indent: -999em;
+    position: relative;
+    z-index: 1000;
+    top: 3px;
 }
 
 header a.help {
@@ -51,25 +63,29 @@ header a.help {
 }
 
 #info {
-    padding: 20px;
-    width: 400px;
-    color: #222;
-    background-color: rgb(185,185,185);
-    -webkit-border-radius: 5px 5px 5px 5px;
-    text-align:center;
-    text-shadow: 0 1px 0 #ddd;
-    position: absolute;
-    top: 235px;
-    right: 675px;
-    box-shadow: 0 0 10px rgba(255,255,255,.4);
-    border: 1px solid #fff;
+    background-color: #11232c;
+    box-shadow: 0 0 5px rgba(0,0,0,.8);
+    color: #eee;
+    font-weight: normal;
     min-height: 400px;
-    z-index: 4;
+    padding: 0;
+    position: absolute;
+    left: 40px;
+    text-shadow: 0 1px 3px #333;
+    top: 80px;
+    width: 700px;
+    z-index: 10;
+}
+
+#info h1 {
+    border-bottom: 1px solid #091419;
+    padding: 20px 20px 10px;
 }
 
 #info p {
     line-height: 20px;
-    margin: 10px 0px 10px 0px;
+    margin: 20px;
+
 }
 
 #buildings, #clouds, #signal {
@@ -92,4 +108,38 @@ header a.help {
     top: 150px;
     right: 400px;
     z-index: 3;
+}
+
+
+
+/*options page stuff*/
+
+#options {
+    margin: 20px;
+    text-align: left;
+}
+
+#relevance {
+    width: 300px;
+}
+
+.scale {
+    width: 300px;
+}
+
+.scale div {
+    float:left;
+    width: 150px;
+}
+
+small {
+    font-size: 0.7em;
+}
+
+.mini {
+    text-align:left;
+}
+
+.maxi {
+    text-align: right;
 }
