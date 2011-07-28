@@ -52,7 +52,7 @@ var Inbox = Backbone.Model.extend({
                 setTimeout(function () {
                     console.log("We couldn't create credentials : " + JSON.stringify(data));
                     this.create_credentials(callback); // We retry. That may be dangerrous though.
-                }, 5000);
+                }.bind(this), 5000);
             }
         }.bind(this));
     },
