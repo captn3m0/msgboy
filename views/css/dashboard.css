@@ -1,7 +1,7 @@
 header {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0D1C22), to(#11242d));
     color: #aaa;
-    padding: 10px;
+    padding: 10px 0;
     margin: 0;
     position: fixed;
     top: 0;
@@ -20,6 +20,9 @@ header h1 {
     width: 16px;
     float: left;
     display: block;
+    margin-left: 10px;
+    position: relative;
+    z-index: 1000;
 }
 
 header h2 {
@@ -27,6 +30,8 @@ header h2 {
     margin-left: 10px;
     font-weight: normal;
     font-size: 14px;
+    position: relative;
+    z-index: 1000;
 }
 
 header a.options, header a.help {
@@ -39,6 +44,8 @@ header a.options, header a.help {
     height: 16px;
     margin-left: 10px;
     text-indent: -999em;
+    position: relative;
+    z-index: 1000;
 }
 
 header a.help {
@@ -54,21 +61,22 @@ header a.help {
 }
 
 #new_messages {
-    width: 100%;
-    text-align: center;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#59A1CD), to(#3284b5));
+    color: white;
+    cursor: pointer;
     margin: 0;
     margin-left:auto;
     margin-right: auto;
-    background-color: rgba(20,20,20,0.6);
-    color: white;
-    font-weight: bold;
-    text-transform: uppercase;
-    padding: 10px;
-    border: solid 1px rgba(0,0,0,0.7);
-    cursor: pointer;
+    padding: 10px 0;
     position: absolute;
+    text-align: center;
+    text-transform: lowercase;
     top: -36px;
+    width: 100%;
     -webkit-transition: top 0.5s ease-out;
+    font-weight: bold;
+    font-style: italic;
+    z-index: 500;
 }
 
 .message {
@@ -83,7 +91,7 @@ header a.help {
 
 .message h1 {
     border-top-left-radius: 2px;
-    background-color: rgba(10,10,10,0.4);
+    background-color: rgba(10,10,10,0.5);
     background-size: 16px 16px;
     background-repeat:no-repeat;
     background-position: 0 0; 
@@ -103,37 +111,16 @@ header a.help {
     text-shadow: 0 1px 0 #111;
 }
 
-.votes {
-}
-
-img.thumbs {
-    width:30px;
-}
-
-img.thumbs:hover {
-    background-color:green;
-}
-
-.source {
-}
-
-.time {
-}
-
-.page_nav {
-    display:none;
-}
-
 .controls {
-    position:absolute;
-    top:0px;
-    right:0px;
-    display:none;
-    width:100%;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    display: none;
+    width: 100%;
 }
 
 .message:hover {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    box-shadow: 0 0 5px rgba(0,0,0,0.9);
     cursor: pointer;
 }
 
@@ -142,14 +129,10 @@ img.thumbs:hover {
     z-index: 10;
 }
 
-.message:hover h1 {
-    display: none;
-}
-
 .controls button {
     -webkit-appearance: none;
     background: none;
-    background-color: rgba(53,141,194,.85);
+    background-color: rgba(0,0,0,.85);
     border: none;
     outline: none;
     width: 49.5%;
@@ -161,27 +144,24 @@ img.thumbs:hover {
     font-weight: bold;
     cursor: pointer;
     position: absolute;
-    top: 0;
-    text-shadow: 0 1px 1px rgba(0,0,0,.85);
-    z-index: 100000000000010000000;
+    bottom: 0;
 }
 
 .controls button:first-child {
-    border-bottom-right-radius: 2px;
-    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border-top-right-radius: 2px;
     left: 0;
     text-align: left;
 }
 .controls button:last-child {
-    border-bottom-left-radius: 2px;
-    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-top-left-radius: 2px;
     right: 0;
     text-align: right;
 }
 
 .controls button:hover {
     background-color: rgba(53,141,194,1);
-    text-shadow: 0 -1px 1px rgba(0,0,0,.85);
 }
 
 .brick-1 {
@@ -228,39 +208,23 @@ img.thumbs:hover {
   -webkit-transition-property: -webkit-transform, opacity;
 }
 
-.image h1 {
-}
-
-.image img {
-}
-
-
 .text {
     background-color: #000;
     color: #E6E6E6;
 }
 
-.text img {
+/*.text img {
     float: left;
     padding: 0px 5px 5px 0px;
-}
+}*/
 
 .text p {
     padding: 10px;
     z-index: 1;
-    max-height: 33%;
     overflow: hidden;
     position: absolute;
-    bottom: 0;
     text-overflow: ellipsis;
-}
-
-.text p.darkened {
-    background-color: #222;
-}
-
-.text h1 {
-    
+    bottom: 0;
 }
 
 .brick-1 p {
@@ -270,42 +234,49 @@ img.thumbs:hover {
 .brick-2 p, .brick-1 p {
     font-size: 0.9em;
     width: 80px;
+    max-height: 33%;    /*padding is 10*/
 }
 
 .brick-3 p {
-    font-size: 1em;
+    font-size: 12pt;
+    font-weight: bold;
     width: 190px;
+    height: 53px;    /*padding is 10*/
+    line-height: 20px;
+    vertical-align: top;
+    padding-top: 5px;
 }
 
 .brick-4 p {
     font-size: 1.5em;
     width: 410px;
+    max-height: 120px;    /*padding is 10*/
 }
 
-.grey, .color0 {
+.grey, .color0, .color0 p.darkened {
     background-color: #6c6b6b;
 }
 
-.purple, .color1 {
+.purple, .color1, .color1 p.darkened {
     background-color: #11232c;
 }
 
-.blue, .color2 {
+.blue, .color2, .color2 p.darkened {
     background-color: #358dc2;
 }
 
-.green, .color3 {
+.green, .color3, .color3 p.darkened {
     background-color: #7d9100;
 }
 
-.yellow, .color4 {
-    background-color: #e1ab04;
+.yellow, .color4, .color4 p.darkened {
+    background-color: #333;
 }
 
-.orange, .color5 {
+.orange, .color5, .color5 p.darkened {
     background-color: #e17103;
 }
 
-.red, .color6 {
+.red, .color6, .color6 p.darkened {
     background-color: #a40637;
 }

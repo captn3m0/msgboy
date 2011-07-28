@@ -95,10 +95,10 @@
                     // Cool, we have a new message. Let's see if we add it to the top, or reload the page.
                     // Let's get the content of $("#new_messages")
                     if($("#new_messages").text()) {
-                        $("#new_messages").text(parseInt($("#new_messages").text()) + 1 + " new messages");
+                        $("#new_messages").text(parseInt($("#new_messages").text()) + 1 + " new!");
                     } else {
                         $("#new_messages").css("top","0");
-                        $("#new_messages").text("1 new message");
+                        $("#new_messages").text("1 new!");
                     }
                 }
             });
