@@ -17,11 +17,11 @@ var MessageView = Backbone.View.extend({
         }).appendTo($(this.el));
         $("<button>", {
             class:"vote down",
-            text:"-"
+            html:"<img src='../images/minus.png' />"
         }).appendTo(controls);
         $("<button>", {
             class:"vote up",
-            text:"+"
+            html:"<img src='../images/plus.png' />"
         }).appendTo(controls);
         
         $(this.el).attr("data-msgboy-relevance", this.model.attributes.relevance);
