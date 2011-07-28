@@ -23,18 +23,6 @@
   "content_scripts": [
     {
       "js": [
-        "/controllers/redirect.js"
-      ],
-      "css": [
-
-      ],
-      "matches": [
-        "*://*/*"
-      ],
-      "run_at": "document_start"
-    },
-    {
-      "js": [
         "/lib/date.format.js",
         "/lib/jquery/jquery.js",
         "/controllers/utils.js",
@@ -73,5 +61,5 @@
     "128": "views/icons/icon128.png"
   },
   "update_url": "http://sup.ee/update-msgboy",
-  "version": "0.0.24.0"
+  "version": "0.0.24.1"
 }
