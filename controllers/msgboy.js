@@ -114,14 +114,16 @@ var Msgboy = new function () {
         subscription.fetch_or_create(function() {
             // Looks like there is a subscription.
             if(subscription.needs_refresh() && subscription.attributes.state == "unsubscribed") {
-                subscription.set_state("subscribing", function() {
-                    Msgboy.log("subscribing to " + subscription.id);
+                Msgboy.log("subscribing to " + subscription.id);
+                subscription.set_state("subscribing");
+                subscription.bind("subscribing", function() {
                     Msgboy.connection.superfeedr.subscribe(subscription.id, function (result, feed) {
                         Msgboy.log("subscribed to " + subscription.id);
-                        subscription.set_state("subscribed", function() {
-                            callback(true);
-                        });
+                        subscription.set_state("subscribed");
                     });
+                });
+                subscription.bind("subscribed", function() {
+                    callback(true);
                 });
             }
             else {
@@ -135,43 +137,31 @@ var Msgboy = new function () {
     this.unsubscribe = function(url, callback) {
         var subscription = new Subscription({id: url});
         subscription.fetch_or_create(function() {
-            subscription.set_state("unsubscribing", function() {
+            subscription.set_state("unsubscribing");
+            subscription.bind("unsubscribing", function() {
                 Msgboy.connection.superfeedr.unsubscribe(url, function (result) {
                     Msgboy.log("Request : unsubscribed " + url);
-                    subscription.set_state("unsubscribed", function() {
-                        callback(true);
-                    });
+                    subscription.set_state("unsubscribed")
                 });
+            });
+            subscription.bind("unsubscribed", function() {
+                callback(true);
             });
         });
     },
     
     // Makes sure there is no 'pending' susbcriptions.
     this.resume_subscriptions = function() {
-        var pending  = new Subscriptions();
-        pending.fetch({
-            conditions: {state: "subscribing"},
-            success: function() {
-                if(pending.length > 0) {
-                    _.each(pending.models, function(subs) {
-                        Msgboy.subscribe({url: subs.attributes.url}, function() {
-                            // Not much.
-                        });
-                    });
-                    setTimeout(function() {
-                        Msgboy.resume_subscriptions(); // Let's retry in 10 minutes.
-                    }, 1000 * 60 * 10); 
-                }
-                else {
-                    // All cool.
-                }
-            }, 
-            error: function() {
-                setTimeout(function() {
-                    Msgboy.resume_subscriptions(); // Let's retry in 10 minutes.
-                }, 1000 * 60 * 10); 
-            }
+        var subscriptions  = new Subscriptions();
+        subscription.bind("add", function(subs) {
+            Msgboy.subscribe({url: subs.attributes.url}, function() {
+                // Not much.
+            });
         });
+        
+        setTimeout(function() {
+            Msgboy.resume_subscriptions(); // Let's retry in 10 minutes.
+        }, 1000 * 60 * 10); 
     }
 
 }

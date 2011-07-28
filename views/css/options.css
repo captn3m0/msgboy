@@ -1,0 +1,29 @@
+#options {
+    margin-top: 20px;
+    text-align: left;
+}
+
+#relevance {
+    width: 300px;
+}
+
+.scale {
+    width: 300px;
+}
+
+.scale div {
+    float:left;
+    width: 150px;
+}
+
+small {
+    font-size: 0.7em;
+}
+
+.mini {
+    text-align:left;
+}
+
+.maxi {
+    text-align: right;
+}

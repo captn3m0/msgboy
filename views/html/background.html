@@ -94,11 +94,11 @@
     }
 
     inbox.bind("messages:added", function (message) {
-        if (message.attributes.relevance > inbox.attributes.options.relevance) {
-            Msgboy.log("Relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
+        if (message.attributes.relevance >= inbox.attributes.options.relevance) {
+            Msgboy.log("Showing message : " + message.attributes.id + " (" + message.attributes.relevance + " >= " + inbox.attributes.options.relevance + ") ");
             Msgboy.notify(message);
         } else {
-            Msgboy.log("Not relevant message : " + message.attributes.id + " (" + message.attributes.relevance + ") ");
+            Msgboy.log("Not showing message : " + message.attributes.id + " (" + message.attributes.relevance + " < " + inbox.attributes.options.relevance + ") ");
         }
     });
 
@@ -109,18 +109,23 @@
 
     // When the inbox is new.
     inbox.bind("new", function () {
-            // Let's open the splash screen
-            chrome.tabs.create({
-                url: chrome.extension.getURL('/views/html/splash.html'),
-                selected: true
-            });
-            // And import all plugins.
-            Plugins.import(function(subs) {
-                Msgboy.subscribe(subs, function() {
-                    // Cool. Not much to do.
-                });
+        // Let's open the splash screen
+        chrome.tabs.create({
+            url: chrome.extension.getURL('/views/html/splash.html'),
+            selected: true
+        });
+        // And import all plugins.
+        Plugins.import(function(subs) {
+            Msgboy.subscribe(subs, function() {
+                // Cool. Not much to do.
             });
         });
+    });
+
+    $(document).bind('reload', function(element, object) {
+        Msgboy.log("Request : reload ");
+        inbox.fetch();
+    });
     
     $(document).bind('notification_received', function (ev, notification) {
         Msgboy.log("Notification received from " + notification.source.url);
