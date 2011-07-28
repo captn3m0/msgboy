@@ -24,9 +24,14 @@ var Inbox = Backbone.Model.extend({
 
         $.post(base + "/users.json", params, function (data) {
             var success = true;
-            _.each(data.user.errors, function (error, field) {
+            if(!data.user) {
                 success = false
-            });
+            }
+            else {
+                _.each(data.user.errors, function (error, field) {
+                    success = false
+                });
+            }
 
             if (success) {
                 this.save({
@@ -45,6 +50,7 @@ var Inbox = Backbone.Model.extend({
                 });
             } else {
                 setTimeout(function () {
+                    console.log("We couldn't create credentials : " + JSON.stringify(data));
                     this.create_credentials(callback); // We retry. That may be dangerrous though.
                 }, 5000);
             }
