@@ -74,9 +74,11 @@ var MessageView = Backbone.View.extend({
                     img.appendTo($(this.el));
                     // Resize the image.
                     if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
-                        this.$("img").css("max-height", "100%");
+                        this.$(".message > img").css("min-height", "100%");
+                        //this.$("img").css("height", "100%");
                     } else {
-                        this.$("img").css("width", "100%");
+                        this.$(".message > img").css("min-width", "100%");
+                        //this.$("img").css("width", "100%");
                     }
                     
                     // show the source title.

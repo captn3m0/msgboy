@@ -52,7 +52,7 @@ body {
 .controls button {
     -webkit-appearance: none;
     background: none;
-    background-color: rgba(53,141,194,.85);
+    background-color: rgba(0,0,0,.65);
     border: none;
     outline: none;
     width: 49.5%;
@@ -65,7 +65,6 @@ body {
     cursor: pointer;
     position: absolute;
     bottom: 0;
-    text-shadow: 0 1px 1px rgba(0,0,0,.85);
 }
 
 .controls button:first-child {
@@ -81,23 +80,7 @@ body {
 }
 
 .controls button:hover {
-    background-color: rgba(53,141,194,1);
-    text-shadow: 0 -1px 1px rgba(0,0,0,.85);
-    box-shadow: 0 1px 2px rgba(160,160,160,.75);
-}
-
-.isotope, .isotope .isotope-item {
-  /* change duration value to whatever you like */
-  -webkit-transition-duration: .5s;
-  -webkit-animation-timing-function: ease-out;
-}
-
-.isotope {
-  -webkit-transition-property: height, width;
-}
-
-.isotope .isotope-item {
-  -webkit-transition-property: -webkit-transform, opacity;
+    background-color: rgba(0,0,0,.92);
 }
 
 .text {
@@ -119,31 +102,4 @@ body {
     top: 20px;
     background-color: rgba(0,0,0,0.7);
 }
-
-/*.grey, .color0 {
-    background-color: #646265;
-}
-
-.purple, .color1 {
-    background-color: #6E4EC8;
-}
-
-.blue, .color2 {
-    background-color: #1B8CD7;
-}
-
-.green, .color3 {
-    background-color: #7FD219;
-}
-
-.yellow, .color4 {
-    background-color: #EACB00;
-}
-
-.orange, .color5 {
-    background-color: #F49000;
-}
-
-.red, .color6 {
-    background-color: #EF0019;
-}*/
+uh
