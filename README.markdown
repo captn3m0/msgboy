@@ -1,18 +1,22 @@
 # Msgboy
 
 The msgboy is a *browser application* that pushes content from the web to the users. It observes the user's browsing habits (but respects their privacy!), and subscribes to the sites they seem to care about, using [Superfeedr](http://superfeedr.com). When these sites update, the content is sent to the user and a notification is shown to the user. 
+
 The msgboy may not always show relevant messages, which is why *the user is asked to vote up or down on messages that he gets*. The msgboy learns from that and tries to only show relevant messages to the user.
+
 The user can also see all the messages that he previously received using the dashboard. The size of the messages in the dashboard indicates their relevance.
+
+You can get the msgboy from [http://msgboy.com](http://msgboy.com). However, we're still in an *early beta phase*, which means we try to limit the number of users to provide them with a personalized help should they have any issue. So, please, if you are using the msgboy, we kindly ask that you **report any issue**.
 
 ## Developers
 
-The msgboy aims at using a lot of open web protocols and techniques to interact better with more online services and providing a universal notification service, without requiring them adapt to the msgboy. Of course, developers can _always_ decide to provide deeper integration with the msgboy.
+The msgboy aims at using a lot of *open web protocols* and techniques to interact better with more online services and providing a universal notification service, without requiring them adapt to the msgboy. Of course, developers can _always_ decide to provide deeper integration with the msgboy.
 
 The msgboy is open source. We use git for source versioning and [github to host it](https://github.com/superfeedr/msgboy). Please, fork it, and feel free to change anything that doesn't suit your needs. Also, tell us about the changes so that we can maybe make the msgboy better for everyone using it!
 
 ### Technology used
 
-Browsers API (Chrome, Firefox and Safari to come), IndexedDB, Websockets, PubSubHubbub, XMPP, Strophe, Backbone.js, Jquery, Isotope. If you're into 3 or more of these technologies, feel free to get in touch, we're hiring!
+Browsers API (Chrome, Firefox and Safari to come), [IndexedDB](http://www.w3.org/TR/IndexedDB/), [Websockets](http://dev.w3.org/html5/websockets/), [PubSubHubbub](http://code.google.com/p/pubsubhubbub/), [XMPP](http://xmpp.org/), [StropheJS](http://strophe.im/), [Backbone.js](http://documentcloud.github.com/backbone/), [jQuery](http://jquery.com/), [Isotope](http://isotope.metafizzy.co/). If you're into 3 or more of these technologies, feel free to get in touch, *we're hiring*!
 
 ### Plugins
 
@@ -21,8 +25,8 @@ When installing the msgboy, it will look at several existing services where the 
 Similarly, when the user continues to use his favorite web services, he may subscribe/follow/watch additional resources. The msgboy then maps these new subscriptions and subscribes to the corresponding feeds.
 
 All this is done with the help of the *plugins*. We have already implemented [several plugins](https://github.com/superfeedr/msgboy/tree/master/controllers/plugins) for some well known services. There is one for [Tumblr](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/tumblr.js), [Github's Repo](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/github-repos.js), or [Google Reader](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/google-reader.js), but also for the [browser bookmarks](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/bookmarks.js), the [browser history](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/history.js)... etc.
-We have also implemented a [generic](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/generic.js) bookmark that uses HTML5's data attributes to add a source to the msgboy when the user interacts with a page element.
-For example, if you have the msgboy installed and <a href="" class="msgboy-follow" data-msgboy-url="http://blog.msgboy.com/rss" >click on this link</a>, the msgboy will have a subscription for our blog.
+
+We have also implemented a [generic](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/generic.js) bookmark that uses HTML5's data attributes to add a source to the msgboy when the user interacts with a page element. For example, if you have the msgboy installed and <a href="" class="msgboy-follow" data-msgboy-url="http://blog.msgboy.com/rss" >click on this link</a>, your msgboy will have a subscription for our blog.
 
 The easiest way to integrate with the msgboy is to add the right HTML5 markup to your pages so that when one of your users does follows/subscribes/watches another resource, the msgboy can trigger a subscription on its own.
 
@@ -46,6 +50,8 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 * Integrate with bit.ly
 * Integrate with Chartbeat
 * More plugins for websites that have some kind of subscription scheme.
+* Keyboard navigation for the dashboard and notifications.
+* Grouping of items in the dashboard (by source, and by topic).
 
 ## Publishers
 
