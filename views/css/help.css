@@ -1,0 +1,139 @@
+body.splash {
+    background: url(../images/page-bg.gif) top left repeat-x fixed;
+}
+
+#info {
+    background-color: #11232c;
+    box-shadow: 0 0 5px rgba(0,0,0,.8);
+    color: #eee;
+    font-weight: normal;
+    min-height: 950px;
+    padding: 0;
+    position: absolute;
+    left: 40px;
+    text-shadow: 0 1px 3px #333;
+    top: 80px;
+    width: 600px;
+    z-index: 10;
+    overflow: auto;
+    padding-bottom: 20px;
+}
+
+.pane {
+    border-bottom: 1px solid #091419;
+    padding-bottom: 60px;
+}
+
+#info h1 {
+    border-bottom: 1px solid #091419;
+    padding: 20px 20px 10px;
+    font-size: 1.4em;
+}
+
+#info h2 {
+    margin: 50px 20px 20px 20px;
+    font-size: 1.3em;
+}
+
+#info h3 {
+    margin: 30px 20px 10px 20px;
+    font-size: 1.1em;
+}
+
+
+#info p {
+    line-height: 20px;
+    margin: 20px;
+}
+
+#info ul {
+    line-height: 20px;
+    margin: 20px 20px 20px 40px;    
+}
+
+#info img {
+    float: right;
+    border: 4px solid #fff;
+    margin-left: 20px;    
+}
+
+#buildings, #clouds, #signal {
+    position: fixed;
+}
+
+#buildings {
+    bottom: 0;
+    left: 400px;
+    z-index: 1;
+}
+
+#clouds {
+    top: 0;
+    left: 300px;
+    z-index: 2; 
+}
+
+#signal {
+    top: 150px;
+    left: 550px;
+    z-index: 3;
+    -webkit-animation-name: signalOn;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-duration: 2.5s;
+    -webkit-animation-timing-function: ease-out;
+    -webkit-animation-delay: .6s;
+}
+
+@-webkit-keyframes signalOn {
+    from {
+        opacity: 0;
+    }
+    5% {
+        opacity: .2;
+    }
+    7% {
+        opacity: 0;
+    }
+    17% {
+        opacity: .4;
+    }
+    19% {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+
+/*options page stuff*/
+
+#options {
+    margin: 20px;
+    text-align: left;
+}
+
+#relevance {
+    width: 300px;
+}
+
+.scale {
+    width: 300px;
+}
+
+.scale div {
+    float:left;
+    width: 150px;
+}
+
+small {
+    font-size: 0.7em;
+}
+
+.mini {
+    text-align:left;
+}
+
+.maxi {
+    text-align: right;
+}
