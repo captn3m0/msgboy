@@ -74,7 +74,7 @@ var MessageView = Backbone.View.extend({
                     img.appendTo($(this.el));
                     // Resize the image.
                     if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
-                        this.$(".message > img").css("min-height", "100%");
+                        this.$(".message > img").css("min-height", "150%");
                         //this.$("img").css("height", "100%");
                     } else {
                         this.$(".message > img").css("min-width", "100%");
