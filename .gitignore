@@ -1,9 +1,4 @@
 .DS_Store
-Rakefile
-updates.xml
+s3.json
 *.pem
 build/
-manifest.json
-node_modules/
-server.js
-.livereload
