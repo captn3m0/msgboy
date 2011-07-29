@@ -37,7 +37,8 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 * When subscribing to a feed on a page, check for rel="me" links and suggest corresponding feeds if they apply.
 * <del>Rewrite the msgboy.com page with inbox</del>.
 * Use the delay@stamp for created_at of offline messages.
-* Run continuous testing before running rake tasks.
+* Run continuous testing before running Rake tasks.
+* Run JSLint (and CSSLint?) in Rake tasks for cleaner JS.
 * Add support for webintents, as a subscribing app, and calls for "sharing" apps.
 * Add the ability for a 3rd party site to ask for the list of subscriptions for a user who uses the msgboy. We want to use a system that would protect the users from having _all_ their subscriptions stolen. A solution would be to ask for subscriptions on a given domain, for example.
 * HTML5 : Custom (web-based) protocol handlers
