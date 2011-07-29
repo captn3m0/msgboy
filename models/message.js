@@ -56,7 +56,6 @@ var Message = Backbone.Model.extend({
     },
 
     /* Votes the message down */
-    /* TODO : we may want to unsubscribe from this source if it has too many downvotes, but we don't want to do it here. The question is : how? where? */
     vote_down: function(callback) {
         this.set_state("down-ed", function(result) {
             // We need to unsubscribe the feed if possible, but only if there is enough negative votes.
@@ -148,11 +147,6 @@ var Message = Backbone.Model.extend({
         }
     },
     
-    /* this returns all the keywords in this message. */
-    keywords: function() {
-        return [];
-    },
-    
     /* Returns the number of links*/
     number_of_links: function() {
         return 5;
@@ -160,11 +154,6 @@ var Message = Backbone.Model.extend({
     
     /*return the links to the media included in this doc*/
     media_included: function() {
-        return [];
-    },
-
-    /* this returns all the keywords in the title of this message. */
-    title_keywords: function() {
         return [];
     },
     
@@ -191,89 +180,8 @@ var Message = Backbone.Model.extend({
             return "";
         }
     },
-     
-    /* Deprecated methods */
-    toggle_read: function(callback) {
-        callback = typeof(callback) != 'undefined' ? callback : function() {};
-        var _read_at = 0
-        var _unread_at = 0
-        var _alternate_new = this.attributes.alternate_new;
-
-        if(this.attributes.unread_at || !this.attributes.read_at) {
-            _read_at = new Date().getTime();
-            _alternate_new = ""; // Not new anymore for that alternate!
-        }
-        else {
-            _unread_at = new Date().getTime();
-        }
-
-        this.save({
-            alternate_new: _alternate_new,
-            read_at: _read_at,
-            unread_at: _unread_at
-        }, {
-            success: function() {
-                callback(true)
-            },
-            error: function() {
-                callback(false)
-            }
-        });
-
-    },
-
-    mark_as_read: function(callback) {
-        callback = typeof(callback) != 'undefined' ? callback : function() {};
-        this.save({
-            alternate_new: "",
-            read_at: new Date().getTime(),
-            unread_at: 0
-        }, {
-            success: function() {
-                callback(true)
-            },
-            error: function(object, error) {
-                callback(false)
-            }
-        });
-    },
-
-    toggle_starred: function(callback) {
-        callback = typeof(callback) != 'undefined' ? callback : function() {};
-        var _starred_at = 0;
-        if(!this.attributes.starred_at) {
-            _starred_at = new Date().getTime();
-        }
-
-        this.save({
-            starred_at: _starred_at
-        }, {
-            success: function() {
-                callback(true)
-            },
-            error: function() {
-                callback(false)
-            }
-        });
-    },
-
     
-    layout: function() {
-        if(this.image() != "") {
-            return 'image';
-        }
-        return "text";
-    },
-    
-    // This function must return the image for this message. It's extracted from the links.
-    image: function() {
-        if(this.attributes.links.enclosure && this.attributes.links.enclosure["image/jpeg"]) {
-            return this.attributes.links.enclosure["image/jpeg"][0].href;
-        }
-        return "";
-    },
-    
-    // This retruns the longest text!
+    // This returns the longest text!
     text: function() {
         if(this.attributes.content) {
             if(this.attributes.summary && this.attributes.summary.length > this.attributes.content.length) {

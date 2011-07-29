@@ -93,6 +93,7 @@
         Msgboy.log(msg);
     }
 
+    // When a new message was added to the inbox
     inbox.bind("messages:added", function (message) {
         if (message.attributes.relevance >= inbox.attributes.options.relevance) {
             Msgboy.log("Showing message : " + message.attributes.id + " (" + message.attributes.relevance + " >= " + inbox.attributes.options.relevance + ") ");
@@ -122,11 +123,13 @@
         });
     });
 
+    // When reloading the inbox is needed (after a change in settings eg)
     $(document).bind('reload', function(element, object) {
         Msgboy.log("Request : reload ");
         inbox.fetch();
     });
     
+    // When a new notification was received from XMPP line.
     $(document).bind('notification_received', function (ev, notification) {
         Msgboy.log("Notification received from " + notification.source.url);
         var msg = Msgboy.connection.superfeedr.convertAtomToJson(notification.payload);
@@ -137,7 +140,6 @@
         }
         var message = inbox.add_message(msg, {
             success: function () {
-                // Cool, message saved!
                 Msgboy.log("Saved message " + msg.id);
             }.bind(this),
             error: function (object, error) {
@@ -157,10 +159,11 @@
         });
     });
 
+    // XMPP discovery.
     Msgboy.connection.caps.setNode("http://download.msgboy.com/msgboy.crx")
     Msgboy.connection.caps.addDiscoFeature("http://jabber.org/protocol/caps");
 
-    // Let's go :)
+    // Main!
     chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
         Msgboy.connection.caps.addDiscoCategory(extension_infos.name + " " + extension_infos.version, "client", "web", "en");
         inbox.fetch_and_prepare();
@@ -177,8 +180,6 @@
             });
         }
     });
-    
-    BayesianFilter.load();
     
     </script>
 </body>

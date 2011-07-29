@@ -73,7 +73,8 @@ var Msgboy = new function () {
     },
 
     // Uploads the content of the database. this will be used for analysis of the dataset o determine a better algorithm.
-    this.uploadData = function() {
+    // It is perfectly anonymous and currentl not used.
+    this.upload_data = function() {
         var archive = new Archive();
         archive.all({
             created_at: [new Date().getTime(), 0]
@@ -101,7 +102,7 @@ var Msgboy = new function () {
                 signature: "notify",
                 params: message.toJSON()
             }, function (response) {
-                // Let's notify the people who may care about this, includingthe notification popup, hopefully :)
+                // Let's notify the people who may care about this, including the notification popup, hopefully :)
             });
         }
         return Msgboy.currentNotification;

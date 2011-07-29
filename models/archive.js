@@ -48,32 +48,6 @@ var Archive = Backbone.Collection.extend({
         this.fetch(options);
     },
 
-    fetch_more: function(conds, done, opts) {
-        opts = typeof(opts) != 'undefined' ? opts : {};
-        opts.lower = opts.lower         || 0;
-        opts.step = opts.step           || 60000;
-        
-        var conditions = null;
-        
-        if(typeof(conds) == "string") {
-            conditions = {};
-            conditions[conds] = [new Date().getTime() - opts.lower, new Date().getTime() - opts.lower - opts.step];
-        }
-        else {
-            conditions = conds
-        }
-        
-        this.fetch({
-            conditions: conditions,
-            success: function() {
-                done();
-            }.bind(this),
-            error: function() {
-                done();
-            }
-        });
-    },
-
     for_source: function(source, done) {
         this.all({alternate: source}, done);
     },

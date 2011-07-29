@@ -16,6 +16,7 @@ body.splash {
     width: 600px;
     z-index: 10;
     overflow: auto;
+    padding-bottom: 20px;
 }
 
 .pane {
@@ -29,9 +30,23 @@ body.splash {
     font-size: 1.4em;
 }
 
+#info h2 {
+    margin: 40px 20px 20px 20px;
+}
+
+#info h3 {
+    margin: 20px 20px 10px 20px;
+}
+
+
 #info p {
     line-height: 20px;
     margin: 20px;
+}
+
+#info ul {
+    line-height: 20px;
+    margin: 20px 20px 20px 40px;    
 }
 
 #info img {

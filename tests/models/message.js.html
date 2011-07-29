@@ -215,20 +215,7 @@
             });
         });
     });
-
-    module("keywords");
-    asyncTest("it should set return all the keywords", function () {
-        messageFixtures.clean_add(function () {
-            // Looks like now!
-            var message = new Message({
-                id: "123"
-            });
-            var keywords = message.keywords();
-            start();
-            deepEqual(keywords, []);
-        });
-    });
-
+    
     module("number_of_links");
     asyncTest("it should set return the number of links", function () {
         messageFixtures.clean_add(function () {
@@ -250,18 +237,6 @@
             });
             start();
             deepEqual(message.media_included(), []);
-        });
-    });
-
-    module("title_keywords");
-    asyncTest("it should return the keywords in the title", function () {
-        messageFixtures.clean_add(function () {
-            // Looks like now!
-            var message = new Message({
-                id: "123"
-            });
-            start();
-            deepEqual(message.title_keywords(), []);
         });
     });
 
