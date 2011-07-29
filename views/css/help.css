@@ -7,7 +7,7 @@ body.splash {
     box-shadow: 0 0 5px rgba(0,0,0,.8);
     color: #eee;
     font-weight: normal;
-    min-height: 950px;
+    min-height: 100%;
     padding: 0;
     position: absolute;
     left: 40px;
@@ -19,15 +19,19 @@ body.splash {
     padding-bottom: 20px;
 }
 
+.pane:first-child {
+  border-top: 0px none;
+}
+
 .pane {
+    border-top: 1px solid #1c3541;
     border-bottom: 1px solid #091419;
     padding-bottom: 60px;
 }
 
 #info h1 {
-    border-bottom: 1px solid #091419;
     padding: 20px 20px 10px;
-    font-size: 1.4em;
+    font-size: 1.8em;
 }
 
 #info h2 {
@@ -105,6 +109,10 @@ body.splash {
     }
 }
 
+
+#privacy {
+  margin-bottom: 400px;
+}
 
 /*options page stuff*/
 
