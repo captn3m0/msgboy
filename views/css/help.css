@@ -31,11 +31,13 @@ body.splash {
 }
 
 #info h2 {
-    margin: 40px 20px 20px 20px;
+    margin: 50px 20px 20px 20px;
+    font-size: 1.3em;
 }
 
 #info h3 {
-    margin: 20px 20px 10px 20px;
+    margin: 30px 20px 10px 20px;
+    font-size: 1.1em;
 }
 
 
