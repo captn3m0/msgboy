@@ -31,7 +31,7 @@ body {
     color: #fff;
     font-size: .6em;
     font-weight: normal;
-    width: 100%;
+    width: 110px;
 }
 
 .page_nav {
@@ -58,7 +58,7 @@ body {
     width: 49.5%;
     margin: 0;
     color: #fff;
-    height: 32px;
+    height: 44px;
     padding: 0 6px 2px;
     font-size: 26px;
     font-weight: bold;
@@ -77,6 +77,18 @@ body {
     border-top-left-radius: 4px;
     right: 0;
     text-align: right;
+}
+
+.controls button img {
+    position: absolute;
+    top: 10px;
+}
+.controls button:first-child img {
+    left: 10px;
+}
+
+.controls button:last-child img {
+    right: 10px;
 }
 
 .controls button:hover {

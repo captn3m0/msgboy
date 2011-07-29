@@ -22,15 +22,13 @@
             <p><img src="../images/help1.jpg" />The <strong><em>msgboy</em></strong> uses your browsing and bookmarks to serve you a live stream of what you’re most interested in. </p>
             
             <p>He’s smart, too! Plus or minus stories to help him know what you want to see more—or less—of. </p>
-            <p><a class="training" href="#training">Next &raquo;</a></p>
             <div style="clear:both;"></div>
         </div>
         
         <div id="training" class="pane">
             <h1>Training <em>msgboy</em></h1>
             
-            <p><img src="../images/help-buttons.jpg" />Click the <strong><em>plus</em></strong> to tell <em><strong>msgboy</strong></em> you want more of this and the <strong><em>minus</em></strong> if you want less.</p>
-            <p><a class="intro" href="#intro">&laquo Previous</a> | <a class="notifications" href="#notifications">Next &raquo;</a></p>
+            <p><img src="../images/help-buttons.jpg" width="250px" />Click the <strong><em>plus</em></strong> to tell <em><strong>msgboy</strong></em> you want more of this and the <strong><em>minus</em></strong> if you want less.</p>
             <div style="clear:both;"></div>
         </div>
         
@@ -41,8 +39,6 @@
             <p>You can hit the <em><strong>plus</strong></em> or <strong><em>minus</em></strong> to provide feedback right from the notification, or just click the story to visit it.</p>
             
             <p>To adjust the frequency of notifications, visit the Settings by clicking the gear icon.</p>
-            
-            <p><a class="training" href="#training">&laquo Previous</a> | <a class="privacy" href="#privacy">Next &raquo;</a></p>
         </div>
         
         <div id="privacy" class="pane">
@@ -50,8 +46,6 @@
             <p>The <strong><em>msgboy</em></strong> uses HTML5’s ability to store and access your data locally, so <strong><em>msgboy</em></strong> accesses it from your machine for your use, which makes it extra fast.</p>
             
             <p>Your <em><strong>msgboy</strong></em> is yours &mdash; he doesn’t report home. Ever.</p>
-            
-            <p><a class="notifications" href="#notifications">&laquo Previous</a></p>
         </div>
     </div>
     
@@ -59,16 +53,16 @@
     <img id="clouds" src="../images/clouds.png" />
     <img id="signal" src="../images/mb-signal.png" />
 
-    <script src="../../lib/jquery/jquery.js" type="text/javascript"></script> 
+    <!--<script src="../../lib/jquery/jquery.js" type="text/javascript"></script> -->
     <script type="text/javascript">
-        $(document).ready(function(){
-            $('#training, #notifications, #privacy').hide();
-            $('.training, .notifications, .privacy, .intro').click(function(){
-                $(this).parent('p').parent('div').hide();
-                var id = $(this).attr('class');
-                $('#' + id).show();
-            });
-        });
+//        $(document).ready(function(){
+//            $('#training, #notifications, #privacy').hide();
+//            $('.training, .notifications, .privacy, .intro').click(function(){
+//                $(this).parent('p').parent('div').hide();
+//                var id = $(this).attr('class');
+//                $('#' + id).show();
+//            });
+//        });
         
     </script>
 
