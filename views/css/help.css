@@ -113,27 +113,40 @@ body.splash {
     text-align: left;
 }
 
+#options label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 #relevance {
     width: 300px;
 }
 
 .scale {
-    width: 300px;
+    width: 310px;
 }
 
 .scale div {
     float:left;
-    width: 150px;
+    width: 147px;
+    color:rgba(255,255,255,0.7);
 }
 
+
 small {
-    font-size: 0.7em;
+    margin-top: 10px;
+    display: block;
+    font-size: .8em;
+    line-height: 140%;
 }
 
 .mini {
+    margin-left: 5px;
     text-align:left;
 }
 
 .maxi {
     text-align: right;
+    margin-right:5px;
 }
