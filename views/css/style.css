@@ -123,7 +123,7 @@ a, a:visited {
 
 header {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#0D1C22), to(#11242d));
-    color: rgba(255,255,255,.8);
+    color: rgba(255,255,255,.9);
     padding: 4px 0 3px;
     margin: 0;
     position: fixed;
@@ -156,9 +156,10 @@ header h2 {
     font-size: 14px;
     position: relative;
     z-index: 1000;
-    border: 1px solid rgba(255,255,255,.5);
+    border-left: 1px solid rgba(255,255,255,.5);
     border-width: 0 1px;
-    padding: 1px 12px;
+    padding: 1px 10px;
+    font-weight: bold;
 }
 
 header a.options, header a.help {
