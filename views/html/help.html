@@ -65,7 +65,7 @@
             $('#training, #notifications, #privacy').hide();
             $('.training, .notifications, .privacy, .intro').click(function(){
                 $(this).parent('p').parent('div').hide();
-                var id = $(this).attr('id').val();
+                var id = $(this).attr('class');
                 $('#' + id).show();
             });
         });
