@@ -254,32 +254,3 @@
 .red, .color6, .color6 p.darkened {
     background-color: #a40637;
 }
-
-#getmore {
-    background-color: #358DC2;
-    padding: 10px;
-    height: 137px;
-    color: #fff;
-}
-
-#getmore div {
-    margin:0 auto;
-}
-
-#getmore img {
-    float: left;
-    margin: 0 10px 10px 0px;
-    border: 8px solid #6db1da;
-}
-
-#getmore h2 {
-    font-size: 1.6em;
-    margin-bottom: 20px;
-}
-
-#getmore p {
-    float:  left;
-    font-size: 1em;
-    width: 400px;
-    line-height:140%;
-}

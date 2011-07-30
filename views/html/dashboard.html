@@ -80,16 +80,6 @@
                 $('#container').isotope('reLayout');
             });
 
-            archive.add({
-                title: 'Let\'s add some more sources. It\'s easy!',
-                summary: 'All you need to do to add more content is bookmark sites you like in Chrome. The msgboy uses your bookmarks and browsing to create your stream.',
-                content: "<img src='../images/addmorestuff.jpg' >some content",
-                relevance: 1,
-                source: {
-                  title: 'do something'
-                }
-            });
-
             $("#new_messages").click(function() {
                 // Refresh the page! Maybe it would actually be fancier to add the elements to the archive and then push them in front. TODO
                 window.location.reload(true);
