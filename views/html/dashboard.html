@@ -51,6 +51,7 @@
             <div id="container" class="isotope">
                 <!-- Messages will be added here when loaded -->
             </div>
+
         </div>
         
         <script type="text/javascript">
@@ -77,6 +78,16 @@
             archive.bind("down-ed", function (message) {
                 BayesianFilter.train_with_message(message)
                 $('#container').isotope('reLayout');
+            });
+
+            archive.add({
+                title: 'Let\'s add some more sources. It\'s easy!',
+                summary: 'All you need to do to add more content is bookmark sites you like in Chrome. The msgboy uses your bookmarks and browsing to create your stream.',
+                content: "<img src='../images/addmorestuff.jpg' >some content",
+                relevance: 1,
+                source: {
+                  title: 'do something'
+                }
             });
 
             $("#new_messages").click(function() {
