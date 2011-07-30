@@ -69,7 +69,7 @@ var Inbox = Backbone.Model.extend({
                     this.create_credentials(function () {
                         this.trigger("ready", this);
                         this.trigger("new", this);
-                    });
+                    }.bind(this));
                 }
             }.bind(this),
             error: function () {
