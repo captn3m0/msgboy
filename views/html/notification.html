@@ -6,7 +6,16 @@
         <meta name="application-name" content="Msgboy"/>
         <link rel="stylesheet" href="../css/style.css" />
         <link rel="stylesheet" href="../css/notification.css" />
-    
+        
+        <!-- Error Reporting Code -->
+        <script type="text/javascript" src="../../lib/error_notifier.js"></script>
+        <script type="text/javascript">
+            Hoptoad.setKey('47bdc2ad25b662cee947d0a1c353e974');
+            Hoptoad.setHost('hoptoadapp.com');
+            Hoptoad.setEnvironment('production');
+            Hoptoad.setErrorDefaults({ url: window.location.href });
+        </script>
+        
         <!-- Lib includes -->
         <script src="../../lib/jquery/jquery.js" type="text/javascript"></script> 
         <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script> 
