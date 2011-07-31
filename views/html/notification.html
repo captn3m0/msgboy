@@ -46,40 +46,41 @@
     </head>
     <body>
         <script>
-        
-        var notification =  new MsgboyNotification();
-        
-        $("body").mouseover(function() {
-            notification.mouse_over = true;
-        });
-        
-        $("body").mouseout(function() {
-            notification.mouse_over = false;
-        });
-    
-        $(document).ready(function() {
-            // Tell everyone we're ready.
-            chrome.extension.sendRequest({
-                signature: "notification_ready",
-                params: {}
-            }, function() {
-                // We should start to receive notifications soon!
-            })
-            
-            chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
-                if (request.signature == "notify" && request.params) {
-                    var message = new Message(request.params);
-                    notification.messages.push(message);
-                    if (!notification.started) {
-                        notification.started = true // Initiate the loop.
-                        notification.show_next_message();
-                    }
-                }
+        Msgboy.bind("loaded", function() {
+            var notification =  new MsgboyNotification();
+
+            $("body").mouseover(function() {
+                notification.mouse_over = true;
             });
+
+            $("body").mouseout(function() {
+                notification.mouse_over = false;
+            });
+
+            $(document).ready(function() {
+                // Tell everyone we're ready.
+                chrome.extension.sendRequest({
+                    signature: "notification_ready",
+                    params: {}
+                }, function() {
+                    // We should start to receive notifications soon!
+                })
+
+                chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
+                    if (request.signature == "notify" && request.params) {
+                        var message = new Message(request.params);
+                        notification.messages.push(message);
+                        if (!notification.started) {
+                            notification.started = true // Initiate the loop.
+                            notification.show_next_message();
+                        }
+                    }
+                });
+            });
+            notification.rotate();
         });
         
-        notification.rotate();
-        
+        Msgboy.run();
         </script>
     </body>
 </html>

@@ -81,114 +81,117 @@
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(ga, s);
     })();
-
-
-    var inbox = new Inbox();
     
-    Msgboy.logEnabled = true;
-    Msgboy.connection = new Strophe.Connection({
-        protocol: new Strophe.Websocket('ws://websocket.msgboy.com:5288/ws-xmpp')
-    });
-    Msgboy.connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
+    Msgboy.bind("loaded", function() {
+        Msgboy.inbox = new Inbox();
 
-    Msgboy.connection.rawInput = function (data) {
-        // Msgboy.log('RECV: ' + data);
-    };
-    Msgboy.connection.rawOutput = function (data) {
-        // Msgboy.log('SENT: ' + data);
-    };
-
-    Strophe.log = function (level, msg) {
-        Msgboy.log(msg);
-    }
-
-    // When a new message was added to the inbox
-    inbox.bind("messages:added", function (message) {
-        if (message.attributes.relevance >= inbox.attributes.options.relevance) {
-            Msgboy.log("Showing message : " + message.attributes.id + " (" + message.attributes.relevance + " >= " + inbox.attributes.options.relevance + ") ");
-            Msgboy.notify(message);
-        } else {
-            Msgboy.log("Not showing message : " + message.attributes.id + " (" + message.attributes.relevance + " < " + inbox.attributes.options.relevance + ") ");
-        }
-    });
-
-    // when the inbox is ready
-    inbox.bind("ready", function () {
-        Msgboy.connect();
-    });
-
-    // When the inbox is new.
-    inbox.bind("new", function () {
-        // Let's open the splash screen
-        chrome.tabs.create({
-            url: chrome.extension.getURL('/views/html/help.html'),
-            selected: true
+        Msgboy.logEnabled = true;
+        Msgboy.connection = new Strophe.Connection({
+            protocol: new Strophe.Websocket('ws://websocket.msgboy.com:5288/ws-xmpp')
         });
-        // And import all plugins.
-        Plugins.import(function(subs) {
-            Msgboy.subscribe(subs, function() {
-                // Cool. Not much to do.
+        Msgboy.connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
+
+        Msgboy.connection.rawInput = function (data) {
+            // Msgboy.log('RECV: ' + data);
+        };
+        Msgboy.connection.rawOutput = function (data) {
+            // Msgboy.log('SENT: ' + data);
+        };
+
+        Strophe.log = function (level, msg) {
+            Msgboy.log(msg);
+        }
+
+        // When a new message was added to the inbox
+        Msgboy.inbox.bind("messages:added", function (message) {
+            if (message.attributes.relevance >= Msgboy.inbox.attributes.options.relevance) {
+                Msgboy.log("Showing message : " + message.attributes.id + " (" + message.attributes.relevance + " >= " + Msgboy.inbox.attributes.options.relevance + ") ");
+                Msgboy.notify(message.toJSON());
+            } else {
+                Msgboy.log("Not showing message : " + message.attributes.id + " (" + message.attributes.relevance + " < " + Msgboy.inbox.attributes.options.relevance + ") ");
+            }
+        });
+
+        // when the inbox is ready
+        Msgboy.inbox.bind("ready", function () {
+            Msgboy.connect(Msgboy.inbox);
+        });
+
+        // When the inbox is new.
+        Msgboy.inbox.bind("new", function () {
+            // Let's open the splash screen
+            chrome.tabs.create({
+                url: chrome.extension.getURL('/views/html/help.html'),
+                selected: true
+            });
+            // And import all plugins.
+            Plugins.import(function(subs) {
+                Msgboy.subscribe(subs, function() {
+                    // Cool. Not much to do.
+                });
             });
         });
-    });
 
-    // When reloading the inbox is needed (after a change in settings eg)
-    $(document).bind('reload', function(element, object) {
-        Msgboy.log("Request : reload ");
-        inbox.fetch();
+        // When reloading the inbox is needed (after a change in settings eg)
+        $(document).bind('reload', function(element, object) {
+            Msgboy.log("Request : reload ");
+            Msgboy.inbox.fetch();
+        });
+
+        // When a new notification was received from XMPP line.
+        $(document).bind('notification_received', function (ev, notification) {
+            Msgboy.log("Notification received from " + notification.source.url);
+            var msg = Msgboy.connection.superfeedr.convertAtomToJson(notification.payload);
+            msg.source = notification.source;
+            msg.feed = notification.source.url;
+            if (notification.via) {
+                msg.via = notification.via
+            }
+            var message = Msgboy.inbox.add_message(msg, {
+                success: function () {
+                    Msgboy.log("Saved message " + msg.id);
+                }.bind(this),
+                error: function (object, error) {
+                    // Message was not saved... probably a dupe
+                    Msgboy.log("Could not save message " + JSON.stringify(msg));
+                    Msgboy.log(error);
+                }.bind(this),
+            });
+        });
+
+        // Chrome specific. We want to turn any Chrome API callback into a DOM event. It will greatly improve portability.
+        chrome.extension.onRequest.addListener(function (_request, _sender, _sendResponse) {
+            $(document).trigger(_request.signature, {
+                request: _request,
+                sender: _sender,
+                sendResponse: _sendResponse
+            });
+        });
+
+        // XMPP discovery.
+        Msgboy.connection.caps.setNode("http://download.msgboy.com/msgboy.crx")
+        Msgboy.connection.caps.addDiscoFeature("http://jabber.org/protocol/caps");
+        Msgboy.connection.caps.addDiscoCategory(Msgboy.infos.name + " " + Msgboy.infos.version, "client", "web", "en");
+        
+        
+        // Let's go.
+        Msgboy.inbox.fetch_and_prepare();
+        
+        // Plugins management
+        $.each(Plugins.all, function (index, plugin) {
+            if (typeof (plugin.subscribeInBackground) != "undefined") {
+                plugin.subscribeInBackground(function (feed) {
+                    Msgboy.log("Request : subscribe " + feed.href);
+                    Msgboy.connection.superfeedr.subscribe(feed.href, function (result, f) {
+                        Msgboy.log("Request : subscribed " + feed.href);
+                    })
+                });
+            }
+        });
     });
     
-    // When a new notification was received from XMPP line.
-    $(document).bind('notification_received', function (ev, notification) {
-        Msgboy.log("Notification received from " + notification.source.url);
-        var msg = Msgboy.connection.superfeedr.convertAtomToJson(notification.payload);
-        msg.source = notification.source;
-        msg.feed = notification.source.url;
-        if (notification.via) {
-            msg.via = notification.via
-        }
-        var message = inbox.add_message(msg, {
-            success: function () {
-                Msgboy.log("Saved message " + msg.id);
-            }.bind(this),
-            error: function (object, error) {
-                // Message was not saved... probably a dupe
-                Msgboy.log("Could not save message " + JSON.stringify(msg));
-                Msgboy.log(error);
-            }.bind(this),
-        });
-    });
-
-    // Chrome specific. We want to turn any Chrome API callback into a DOM event. It will greatly improve portability.
-    chrome.extension.onRequest.addListener(function (_request, _sender, _sendResponse) {
-        $(document).trigger(_request.signature, {
-            request: _request,
-            sender: _sender,
-            sendResponse: _sendResponse
-        });
-    });
-
-    // XMPP discovery.
-    Msgboy.connection.caps.setNode("http://download.msgboy.com/msgboy.crx")
-    Msgboy.connection.caps.addDiscoFeature("http://jabber.org/protocol/caps");
-
     // Main!
-    chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
-        Msgboy.connection.caps.addDiscoCategory(extension_infos.name + " " + extension_infos.version, "client", "web", "en");
-        inbox.fetch_and_prepare();
-    });
-
-    // Plugins management
-    $.each(Plugins.all, function (index, plugin) {
-        if (typeof (plugin.subscribeInBackground) != "undefined") {
-            plugin.subscribeInBackground(function (feed) {
-                Msgboy.log("Request : subscribe " + feed.href);
-                Msgboy.connection.superfeedr.subscribe(feed.href, function (result, f) {
-                    Msgboy.log("Request : subscribed " + feed.href);
-                })
-            });
-        }
-    });
+    Msgboy.run();
     
     </script>
 </body>

@@ -60,7 +60,7 @@
     <img id="signal" src="../images/mb-signal.png" />
     
     <script>
-        $(document).ready(function() {
+        Msgboy.bind("loaded", function() {
             var view  = new OptionsView();
         });
     </script>

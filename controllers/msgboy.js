@@ -6,6 +6,8 @@ var Msgboy = new function () {
     this.connectionTimeout = null,
     this.reconnectDelay = 1,
     this.connection = null,
+    this.infos = {},
+    this.inbox = null;
     
     // Logs messages to the console
     this.log = function(msg) {
@@ -13,6 +15,15 @@ var Msgboy = new function () {
             console.log("Msgboy : " + msg);
         }
     },
+    
+    this.run =  function() {
+        $(document).ready(function () {
+            chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
+                Msgboy.infos = extension_infos;
+                Msgboy.trigger("loaded");
+            });
+        });
+    }
 
     // Handles XMPP Connections
     this.on_connect = function(status) {
@@ -65,8 +76,8 @@ var Msgboy = new function () {
             // If connection failed. We just try again.
             Msgboy.connect();
         }, 60 * 1000)
-        var password = inbox.attributes.password;
-        var jid = inbox.attributes.jid + "@msgboy.com/extension";
+        var password = Msgboy.inbox.attributes.password;
+        var jid = Msgboy.inbox.attributes.jid + "@msgboy.com/extension";
 
         Msgboy.connection.connect(jid, password, this.on_connect);
     },
@@ -79,7 +90,7 @@ var Msgboy = new function () {
             created_at: [new Date().getTime(), 0]
         }, function () {
             $("#log").text(JSON.stringify(archive.toJSON()));
-            MsgboyHelper.uploader.upload(inbox.attributes.jid, archive.toJSON());
+            MsgboyHelper.uploader.upload(Msgboy.inbox.attributes.jid, archive.toJSON());
         });
     },
 
@@ -99,7 +110,7 @@ var Msgboy = new function () {
         else {
             chrome.extension.sendRequest({
                 signature: "notify",
-                params: message.toJSON()
+                params: message
             }, function (response) {
                 // Let's notify the people who may care about this, including the notification popup, hopefully :)
             });
@@ -165,3 +176,4 @@ var Msgboy = new function () {
     }
 
 }
+_.extend(Msgboy, Backbone.Events);
