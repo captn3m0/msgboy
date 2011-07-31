@@ -4,7 +4,7 @@ var Msgboy = new function () {
     this.currentNotification = null,
     this.messageStack = [],
     this.connectionTimeout = null,
-    this.reconnectDelay = 0,
+    this.reconnectDelay = 1,
     this.connection = null,
     
     // Logs messages to the console
@@ -20,9 +20,9 @@ var Msgboy = new function () {
             msg = 'Msgboy is connecting.';
         } else if (status == Strophe.Status.CONNFAIL) {
             msg = 'Msgboy failed to connect.';
+            Msgboy.reconnectDelay += 1;
             setTimeout(function () {
                 if (Msgboy.autoReconnect) {
-                    Msgboy.reconnectDelay += 1;
                     Msgboy.connect();
                 }
             }, fibonacci(Msgboy.reconnectDelay) * 1000);
@@ -39,15 +39,14 @@ var Msgboy = new function () {
             msg = 'Msgboy is disconnecting.'; // We may want to time this out.
         } else if (status == Strophe.Status.DISCONNECTED) {
             msg = 'Msgboy is disconnected. ';
+            Msgboy.reconnectDelay += 1;
             setTimeout(function () {
                 if (Msgboy.autoReconnect) {
-                    Msgboy.reconnectDelay += 1;
                     Msgboy.connect();
                 }
             }, fibonacci(Msgboy.reconnectDelay) * 1000);
             if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
         } else if (status == Strophe.Status.CONNECTED) {
-            Msgboy.reconnectDelay = 0
             Msgboy.autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
             msg = 'Msgboy is connected.';
             Msgboy.connection.caps.sendPresenceWithCaps(); // Send presence! 
