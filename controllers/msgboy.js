@@ -178,7 +178,7 @@ var Msgboy = new function () {
             Msgboy.log("subscribing to " + subs.id);
             Msgboy.connection.superfeedr.subscribe(subs.id, function (result, feed) {
                 Msgboy.log("subscribed to " + subs.id);
-                subscription.set_state("subscribed");
+                subs.set_state("subscribed");
             });
         });
         subscriptions.pending();
