@@ -42,14 +42,12 @@
     Msgboy.bind("loaded", function() {
         Msgboy.inbox = new Inbox();
         Msgboy.inbox.bind("change", function() {
-            console.log("Loaded")
             
             var error = {
                 message : "There was an error",
                 stack   : '()@' + "file.js" + ':' + 1337
             }
             var xml = Hoptoad.generateXML(error);
-            console.log(xml);
             
         });
         Msgboy.inbox.fetch();

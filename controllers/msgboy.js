@@ -72,7 +72,7 @@ var Msgboy = new function () {
             Msgboy.connection.caps.sendPresenceWithCaps(); // Send presence! 
             if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
             // Makes sure there is no missing subscription.
-            // Msgboy.resume_subscriptions();
+            Msgboy.resume_subscriptions();
         }
         Msgboy.log(msg);
     },
@@ -174,9 +174,11 @@ var Msgboy = new function () {
     // Makes sure there is no 'pending' susbcriptions.
     this.resume_subscriptions = function() {
         var subscriptions  = new Subscriptions();
-        subscription.bind("add", function(subs) {
-            Msgboy.subscribe(subs.attributes.url, function() {
-                // Not much.
+        subscriptions.bind("add", function(subs) {
+            Msgboy.log("subscribing to " + url);
+            Msgboy.connection.superfeedr.subscribe(subs.id, function (result, feed) {
+                Msgboy.log("subscribed to " + url);
+                subscription.set_state("subscribed");
             });
         });
         
