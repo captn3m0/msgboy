@@ -6,6 +6,7 @@ require 'yajl/json_gem'
 require 'aws/s3'
 require 'selenium-webdriver'
 require 'json'
+require 'net/http'
 
 s3 = JSON.load(File.read("s3.json"))
 
@@ -152,12 +153,11 @@ namespace :version do
   end
 end
 
-
 task :publish => [:'publish:chrome:pack', :'publish:upload']
 
 namespace :publish do
 
-  task :upload => [:'upload:crx', :'upload:updates_xml']
+  task :upload => [:'upload:crx', :'upload:updates_xml', :'airbrake:track']
 
   namespace :upload do
     desc "Uploads the extension"
@@ -193,6 +193,26 @@ namespace :publish do
       }
       )
       puts "Updates.xml #{version} uploaded"
+    end
+  end
+  
+  namespace :airbrake do
+    desc "Tracks deploy in airbrake"
+    task :track do
+      commit = `git show`.split("\n")
+      response = Net::HTTP.post_form(URI.parse("http://hoptoadapp.com/deploys.txt"), {
+        :api_key => "47bdc2ad25b662cee947d0a1c353e974",
+        :'deploy[rails_env]' => "production",
+        :'deploy[scm_repository]' => "https://github.com/superfeedr/msgboy",
+        :'deploy[scm_revision]' => commit[0].match(/commit (.*)/)[1],
+        :'deploy[local_username]' => commit[1].match(/Author: (.*)/)[1],
+      })
+      
+      if(response.is_a? Net::HTTPOK)
+        puts "Tracking changes for #{version}"
+      else
+        puts "Cannot track changes for #{version}"
+      end
     end
   end
 

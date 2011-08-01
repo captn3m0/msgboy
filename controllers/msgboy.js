@@ -16,6 +16,15 @@ var Msgboy = new function () {
         }
     },
     
+    this.environment = function() {
+        if(chrome.i18n.getMessage("@@extension_id") == "ligglcbjgpiljeoenbhnnfdipkealakb") {
+            return "production";
+        }
+        else {
+            return "development"
+        }
+    }
+    
     this.run =  function() {
         $(document).ready(function () {
             chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
