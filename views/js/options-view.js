@@ -5,7 +5,7 @@ var OptionsView = Backbone.View.extend({
     el: "#options",
 
     initialize: function() {
-        _.bindAll(this, "render");
+        _.bindAll(this, "render", "change");
         this.model = new Inbox();
         this.model.bind("change", function() {
             this.render();
