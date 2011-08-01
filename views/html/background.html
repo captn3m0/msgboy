@@ -87,10 +87,14 @@
         Msgboy.connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
 
         Msgboy.connection.rawInput = function (data) {
-            Msgboy.log('RECV: ' + data);
+            if(Msgboy.environment() == "development") {
+                Msgboy.log('RECV: ' + data);
+            }
         };
         Msgboy.connection.rawOutput = function (data) {
-            Msgboy.log('SENT: ' + data);
+            if(Msgboy.environment() == "development") {
+                Msgboy.log('SENT: ' + data);
+            }
         };
 
         Strophe.log = function (level, msg) {
