@@ -147,7 +147,7 @@ var Msgboy = new function () {
                 });
             }
             else {
-                Msgboy.log("Nothing to do for " + url);
+                Msgboy.log("Nothing to do for " + url + " (" + subscription.attributes.state + ")");
                 callback(false);
             }
         });
@@ -175,12 +175,13 @@ var Msgboy = new function () {
     this.resume_subscriptions = function() {
         var subscriptions  = new Subscriptions();
         subscriptions.bind("add", function(subs) {
-            Msgboy.log("subscribing to " + url);
+            Msgboy.log("subscribing to " + subs.id);
             Msgboy.connection.superfeedr.subscribe(subs.id, function (result, feed) {
-                Msgboy.log("subscribed to " + url);
+                Msgboy.log("subscribed to " + subs.id);
                 subscription.set_state("subscribed");
             });
         });
+        subscriptions.pending();
         
         setTimeout(function() {
             Msgboy.resume_subscriptions(); // Let's retry in 10 minutes.
