@@ -59,6 +59,7 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 * More plugins for websites that have some kind of subscription scheme.
 * Keyboard navigation for the dashboard and notifications.
 * Grouping of items in the dashboard (by source, and by topic).
+* Set git tags when bumping
 
 ## Publishers
 
