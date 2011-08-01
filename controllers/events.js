@@ -1,27 +1,21 @@
 $(document).bind('subscribe', function(element, object) {
     Msgboy.log("Request : subscribe " + object.request.params.url);
-    Msgboy.subscribe(object.request.params, function(result) {
-        object.sendResponse({
-            value: result
-        });
+    Msgboy.subscribe(object.request.params.url, function(result) {
+        // Nothing to do.
     });
 });
 
 $(document).bind('unsubscribe', function(element, object) {
     Msgboy.log("Request : unsubscribe " + object.request.params);
     Msgboy.unsubscribe(object.request.params, function(result) {
-        object.sendResponse({
-            value: result
-        });
+        // Nothing to do.
     });
 });
 
 $(document).bind('notify', function(element, object) {
     Msgboy.log("Request : notify", object.request.params);
     Msgboy.notify(object.request.params);
-    object.sendResponse({
-        value: true
-    });
+    // Nothing to do.
 });
 
 $(document).bind('notification_ready', function(element, object) {
@@ -33,12 +27,9 @@ $(document).bind('notification_ready', function(element, object) {
             signature: "notify",
             params: Msgboy.messageStack.pop()
         }, function (response) {
-            // Let's notify the people who may care about this, includingthe notification popup, hopefully :)
+            // Nothing to do.
         });
     }
-    object.sendResponse({
-        value: true
-    });
 });
 
 $(document).bind('tab', function(element, object) {
@@ -56,11 +47,7 @@ $(document).bind('tab', function(element, object) {
             // Just open an extra tab.
             options = object.request.params
             options.windowId = windows[0].id
-            chrome.tabs.create(options, function() {
-                object.sendResponse({
-                    value: true
-                });
-            });
+            chrome.tabs.create(options);
         }
     });
 });
@@ -71,6 +58,12 @@ $(document).bind('close', function(element, object) {
     object.sendResponse({
         value: true
     });
+});
+
+// When reloading the inbox is needed (after a change in settings eg)
+$(document).bind('reload', function(element, object) {
+    Msgboy.log("Request : reload ");
+    Msgboy.inbox.fetch();
 });
 
 

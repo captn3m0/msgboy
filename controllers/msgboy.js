@@ -112,24 +112,24 @@ var Msgboy = new function () {
                 signature: "notify",
                 params: message
             }, function (response) {
-                // Let's notify the people who may care about this, including the notification popup, hopefully :)
+                // Nothing to do.
             });
         }
         return Msgboy.currentNotification;
     },
 
     // Subscribes to a feed.
-    this.subscribe = function(subs, callback) {
+    this.subscribe = function(url, callback) {
         // First, let's check if we have a subscription for this.
-        var subscription = new Subscription({id: subs.url});
+        var subscription = new Subscription({id: url});
         subscription.fetch_or_create(function() {
             // Looks like there is a subscription.
             if(subscription.needs_refresh() && subscription.attributes.state == "unsubscribed") {
-                Msgboy.log("subscribing to " + subscription.id);
                 subscription.set_state("subscribing");
                 subscription.bind("subscribing", function() {
-                    Msgboy.connection.superfeedr.subscribe(subscription.id, function (result, feed) {
-                        Msgboy.log("subscribed to " + subscription.id);
+                    Msgboy.log("subscribing to " + url);
+                    Msgboy.connection.superfeedr.subscribe(url, function (result, feed) {
+                        Msgboy.log("subscribed to " + url);
                         subscription.set_state("subscribed");
                     });
                 });
@@ -138,7 +138,7 @@ var Msgboy = new function () {
                 });
             }
             else {
-                Msgboy.log("Nothing to do for " + subscription.id)
+                Msgboy.log("Nothing to do for " + url);
                 callback(false);
             }
         });
@@ -150,6 +150,7 @@ var Msgboy = new function () {
         subscription.fetch_or_create(function() {
             subscription.set_state("unsubscribing");
             subscription.bind("unsubscribing", function() {
+                Msgboy.log("unsubscribing from " + url);
                 Msgboy.connection.superfeedr.unsubscribe(url, function (result) {
                     Msgboy.log("Request : unsubscribed " + url);
                     subscription.set_state("unsubscribed")
@@ -165,7 +166,7 @@ var Msgboy = new function () {
     this.resume_subscriptions = function() {
         var subscriptions  = new Subscriptions();
         subscription.bind("add", function(subs) {
-            Msgboy.subscribe({url: subs.attributes.url}, function() {
+            Msgboy.subscribe(subs.attributes.url, function() {
                 // Not much.
             });
         });

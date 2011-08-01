@@ -132,12 +132,6 @@
             });
         });
 
-        // When reloading the inbox is needed (after a change in settings eg)
-        $(document).bind('reload', function(element, object) {
-            Msgboy.log("Request : reload ");
-            Msgboy.inbox.fetch();
-        });
-
         // When a new notification was received from XMPP line.
         $(document).bind('notification_received', function (ev, notification) {
             Msgboy.log("Notification received from " + notification.source.url);
@@ -181,10 +175,7 @@
         $.each(Plugins.all, function (index, plugin) {
             if (typeof (plugin.subscribeInBackground) != "undefined") {
                 plugin.subscribeInBackground(function (feed) {
-                    Msgboy.log("Request : subscribe " + feed.href);
-                    Msgboy.connection.superfeedr.subscribe(feed.href, function (result, f) {
-                        Msgboy.log("Request : subscribed " + feed.href);
-                    })
+                    $(document).trigger('subscribe', {request: {params: {url: feed.href}}});
                 });
             }
         });
