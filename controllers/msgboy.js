@@ -1,12 +1,12 @@
 var Msgboy = new function () {
-    this.logEnabled = false,
-    this.autoReconnect = true,
-    this.currentNotification = null,
-    this.messageStack = [],
-    this.connectionTimeout = null,
-    this.reconnectDelay = 1,
-    this.connection = null,
-    this.infos = {},
+    this.logEnabled = false;
+    this.autoReconnect = true;
+    this.currentNotification = null;
+    this.messageStack = [];
+    this.connectionTimeout = null;
+    this.reconnectDelay = 1;
+    this.connection = null;
+    this.infos = {};
     this.inbox = null;
     
     // Logs messages to the console
@@ -14,7 +14,7 @@ var Msgboy = new function () {
         if (this.logEnabled) {
             console.log("Msgboy : " + msg);
         }
-    },
+    };
     
     this.environment = function() {
         if(chrome.i18n.getMessage("@@extension_id") == "ligglcbjgpiljeoenbhnnfdipkealakb") {
@@ -23,7 +23,7 @@ var Msgboy = new function () {
         else {
             return "development"
         }
-    }
+    };
     
     this.run =  function() {
         $(document).ready(function () {
@@ -32,7 +32,7 @@ var Msgboy = new function () {
                 Msgboy.trigger("loaded");
             });
         });
-    }
+    };
 
     // Handles XMPP Connections
     this.on_connect = function(status) {
@@ -75,7 +75,7 @@ var Msgboy = new function () {
             Msgboy.resume_subscriptions();
         }
         Msgboy.log(msg);
-    },
+    };
     
     // Connects the XMPP Client
     // It also includes a timeout that tries to reconnect when we could not connect in less than 1 minute.
@@ -89,7 +89,7 @@ var Msgboy = new function () {
         var jid = Msgboy.inbox.attributes.jid + "@msgboy.com/extension";
 
         Msgboy.connection.connect(jid, password, this.on_connect);
-    },
+    };
 
     // Uploads the content of the database. this will be used for analysis of the dataset o determine a better algorithm.
     // It is perfectly anonymous and currentl not used.
@@ -101,7 +101,7 @@ var Msgboy = new function () {
             $("#log").text(JSON.stringify(archive.toJSON()));
             MsgboyHelper.uploader.upload(Msgboy.inbox.attributes.jid, archive.toJSON());
         });
-    },
+    };
 
     // Shows a popup notification
     this.notify = function(message) {
@@ -125,7 +125,7 @@ var Msgboy = new function () {
             });
         }
         return Msgboy.currentNotification;
-    },
+    };
 
     // Subscribes to a feed.
     this.subscribe = function(url, callback) {
@@ -151,7 +151,7 @@ var Msgboy = new function () {
                 callback(false);
             }
         });
-    },
+    };
     
     // Unsubscribes from a feed.
     this.unsubscribe = function(url, callback) {
@@ -169,7 +169,7 @@ var Msgboy = new function () {
                 callback(true);
             });
         });
-    },
+    };
     
     // Makes sure there is no 'pending' susbcriptions.
     this.resume_subscriptions = function() {
@@ -186,7 +186,6 @@ var Msgboy = new function () {
         setTimeout(function() {
             Msgboy.resume_subscriptions(); // Let's retry in 10 minutes.
         }, 1000 * 60 * 10); 
-    }
-
-}
+    };
+};
 _.extend(Msgboy, Backbone.Events);
