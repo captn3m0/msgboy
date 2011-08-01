@@ -121,7 +121,7 @@
             });
             // And import all plugins.
             Plugins.import(function(subs) {
-                Msgboy.subscribe(subs, function() {
+                Msgboy.subscribe(subs.url, function() {
                     // Cool. Not much to do.
                 });
             });
