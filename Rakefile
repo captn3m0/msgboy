@@ -200,12 +200,17 @@ namespace :publish do
     desc "Tracks deploy in airbrake"
     task :track do
       commit = `git show`.split("\n")
+      scm_revision = commit.select() {|line|
+        line.match(/^commit .*/)}[0].match(/commit (.*)/)[1]
+      local_username = commit.select() {|line|
+        line.match(/Author: .*/)}[0].match(/Author: (.*)/)[1]
+      
       response = Net::HTTP.post_form(URI.parse("http://hoptoadapp.com/deploys.txt"), {
         :api_key => "47bdc2ad25b662cee947d0a1c353e974",
         :'deploy[rails_env]' => "production",
         :'deploy[scm_repository]' => "https://github.com/superfeedr/msgboy",
-        :'deploy[scm_revision]' => commit[0].match(/commit (.*)/)[1],
-        :'deploy[local_username]' => commit[1].match(/Author: (.*)/)[1],
+        :'deploy[scm_revision]' => scm_revision,
+        :'deploy[local_username]' => local_username,
       })
       
       if(response.is_a? Net::HTTPOK)
