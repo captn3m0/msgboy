@@ -37,6 +37,7 @@ var Msgboy = new function () {
 
     // Handles XMPP Connections
     this.on_connect = function(status) {
+        var msg = '';
         if (status == Strophe.Status.CONNECTING) {
             msg = 'Msgboy is connecting.';
         } else if (status == Strophe.Status.CONNFAIL) {
