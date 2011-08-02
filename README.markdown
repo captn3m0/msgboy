@@ -60,6 +60,7 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 * Keyboard navigation for the dashboard and notifications.
 * Grouping of items in the dashboard (by source, and by topic).
 * Set git tags when bumping
+* Throttle down importing of sources, to avoid slowness at setup. Since everything happens in the background. It's ok to take more time.
 
 ## Publishers
 
