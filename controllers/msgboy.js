@@ -58,7 +58,7 @@ var Msgboy = new function () {
         } else if (status == Strophe.Status.DISCONNECTING) {
             msg = 'Msgboy is disconnecting.'; // We may want to time this out.
         } else if (status == Strophe.Status.DISCONNECTED) {
-            msg = 'Msgboy is disconnected. ';
+            msg = 'Msgboy is disconnected. Reconnect in ' + fibonacci(Msgboy.reconnectDelay) + ' seconds.';
             Msgboy.reconnectDelay += 1;
             setTimeout(function () {
                 if (Msgboy.autoReconnect) {
