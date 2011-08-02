@@ -8,6 +8,7 @@ var Msgboy = new function () {
     this.connection = null;
     this.infos = {};
     this.inbox = null;
+    this.reconnectionTimeout = null;
     
     // Logs messages to the console
     this.log = function(msg) {
@@ -41,12 +42,7 @@ var Msgboy = new function () {
         } else if (status == Strophe.Status.CONNFAIL) {
             msg = 'Msgboy failed to connect.';
             Msgboy.reconnectDelay += 1;
-            setTimeout(function () {
-                if (Msgboy.autoReconnect) {
-                    Msgboy.connect();
-                }
-            }, fibonacci(Msgboy.reconnectDelay) * 1000);
-            if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
+            if (Msgboy.autoReconnect) Msgboy.auto_reconnect();
         } else if (status == Strophe.Status.AUTHFAIL) {
             msg = 'Msgboy couldn\'t authenticate. Please check your credentials';
             Msgboy.autoReconnect = false // We need to open the settings tab
@@ -54,40 +50,39 @@ var Msgboy = new function () {
                 url: chrome.extension.getURL('/views/html/options.html'),
                 selected: true
             });
-            if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
         } else if (status == Strophe.Status.DISCONNECTING) {
             msg = 'Msgboy is disconnecting.'; // We may want to time this out.
         } else if (status == Strophe.Status.DISCONNECTED) {
+            if (Msgboy.autoReconnect) Msgboy.auto_reconnect();
             msg = 'Msgboy is disconnected. Reconnect in ' + fibonacci(Msgboy.reconnectDelay) + ' seconds.';
-            Msgboy.reconnectDelay += 1;
-            setTimeout(function () {
-                if (Msgboy.autoReconnect) {
-                    Msgboy.connect();
-                }
-            }, fibonacci(Msgboy.reconnectDelay) * 1000);
-            if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
         } else if (status == Strophe.Status.CONNECTED) {
             Msgboy.autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
             msg = 'Msgboy is connected.';
             Msgboy.connection.caps.sendPresenceWithCaps(); // Send presence! 
-            if (Msgboy.connectionTimeout) clearTimeout(Msgboy.connectionTimeout);
             // Makes sure there is no missing subscription.
             Msgboy.resume_subscriptions();
         }
         Msgboy.log(msg);
     };
     
+    this.auto_reconnect = function() {
+        Msgboy.reconnectDelay += 1;
+        if(!Msgboy.reconnectionTimeout) {
+            Msgboy.reconnectionTimeout = setTimeout(function () {
+                Msgboy.reconnectionTimeout = null;
+                Msgboy.connect();
+            }, fibonacci(Msgboy.reconnectDelay) * 1000);
+        }
+        else {
+            // We already have a reconnection Timeout waiting to be fired.
+        }
+    },
+    
     // Connects the XMPP Client
     // It also includes a timeout that tries to reconnect when we could not connect in less than 1 minute.
     this.connect = function() {
-        Msgboy.connectionTimeout = setTimeout(function () {
-            // We add a 60 secinds reconnect when trying to connect.
-            // If connection failed. We just try again.
-            Msgboy.connect();
-        }, 60 * 1000)
         var password = Msgboy.inbox.attributes.password;
         var jid = Msgboy.inbox.attributes.jid + "@msgboy.com/extension";
-
         Msgboy.connection.connect(jid, password, this.on_connect);
     };
 
