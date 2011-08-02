@@ -9,7 +9,7 @@ var MessageView = Backbone.View.extend({
     },
 
     initialize: function() {
-        _.bindAll(this, "render", "up", "down", "format");
+        _.bindAll(this, "render", "up", "down");
         this.model.view = this;
 
         var controls = $("<span>", {
@@ -25,38 +25,10 @@ var MessageView = Backbone.View.extend({
         }).appendTo(controls);
         
         $(this.el).attr("data-msgboy-relevance", this.model.attributes.relevance);
-        $(this.el).attr("data-msgboy-state", this.model.attributes.state);
-        
-        if(this.model.attributes.state == "down-ed") {
-            $(this.el).addClass("brick-1");
-        } else if(this.model.attributes.state == "up-ed"){
-            $(this.el).addClass("brick-4");
-        } else {
-            $(this.el).addClass("brick-" +Math.ceil( this.model.attributes.relevance * 4));
-        }
-        
         $(this.el).attr("id", this.model.id);
+        
         this.model.bind("change", this.render);
-    },
-    
-    click: function(evt) {
-        if(!$(evt.target).hasClass("vote")) {
-            if(evt.shiftKey) {
-                chrome.extension.sendRequest({
-                    signature: "notify",
-                    params: this.model.toJSON()
-                });
-            } else {
-                chrome.extension.sendRequest({
-                    signature: "tab",
-                    params: {url: this.model.main_link(), selected: false}
-                });
-                this.trigger("clicked");
-            }
-        }
-    },
-    
-    format: function() {
+        
         $(this.el).addClass("text");
         $("<div>", {
             "class": "full-content",
@@ -80,7 +52,7 @@ var MessageView = Backbone.View.extend({
                         this.$(".message > img").css("min-width", "100%");
                         //this.$("img").css("width", "100%");
                     }
-                    
+        
                     // show the source title.
                     this.$("h1").text(this.model.attributes.source.title).appendTo($(this.el));
                 }
@@ -92,7 +64,7 @@ var MessageView = Backbone.View.extend({
         $("<h1/>").text(this.model.attributes.source.title).appendTo($(this.el));
         this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
         //this.$("h1").css("width", "100%");
-        
+
         // Chose a color for the box.
         var sum = 0
         _.each(this.model.attributes.source.title.split(""), function(c) {
@@ -102,40 +74,33 @@ var MessageView = Backbone.View.extend({
         // using grayscale for the time being. pending new color palette. -&yet:eric
         //$(this.el).css("background-color", "hsl(240,0%," + (sum%7)*10 + "%)");
         //$("<p>").html(MsgboyHelper.cleaner.html(sum%7)).appendTo($(this.el));
-        this.trigger("rendered");
+        this.render();
+    },
+    
+    click: function(evt) {
+        if(!$(evt.target).hasClass("vote")) {
+            if(evt.shiftKey) {
+                chrome.extension.sendRequest({
+                    signature: "notify",
+                    params: this.model.toJSON()
+                });
+            } else {
+                chrome.extension.sendRequest({
+                    signature: "tab",
+                    params: {url: this.model.main_link(), selected: false}
+                });
+                this.trigger("clicked");
+            }
+        }
     },
     
     // Message was voted up
     up: function() {
-        if ($(this.el).hasClass("brick-1")) {
-            $(this.el).removeClass("brick-1");
-            $(this.el).addClass("brick-2");
-        }
-        else if ($(this.el).hasClass("brick-2")) {
-            $(this.el).removeClass("brick-2");
-            $(this.el).addClass("brick-3");   
-        }
-        else if ($(this.el).hasClass("brick-3")) {
-            $(this.el).removeClass("brick-3");
-            $(this.el).addClass("brick-4");
-        }
-        this.trigger("change");
         this.model.vote_up();
     },
     
     // Message was voted down
     down: function() {
-        if ($(this.el).hasClass("brick-2")) {
-            $(this.el).removeClass("brick-2");
-            $(this.el).addClass("brick-1");
-        } else if ($(this.el).hasClass("brick-3")) {
-            $(this.el).removeClass("brick-3");
-            $(this.el).addClass("brick-2");
-        } else if ($(this.el).hasClass("brick-4")) {
-            $(this.el).removeClass("brick-4");
-            $(this.el).addClass("brick-3");
-        }
-        // this.trigger("change");
         this.model.vote_down(function(result) {
             if(result.unsubscribe) {
                 var request = {
@@ -149,7 +114,24 @@ var MessageView = Backbone.View.extend({
     },
     
     render: function() {
-        this.format();
+        $(this.el).attr("data-msgboy-state", this.model.attributes.state);
+        
+        // Let's remove all the brick classes
+        for(var i=0; i <= 4; i = i+1) {
+            $(this.el).removeClass("brick-" + i);
+        }
+        
+        // And add the right ones.
+        if(this.model.attributes.state == "down-ed") {
+            $(this.el).addClass("brick-1");
+        } else if(this.model.attributes.state == "up-ed"){
+            $(this.el).addClass("brick-4");
+        } else {
+            $(this.el).addClass("brick-" +Math.ceil( this.model.attributes.relevance * 4));
+        }
+        
+        // Trigger rendered
+        this.trigger("rendered");
     },
 });
 
