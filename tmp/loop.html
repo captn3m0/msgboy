@@ -27,8 +27,7 @@
         conns.push(socket);
         
         socket.onopen = function() {
-            console.log("OPEN " + conns.length);
-            open('ws://websocket.msgboy.com:5288/ws-xmpp');
+            console.log("OPEN");
         }; 
         
         socket.onerror = function() {
@@ -43,8 +42,11 @@
             console.log("MESSAGE : " + message);
         }; 
     }
+        
+        setInterval(function() {
+            open('ws://websocket.msgboy.com:5288/ws-xmpp');
+        }, 100);
     
-    open('ws://websocket.msgboy.com:5288/ws-xmpp');
 
     
     </script>
