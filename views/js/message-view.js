@@ -13,8 +13,10 @@ var MessageView = Backbone.View.extend({
         this.model.view = this;
 
         var controls = $("<span>", {
-            class:"controls"
-        }).appendTo($(this.el));
+              class:"controls"
+          }).appendTo($(this.el)),
+          self = this;
+          
         $("<button>", {
             class:"vote down",
             html:"<img class='vote down' src='../images/minus.png' />"
@@ -36,28 +38,27 @@ var MessageView = Backbone.View.extend({
         }).html(MsgboyHelper.cleaner.html(this.model.text())).appendTo($(this.el));
         
         // Let's allow for the images to be loaded... but how long should we wait?
-        setTimeout(function() {
-            this.$(".full-content img").each(function(idx, img) {
-                var img_size = MsgboyHelper.get_original_element_size(img);
-                if(img_size.width > $(this.el).width() && img_size.height > $(this.el).height()) {
-                    //this.$("p").remove();
-                    this.$("p").addClass("darkened");
-                    var img = $("<img/>").attr("src", $(img).attr("src"));
-                    img.appendTo($(this.el));
-                    // Resize the image.
-                    if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
-                        this.$(".message > img").css("min-height", "150%");
-                        //this.$("img").css("height", "100%");
-                    } else {
-                        this.$(".message > img").css("min-width", "100%");
-                        //this.$("img").css("width", "100%");
-                    }
-        
-                    // show the source title.
-                    this.$("h1").text(this.model.attributes.source.title).appendTo($(this.el));
+        this.$(".full-content img").load(function() {
+            var img = $(this),
+                img_size = MsgboyHelper.get_original_element_size(img);
+            if(img_size.width > $(self.el).width() && img_size.height > $(self.el).height()) {
+                //this.$("p").remove();
+                self.$("p").addClass("darkened");
+                var img = $("<img/>").attr("src", $(img).attr("src"));
+                img.appendTo($(self.el));
+                // Resize the image.
+                if(img_size.width/img_size.height > $(self.el).width()/$(self.el).height()) {
+                    self.$(".message > img").css("min-height", "150%");
+                    //this.$("img").css("height", "100%");
+                } else {
+                    self.$(".message > img").css("min-width", "100%");
+                    //this.$("img").css("width", "100%");
                 }
-            }.bind(this));
-        }.bind(this), 2000); // For now, let's wait for 2 seconds. It would be much much better if we had a callback that works when images have been loaded.
+    
+                // show the source title.
+                self.$("h1").text(self.model.attributes.source.title).appendTo($(self.el));
+            }
+        });
         
         // Adding the rest of the content.
         $("<p>").html(MsgboyHelper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
