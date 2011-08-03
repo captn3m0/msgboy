@@ -82,7 +82,7 @@
 
         Msgboy.logEnabled = true;
         Msgboy.connection = new Strophe.Connection({
-            protocol: new Strophe.Websocket('ws://websocket.msgboy.com:5288/ws-xmpp')
+            protocol: new Strophe.Websocket('ws://ws1.msgboy.com:5280')
         });
         Msgboy.connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
 
