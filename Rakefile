@@ -7,6 +7,7 @@ require 'aws/s3'
 require 'selenium-webdriver'
 require 'json'
 require 'net/http'
+require 'git'
 
 s3 = JSON.load(File.read("s3.json"))
 
@@ -139,12 +140,26 @@ task :version => [:'version:current']
 namespace :version do
   desc "Bumps version for the extension, both in the updates.xml and the manifest file."
   task :bump, :version do |task, args|
-    # First, update the updates.xml
-    doc = Nokogiri::XML(File.open("updates.xml"))
-    doc.at("updatecheck")["version"] = args[:version]
-    File.open('updates.xml','w') { |f| 
-      doc.write_xml_to f
-    }
+    # Makes sure we have no pending commits, and that we're on master
+    g = Git.open (".")
+    if(g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
+      if(g.branch == "master")
+        # First, update the updates.xml
+        doc = Nokogiri::XML(File.open("updates.xml"))
+        doc.at("updatecheck")["version"] = args[:version]
+        File.open('updates.xml','w') { |f| 
+          doc.write_xml_to f
+        }
+        # Then, let's commit.
+        g.commit("version bump to #{version}", { :add_all => true})
+        # Finally, let's tag the repo
+        g.tag(version)
+      else 
+        puts "Please make sure you use the master branch to package new versions"
+      end
+    else 
+      puts "You have pending changed. Please commit them first."
+    end
   end
 
   desc "Prints the version for the extension"
