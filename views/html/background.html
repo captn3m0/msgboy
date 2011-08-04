@@ -88,12 +88,12 @@
 
         Msgboy.connection.rawInput = function (data) {
             if(Msgboy.environment() == "development") {
-                Msgboy.log('RECV: ' + data);
+                // Msgboy.log('RECV: ' + data);
             }
         };
         Msgboy.connection.rawOutput = function (data) {
             if(Msgboy.environment() == "development") {
-                Msgboy.log('SENT: ' + data);
+                // Msgboy.log('SENT: ' + data);
             }
         };
 
