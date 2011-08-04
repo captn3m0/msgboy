@@ -50,37 +50,6 @@ parseUri.options = {
   }
 };
 
-
-function truncate(text, len) {
-    if (text.length > len) {
-        text = text.substring(0, len);
-        text = text.replace(/\w+$/, '');
-        text  = text + "..."
-    }
-    return text;
-};
-
-function strip(html) {
-    var tmp = document.createElement("DIV");
-    tmp.innerHTML = html;
-    return tmp.textContent||tmp.innerText;
-};
-
-function main_link(links) {
-    if(links["alternate"]) {
-        if(links["alternate"]["text/html"]) {
-            return links["alternate"]["text/html"][0].href;
-        }
-        else {
-            // Hum, let's see what other types we have!
-            return "";
-        }
-    }
-    else {
-        return "";
-    }
-};
-
 // Hopefully this should be part of the regular Msgboy
 if(typeof Msgboy == "undefined") {
     var Msgboy = new function () {}
