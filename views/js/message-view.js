@@ -60,7 +60,6 @@ var MessageView = Backbone.View.extend({
         $("<p>").html(Msgboy.helper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
         $("<h1>").text(this.model.attributes.source.title).appendTo($(this.el));
         this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
-        //this.$("h1").css("width", "100%");
 
         // Chose a color for the box.
         var sum = 0
