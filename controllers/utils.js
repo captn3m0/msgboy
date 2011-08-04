@@ -183,149 +183,17 @@ MsgboyHelper.events.trigger = function(ev, object) {
     return customEvent;
 }
 
-// This function, which requires JQUERY cleans up the HTML that it includes
-MsgboyHelper.cleaner = {};
-MsgboyHelper.cleaner.html = function(string) {
-    // We must remove the <script> tags from the string first.
-    string = string.replace(/(<script([^>]+)>.*<\/script>)/ig, ' ');
-    var div = $("<div/>").html(string);
-    var cleaned = $(MsgboyHelper.cleaner.dom(div.get()));
-    return cleaned.html();
-}
 
-MsgboyHelper.cleaner.dom = function(element) {
-    // Do stuff here :)
-    // console.log($(element));
-    // console.log(element.nodeName);
-    $.each($(element).children(), function(index, child) {
-        if(child.nodeName == "IMG") {
-            if(MsgboyHelper.get_original_element_size.width < 2 || MsgboyHelper.get_original_element_size.height < 2) {
-                MsgboyHelper.cleaner.remove(child);
-            }
-            else {
-                var src = $(child).attr("src");
-                if(!src) {
-                    MsgboyHelper.cleaner.remove(child);
-                }
-                else if(src.match("http://rss.feedsportal.com/.*/*.gif")) {
-                    MsgboyHelper.cleaner.remove(child);
-                }
-                else if(src.match("http://da.feedsportal.com/.*/*.img")) {
-                    MsgboyHelper.cleaner.remove(child);
-                }
-                else if(src.match("http://ads.pheedo.com/img.phdo?.*")) {
-                    MsgboyHelper.cleaner.remove(child);
-                }
-                else if(src.match("http://feedads.g.doubleclick.net/~at/.*")) {
-                    MsgboyHelper.cleaner.remove(child);
-                }
-            }
-        }
-        else if(child.nodeName == "P") {
-            if(child.childNodes.length == 0) {
-                MsgboyHelper.cleaner.remove(child);
-            }
-            else {
-                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") == "") {
-                    // MsgboyHelper.cleaner.remove(child);
-                }
-            }
-        }
-        else if(child.nodeName == "NOSCRIPT") {
-            MsgboyHelper.cleaner.remove(child);
-        }
-        else if(child.nodeName == "IFRAME") {
-            MsgboyHelper.cleaner.remove(child);
-        }
-        else if(child.nodeName == "DIV") {
-            if(child.childNodes.length == 0) {
-                MsgboyHelper.cleaner.remove(child);
-            }
-            else {
-                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") == "") {
-                    MsgboyHelper.cleaner.remove(child);
-                }
-            }
-        }
-        else if(child.nodeName == "CENTER") {
-            // We need to replace this with a p. We don't want specific formats...
-            var p = document.createElement("P");
-            p.innerHTML = child.innerHTML;
-            child.parentNode.replaceChild(p,child);
-            child = p;
-        }
-        else if(child.nodeName == "FONT") {
-            // Let's replace with a span. We don't want specific formats!
-            var span = document.createElement("SPAN");
-            span.innerHTML = child.innerHTML;
-            child.parentNode.replaceChild(span,child);
-            child = span;
-        }
-        else if(child.nodeName == "BR") {
-            MsgboyHelper.cleaner.remove(child);
-        }
-        else if(child.nodeName == "OBJECT") {
-            MsgboyHelper.cleaner.remove(child);
-        }
-        else if(child.nodeName == "SCRIPT") {
-            MsgboyHelper.cleaner.remove(child);
-        }
-        else if($(child).hasClass("mf-viral") || $(child).hasClass("feedflare")) {
-            MsgboyHelper.cleaner.remove(child);
-        }
-        else {
-            // Not much
-        }
-        
-        // Remove style attributes
-        $(child).removeAttr("style");
-        $(child).removeAttr("align");
-        $(child).removeAttr("width");
-        $(child).removeAttr("height");
-        $(child).removeAttr("class");
-        $(child).removeAttr("border");
-        $(child).removeAttr("cellpadding");
-        $(child).removeAttr("cellspacing");
-        $(child).removeAttr("valign");
-        $(child).removeAttr("border");
-        $(child).removeAttr("hspace");
-        $(child).removeAttr("vspace");
-        
-        MsgboyHelper.cleaner.dom(child);
-    })
-    return element;
-}
-
-MsgboyHelper.cleaner.remove = function(element) {
-    var parent = element.parentNode;
-    if(parent) {
-        parent.removeChild(element);
-        if(parent.childNodes.length == 0) {
-            MsgboyHelper.cleaner.remove(parent);
-        }
-    }
-}
-
-MsgboyHelper.get_original_element_size = function(el) {
-    var clone = $(el).clone();
-    clone.css("display", "none");
-    clone.removeAttr('height');
-    clone.removeAttr('width');
-    clone.appendTo($("body"));
-    var sizes = {width: clone.width(), height:clone.height()}
-    clone.remove();
-    return sizes;
-}
-
-
+// Hopefully this should be part of the regular Msgboy
 if(typeof Msgboy == "undefined") {
-    // Hopefully this should be part of the regular Msgboy
     var Msgboy = new function () {}
 }
 
+// Let's define the helper module.
 Msgboy.helper = {
 };
 
+// Feediscovery module. The only API that needs to be used is the Msgboy.helper.feediscovery.get
 Msgboy.helper.feediscovery = {};
 Msgboy.helper.feediscovery.stack = [];
 Msgboy.helper.feediscovery.get = function(_url, _callback) {
@@ -354,6 +222,139 @@ Msgboy.helper.feediscovery.run = function() {
 Msgboy.helper.feediscovery.run();
 
 
+// The DOM cleaner
+// This function, which requires JQUERY cleans up the HTML that it includes
+Msgboy.helper.cleaner = {};
+Msgboy.helper.cleaner.html = function(string) {
+    // We must remove the <script> tags from the string first.
+    string = string.replace(/(<script([^>]+)>.*<\/script>)/ig, ' ');
+    var div = $("<div/>").html(string);
+    var cleaned = $(Msgboy.helper.cleaner.dom(div.get()));
+    return cleaned.html();
+}
+Msgboy.helper.cleaner.dom = function(element) {
+    // Do stuff here :)
+    // console.log($(element));
+    // console.log(element.nodeName);
+    $.each($(element).children(), function(index, child) {
+        if(child.nodeName == "IMG") {
+            if(MsgboyHelper.get_original_element_size.width < 2 || MsgboyHelper.get_original_element_size.height < 2) {
+                Msgboy.helper.cleaner.remove(child);
+            }
+            else {
+                var src = $(child).attr("src");
+                if(!src) {
+                    Msgboy.helper.cleaner.remove(child);
+                }
+                else if(src.match("http://rss.feedsportal.com/.*/*.gif")) {
+                    Msgboy.helper.cleaner.remove(child);
+                }
+                else if(src.match("http://da.feedsportal.com/.*/*.img")) {
+                    Msgboy.helper.cleaner.remove(child);
+                }
+                else if(src.match("http://ads.pheedo.com/img.phdo?.*")) {
+                    Msgboy.helper.cleaner.remove(child);
+                }
+                else if(src.match("http://feedads.g.doubleclick.net/~at/.*")) {
+                    Msgboy.helper.cleaner.remove(child);
+                }
+            }
+        }
+        else if(child.nodeName == "P") {
+            if(child.childNodes.length == 0) {
+                Msgboy.helper.cleaner.remove(child);
+            }
+            else {
+                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") == "") {
+                    // Msgboy.helper.cleaner.remove(child);
+                }
+            }
+        }
+        else if(child.nodeName == "NOSCRIPT") {
+            Msgboy.helper.cleaner.remove(child);
+        }
+        else if(child.nodeName == "IFRAME") {
+            Msgboy.helper.cleaner.remove(child);
+        }
+        else if(child.nodeName == "DIV") {
+            if(child.childNodes.length == 0) {
+                Msgboy.helper.cleaner.remove(child);
+            }
+            else {
+                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") == "") {
+                    Msgboy.helper.cleaner.remove(child);
+                }
+            }
+        }
+        else if(child.nodeName == "CENTER") {
+            // We need to replace this with a p. We don't want specific formats...
+            var p = document.createElement("P");
+            p.innerHTML = child.innerHTML;
+            child.parentNode.replaceChild(p,child);
+            child = p;
+        }
+        else if(child.nodeName == "FONT") {
+            // Let's replace with a span. We don't want specific formats!
+            var span = document.createElement("SPAN");
+            span.innerHTML = child.innerHTML;
+            child.parentNode.replaceChild(span,child);
+            child = span;
+        }
+        else if(child.nodeName == "BR") {
+            Msgboy.helper.cleaner.remove(child);
+        }
+        else if(child.nodeName == "OBJECT") {
+            Msgboy.helper.cleaner.remove(child);
+        }
+        else if(child.nodeName == "SCRIPT") {
+            Msgboy.helper.cleaner.remove(child);
+        }
+        else if($(child).hasClass("mf-viral") || $(child).hasClass("feedflare")) {
+            Msgboy.helper.cleaner.remove(child);
+        }
+        else {
+            // Not much
+        }
+        
+        // Remove style attributes
+        $(child).removeAttr("style");
+        $(child).removeAttr("align");
+        $(child).removeAttr("width");
+        $(child).removeAttr("height");
+        $(child).removeAttr("class");
+        $(child).removeAttr("border");
+        $(child).removeAttr("cellpadding");
+        $(child).removeAttr("cellspacing");
+        $(child).removeAttr("valign");
+        $(child).removeAttr("border");
+        $(child).removeAttr("hspace");
+        $(child).removeAttr("vspace");
+        
+        Msgboy.helper.cleaner.dom(child);
+    })
+    return element;
+}
+Msgboy.helper.cleaner.remove = function(element) {
+    var parent = element.parentNode;
+    if(parent) {
+        parent.removeChild(element);
+        if(parent.childNodes.length == 0) {
+            Msgboy.helper.cleaner.remove(parent);
+        }
+    }
+}
+
+
+MsgboyHelper.get_original_element_size = function(el) {
+    var clone = $(el).clone();
+    clone.css("display", "none");
+    clone.removeAttr('height');
+    clone.removeAttr('width');
+    clone.appendTo($("body"));
+    var sizes = {width: clone.width(), height:clone.height()}
+    clone.remove();
+    return sizes;
+}
 
 
 

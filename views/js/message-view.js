@@ -33,7 +33,7 @@ var MessageView = Backbone.View.extend({
         $("<div>", {
             "class": "full-content",
             "style": "display:none"
-        }).html(MsgboyHelper.cleaner.html(this.model.text())).appendTo($(this.el));
+        }).html(Msgboy.helper.cleaner.html(this.model.text())).appendTo($(this.el));
         
         // Let's allow for the images to be loaded... but how long should we wait?
         setTimeout(function() {
@@ -60,7 +60,7 @@ var MessageView = Backbone.View.extend({
         }.bind(this), 2000); // For now, let's wait for 2 seconds. It would be much much better if we had a callback that works when images have been loaded.
         
         // Adding the rest of the content.
-        $("<p>").html(MsgboyHelper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
+        $("<p>").html(Msgboy.helper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
         $("<h1/>").text(this.model.attributes.source.title).appendTo($(this.el));
         this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
         //this.$("h1").css("width", "100%");
@@ -73,7 +73,7 @@ var MessageView = Backbone.View.extend({
         $(this.el).addClass("color" + sum%7);
         // using grayscale for the time being. pending new color palette. -&yet:eric
         //$(this.el).css("background-color", "hsl(240,0%," + (sum%7)*10 + "%)");
-        //$("<p>").html(MsgboyHelper.cleaner.html(sum%7)).appendTo($(this.el));
+        //$("<p>").html(Msgboy.helper.cleaner.html(sum%7)).appendTo($(this.el));
         this.render();
     },
     
