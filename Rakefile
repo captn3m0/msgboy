@@ -150,12 +150,9 @@ namespace :version do
         File.open('updates.xml','w') { |f| 
           doc.write_xml_to f
         }
-        # manifest() # Rewrite the manifest
-        # 
-        # # Then, let's commit.
-        # g.commit("version bump to #{version}", { :add_all => true})
+        manifest() # Rewrite the manifest
         # # Finally, let's tag the repo
-        # g.add_tag(version)
+        g.add_tag(version)
       else 
         puts "Please make sure you use the master branch to package new versions"
       end
