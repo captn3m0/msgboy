@@ -95,7 +95,7 @@ var Msgboy = new function () {
             created_at: [new Date().getTime(), 0]
         }, function () {
             $("#log").text(JSON.stringify(archive.toJSON()));
-            MsgboyHelper.uploader.upload(Msgboy.inbox.attributes.jid, archive.toJSON());
+            Msgboy.helper.uploader.upload(Msgboy.inbox.attributes.jid, archive.toJSON());
         });
     };
 
