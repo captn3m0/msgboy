@@ -130,42 +130,6 @@ MsgboyHelper = function() {
     
 }
 
-MsgboyHelper.maths = function() {
-    // Maths functions
-}
-
-MsgboyHelper.maths.array = function() {
-    // Maths functions on arrays
-}
-
-MsgboyHelper.maths.array.normalized_deviation = function(array) {
-    return MsgboyHelper.maths.array.deviation(array)/MsgboyHelper.maths.array.average(array);
-}
-
-MsgboyHelper.maths.array.deviation = function(array) {
-    var avg = MsgboyHelper.maths.array.average(array); 
-    var count = array.length;
-    var i = count - 1;
-    var v = 0;
-
-    while(i >= 0) {
-        v += Math.pow((array[ i ] - avg),2);
-        i = i - 1;
-    }
-    return Math.sqrt(v/count);
-}
-
-MsgboyHelper.maths.array.average = function(array) {
-    var count = array.length;
-    var i = count - 1;
-    var sum = 0;
-    while(i >= 0){
-        sum += array[i];
-        i = i - 1;
-    }
-    return sum/count;
-}
-
 MsgboyHelper.events = function() {
     
 }
@@ -352,6 +316,37 @@ Msgboy.helper.element.original_size = function(el) {
     clone.remove();
     return sizes;
 }
+
+// Helpers for maths
+Msgboy.helper.maths = {};
+// Helpers for arrays of elements
+Msgboy.helper.maths.array = {};
+Msgboy.helper.maths.array.normalized_deviation = function(array) {
+    return Msgboy.helper.maths.array.deviation(array)/Msgboy.helper.maths.array.average(array);
+};
+Msgboy.helper.maths.array.deviation = function(array) {
+    var avg = Msgboy.helper.maths.array.average(array); 
+    var count = array.length;
+    var i = count - 1;
+    var v = 0;
+
+    while(i >= 0) {
+        v += Math.pow((array[ i ] - avg),2);
+        i = i - 1;
+    }
+    return Math.sqrt(v/count);
+};
+Msgboy.helper.maths.array.average = function(array) {
+    var count = array.length;
+    var i = count - 1;
+    var sum = 0;
+    while(i >= 0){
+        sum += array[i];
+        i = i - 1;
+    }
+    return sum/count;
+};
+
 
 
 

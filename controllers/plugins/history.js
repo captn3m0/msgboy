@@ -57,7 +57,7 @@ Plugins.register(new function () {
                 diffs[i] =  times[i+1] - times[i];
             }
             // Check the regularity and if it is regular + within a certain timeframe, then, we validate.
-            if(MsgboyHelper.maths.array.normalized_deviation(diffs) < this.deviation && (times.slice(-1)[0] -  times[0] > this.elapsed)) {
+            if(Msgboy.helper.maths.array.normalized_deviation(diffs) < this.deviation && (times.slice(-1)[0] -  times[0] > this.elapsed)) {
                 callback();
             }
         }.bind(this));        
