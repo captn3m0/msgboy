@@ -52,16 +52,13 @@ var MessageView = Backbone.View.extend({
                         this.$(".message > img").css("min-width", "100%");
                         //this.$("img").css("width", "100%");
                     }
-        
-                    // show the source title.
-                    this.$("h1").text(this.model.attributes.source.title).appendTo($(this.el));
                 }
             }.bind(this));
         }.bind(this), 2000); // For now, let's wait for 2 seconds. It would be much much better if we had a callback that works when images have been loaded.
         
         // Adding the rest of the content.
         $("<p>").html(Msgboy.helper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
-        $("<h1/>").text(this.model.attributes.source.title).appendTo($(this.el));
+        $("<h1>").text(this.model.attributes.source.title).appendTo($(this.el));
         this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
         //this.$("h1").css("width", "100%");
 
