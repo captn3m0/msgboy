@@ -60,8 +60,9 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 * Keyboard navigation for the dashboard and notifications.
 * Grouping of items in the dashboard (by source, and by topic).
 * Set git tags when bumping
-* Throttle down importing of sources, to avoid slowness at setup. Since everything happens in the background. It's ok to take more time.
-* Show messages when there was no subscription performed at all...
+* <del>Throttle down importing of sources, to avoid slowness at setup. Since everything happens in the background. It's ok to take more time</del>.
+* <del>Show messages when there was no subscription performed at all...</del>
+* Show more help in the msgboy dashboard in the form of boxes. These should indicate what needs to be done to subscribe to more content (bookmarking stuff!).
 
 ## Publishers
 
