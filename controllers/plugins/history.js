@@ -24,7 +24,7 @@ Plugins.register(new function () {
             _.each(historyItems, function (item) {
                 if (item.visitCount > this.visits_to_be_popular) {
                     this.visits_regularly(item.url, function(result) {
-                        MsgboyHelper.links_to_feeds_at_url(item.url, function (links) {
+                        Msgboy.helper.feediscovery.get(item.url, function (links) {
                             var feeds = [];
                             _.each(links, function (link) {
                                 if(seen.indexOf(link.href) == -1) {
@@ -67,7 +67,7 @@ Plugins.register(new function () {
         chrome.history.onVisited.addListener(function(historyItem) {
             if(historyItem.visitCount > this.visits_to_be_popular) {
                 this.visits_regularly(historyItem.url, function(result) {
-                    MsgboyHelper.links_to_feeds_at_url(historyItem.url, function (links) {
+                    Msgboy.helper.feediscovery.get(historyItem.url, function (links) {
                         _.each(links, function (link) {
                             callback(link); 
                         });

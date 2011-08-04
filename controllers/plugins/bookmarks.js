@@ -16,7 +16,7 @@ Plugins.register(new function () {
         chrome.bookmarks.getRecent(1000, 
         function (bookmarks) {
             _.each(bookmarks, function (bookmark) {
-                MsgboyHelper.links_to_feeds_at_url(bookmark.url, function (links) {
+                Msgboy.helper.feediscovery.get(bookmark.url, function (links) {
                     var feeds = [];
                     _.each(links, function (link) {
                         if(seen.indexOf(link.href) == -1) {
@@ -38,7 +38,7 @@ Plugins.register(new function () {
     
     this.subscribeInBackground = function(callback) {
         chrome.bookmarks.onCreated.addListener(function(id, bookmark) {
-            MsgboyHelper.links_to_feeds_at_url(bookmark.url, function (links) {
+            Msgboy.helper.feediscovery.get(bookmark.url, function (links) {
                 _.each(links, function (link) {
                     callback(link);
                 });

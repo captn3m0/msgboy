@@ -171,7 +171,6 @@ MsgboyHelper.maths.array.average = function(array) {
     return sum/count;
 }
 
-
 MsgboyHelper.events = function() {
     
 }
@@ -183,16 +182,6 @@ MsgboyHelper.events.trigger = function(ev, object) {
     document.body.dispatchEvent(customEvent);
     return customEvent;
 }
-
-MsgboyHelper.links_to_feeds_at_url = function(_url, callback) {
-    $.ajax({url: "http://feediscovery.appspot.com/",
-      data: {url: _url},
-      success: function(data) {
-          callback(JSON.parse(data));
-      }
-    });
-}
-
 
 // This function, which requires JQUERY cleans up the HTML that it includes
 MsgboyHelper.cleaner = {};
@@ -327,3 +316,44 @@ MsgboyHelper.get_original_element_size = function(el) {
     clone.remove();
     return sizes;
 }
+
+
+if(typeof Msgboy == "undefined") {
+    // Hopefully this should be part of the regular Msgboy
+    var Msgboy = new function () {}
+}
+
+Msgboy.helper = {
+};
+
+Msgboy.helper.feediscovery = {};
+Msgboy.helper.feediscovery.stack = [];
+Msgboy.helper.feediscovery.get = function(_url, _callback) {
+    Msgboy.helper.feediscovery.stack.push([_url, _callback]);
+};
+Msgboy.helper.feediscovery.run = function() {
+    var next = Msgboy.helper.feediscovery.stack.shift();
+    if(next) {
+        $.ajax({url: "http://feediscovery.appspot.com/",
+          data: {url: next[0]},
+          success: function(data) {
+              next[1](JSON.parse(data));
+              Msgboy.helper.feediscovery.run();
+          },
+          error: function() {
+              // Let's restack, in the back.
+              Msgboy.helper.feediscovery.get(next[0], next[1]);
+          }
+        });
+    } else {
+        setTimeout(function() {
+            Msgboy.helper.feediscovery.run();
+        }, 1000);
+    }
+};
+Msgboy.helper.feediscovery.run();
+
+
+
+
+
