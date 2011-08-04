@@ -155,7 +155,7 @@ namespace :version do
         # Then, let's commit.
         g.commit("version bump to #{version}", { :add_all => true})
         # Finally, let's tag the repo
-        g.tag(version)
+        g.add_tag(version)
       else 
         puts "Please make sure you use the master branch to package new versions"
       end
