@@ -38,7 +38,7 @@ var MessageView = Backbone.View.extend({
         // Let's allow for the images to be loaded... but how long should we wait?
         setTimeout(function() {
             this.$(".full-content img").each(function(idx, img) {
-                var img_size = MsgboyHelper.get_original_element_size(img);
+                var img_size = Msgboy.helper.element.original_size(img);
                 if(img_size.width > $(this.el).width() && img_size.height > $(this.el).height()) {
                     //this.$("p").remove();
                     this.$("p").addClass("darkened");

@@ -50,11 +50,6 @@ parseUri.options = {
   }
 };
 
-function getIconUrl(url, done) {
-    
-    // return "http://www.blogsmithmedia.com/www.engadget.com/media/apple-touch-icon.png";
-    done(parseUri(url).source + "/favicon.ico");
-}
 
 function truncate(text, len) {
     if (text.length > len) {
@@ -223,8 +218,8 @@ Msgboy.helper.feediscovery.run();
 
 
 // The DOM cleaner
-// This function, which requires JQUERY cleans up the HTML that it includes
 Msgboy.helper.cleaner = {};
+// This function, which requires JQUERY cleans up the HTML that it includes
 Msgboy.helper.cleaner.html = function(string) {
     // We must remove the <script> tags from the string first.
     string = string.replace(/(<script([^>]+)>.*<\/script>)/ig, ' ');
@@ -238,7 +233,7 @@ Msgboy.helper.cleaner.dom = function(element) {
     // console.log(element.nodeName);
     $.each($(element).children(), function(index, child) {
         if(child.nodeName == "IMG") {
-            if(MsgboyHelper.get_original_element_size.width < 2 || MsgboyHelper.get_original_element_size.height < 2) {
+            if(Msgboy.helper.element.original_size.width < 2 || Msgboy.helper.element.original_size.height < 2) {
                 Msgboy.helper.cleaner.remove(child);
             }
             else {
@@ -344,8 +339,10 @@ Msgboy.helper.cleaner.remove = function(element) {
     }
 }
 
-
-MsgboyHelper.get_original_element_size = function(el) {
+// Helper for the DOM elements
+Msgboy.helper.element = {};
+// Returns the original size of the element.
+Msgboy.helper.element.original_size = function(el) {
     var clone = $(el).clone();
     clone.css("display", "none");
     clone.removeAttr('height');
