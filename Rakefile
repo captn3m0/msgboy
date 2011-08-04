@@ -143,7 +143,7 @@ namespace :version do
     # Makes sure we have no pending commits, and that we're on master
     g = Git.open (".")
     if(g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
-      if(g.branch == "master")
+      if(g.branch.name == "master")
         # First, update the updates.xml
         doc = Nokogiri::XML(File.open("updates.xml"))
         doc.at("updatecheck")["version"] = args[:version]
