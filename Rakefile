@@ -152,6 +152,7 @@ namespace :version do
         }
         manifest() # Rewrite the manifest
         # # Finally, let's tag the repo
+        g.commit("Version bump #{version}", { :add_all => true,  :allow_empty => true})
         g.add_tag(version)
       else 
         puts "Please make sure you use the master branch to package new versions"
