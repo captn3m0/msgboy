@@ -81,15 +81,6 @@ function main_link(links) {
     }
 };
 
-function nameToId(name) {
-    return name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '-')
-};
-
-function fibonacci(n){
-    var o;
-    return n < 2 ? n : n % 2 ? (o = fibonacci(n = -(-n >> 1))) * o + (o = fibonacci(n - 1)) * o : (fibonacci(n >>= 1) + 2 * fibonacci(n - 1)) * fibonacci(n);
-};
-
 Log = function(level) {
 	this.level = level;
 };
@@ -126,22 +117,6 @@ Log.prototype = {
 
 logger = new Log(Log.levels.error);
 
-MsgboyHelper = function() {
-    
-}
-
-MsgboyHelper.events = function() {
-    
-}
-
-MsgboyHelper.events.trigger = function(ev, object) {
-    object = typeof(object) != 'undefined' ? object : {};
-    var customEvent = document.createEvent('Event');
-    customEvent.initEvent(ev, true, false);
-    document.body.dispatchEvent(customEvent);
-    return customEvent;
-}
-
 
 // Hopefully this should be part of the regular Msgboy
 if(typeof Msgboy == "undefined") {
@@ -149,8 +124,9 @@ if(typeof Msgboy == "undefined") {
 }
 
 // Let's define the helper module.
-Msgboy.helper = {
-};
+if(typeof Msgboy.helper == "undefined") {
+    Msgboy.helper = {};
+}
 
 // Feediscovery module. The only API that needs to be used is the Msgboy.helper.feediscovery.get
 Msgboy.helper.feediscovery = {};
@@ -346,7 +322,12 @@ Msgboy.helper.maths.array.average = function(array) {
     }
     return sum/count;
 };
-
+// Helpers for numbers
+Msgboy.helper.maths.number = {};
+Msgboy.helper.maths.number.fibonacci = function(n){
+    var o;
+    return n < 2 ? n : n % 2 ? (o = Msgboy.helper.maths.number.fibonacci(n = -(-n >> 1))) * o + (o = Msgboy.helper.maths.number.fibonacci(n - 1)) * o : (Msgboy.helper.maths.number.fibonacci(n >>= 1) + 2 * Msgboy.helper.maths.number.fibonacci(n - 1)) * Msgboy.helper.maths.number.fibonacci(n);
+};
 
 
 

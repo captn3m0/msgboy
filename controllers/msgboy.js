@@ -55,7 +55,7 @@ var Msgboy = new function () {
             msg = 'Msgboy is disconnecting.'; // We may want to time this out.
         } else if (status == Strophe.Status.DISCONNECTED) {
             if (Msgboy.autoReconnect) Msgboy.auto_reconnect();
-            msg = 'Msgboy is disconnected. Reconnect in ' + fibonacci(Msgboy.reconnectDelay) + ' seconds.';
+            msg = 'Msgboy is disconnected. Reconnect in ' + Msgboy.helper.maths.number.fibonacci(Msgboy.reconnectDelay) + ' seconds.';
         } else if (status == Strophe.Status.CONNECTED) {
             Msgboy.autoReconnect = true; // Set autoReconnect to true only when we've been connected :)
             msg = 'Msgboy is connected.';
@@ -72,7 +72,7 @@ var Msgboy = new function () {
             Msgboy.reconnectionTimeout = setTimeout(function () {
                 Msgboy.reconnectionTimeout = null;
                 Msgboy.connect();
-            }, fibonacci(Msgboy.reconnectDelay) * 1000);
+            }, Msgboy.helper.maths.number.fibonacci(Msgboy.reconnectDelay) * 1000);
         }
         else {
             // We already have a reconnection Timeout waiting to be fired.

@@ -1,8 +1,15 @@
-MsgboyHelper.uploader = {
-    
+// Hopefully this should be part of the regular Msgboy
+if(typeof Msgboy == "undefined") {
+    var Msgboy = new function () {}
 }
 
-MsgboyHelper.uploader.upload = function(client, json) {
+// Let's define the helper module.
+if(typeof Msgboy.helper == "undefined") {
+    Msgboy.helper = {};
+}
+
+Msgboy.helper.uploader = {};
+Msgboy.helper.uploader.upload = function(client, json) {
     var xhr = new XMLHttpRequest();
     var uri = "http://msgboy.com/upload/" + client;
     xhr.open("POST", uri, true);
