@@ -1,7 +1,7 @@
 /* This was shamelessly stolen from the regular Aribrake JS notifier. We have to do this because there is an issue with the scheme used to build the URL to which errors are sent. */
 var Hoptoad = {
   VERSION           : '0.1.0',
-  NOTICE_XML        : '<?xml version="1.0" encoding="UTF-8"?><notice version="2.0"><api-key></api-key><notifier><name>msgboy_hoptoad_notifier</name><version>0.1.0</version><url>http://msgboy.com</url></notifier><error><class>EXCEPTION_CLASS</class><message>EXCEPTION_MESSAGE</message><backtrace>BACKTRACE_LINES</backtrace></error><request><url>REQUEST_URL</url><component>REQUEST_COMPONENT</component><action>REQUEST_ACTION</action></request><server-environment><project-root>PROJECT_ROOT</project-root><environment-name></environment-name><app-version>APP_VERSION</app-version></server-environment></notice>',
+  NOTICE_XML        : '<?xml version="1.0" encoding="UTF-8"?><notice version="2.1"><api-key></api-key><notifier><name>msgboy_hoptoad_notifier</name><version>0.1.0</version><url>http://msgboy.com</url></notifier><error><class>EXCEPTION_CLASS</class><message>EXCEPTION_MESSAGE</message><backtrace>BACKTRACE_LINES</backtrace></error><request><url>REQUEST_URL</url><component>REQUEST_COMPONENT</component><action>REQUEST_ACTION</action></request><server-environment><project-root>PROJECT_ROOT</project-root><environment-name></environment-name><app-version>APP_VERSION</app-version></server-environment></notice>',
   ROOT              : window.location.protocol + '//' + window.location.host,
   BACKTRACE_MATCHER : /^(.*)\@(.*)\:(\d+)$/,
   backtrace_filters : [/notifier\.js/],
