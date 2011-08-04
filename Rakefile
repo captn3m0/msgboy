@@ -171,7 +171,7 @@ task :publish => [:'publish:chrome:pack', :'publish:upload']
 
 namespace :publish do
 
-  task :upload => [:'upload:crx', :'upload:updates_xml', :'airbrake:track']
+  task :upload => [:'upload:crx', :'upload:updates_xml', :'airbrake:track', :'upload:push_git']
 
   namespace :upload do
     desc "Uploads the extension"
@@ -208,6 +208,14 @@ namespace :publish do
       )
       puts "Updates.xml #{version} uploaded"
     end
+    
+    desc "Pushes to the git remotes"
+    task :push_git do
+      g = Git.open (".")
+      res = g.push("origin", "master", true)
+      puts res
+    end
+    
   end
   
   namespace :airbrake do
