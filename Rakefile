@@ -150,6 +150,8 @@ namespace :version do
         File.open('updates.xml','w') { |f| 
           doc.write_xml_to f
         }
+        manifest() # Rewrite the manifest
+        
         # Then, let's commit.
         g.commit("version bump to #{version}", { :add_all => true})
         # Finally, let's tag the repo
