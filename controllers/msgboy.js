@@ -83,7 +83,7 @@ var Msgboy = new function () {
     // It also includes a timeout that tries to reconnect when we could not connect in less than 1 minute.
     this.connect = function() {
         var password = Msgboy.inbox.attributes.password;
-        var jid = Msgboy.inbox.attributes.jid + "@msgboy.com/extension";
+        var jid = Msgboy.inbox.attributes.jid + "@msgboy.com/" + Msgboy.infos.version;
         Msgboy.connection.connect(jid, password, this.on_connect);
     };
 
