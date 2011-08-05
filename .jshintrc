@@ -1,0 +1,10 @@
+{
+  "predef": [],
+  "node" : true,
+  "asi": false,
+  "expr": true,
+  "loopfunc": true,
+  "curly": false,
+  "evil": true,
+  "eqeqeq": false
+}
