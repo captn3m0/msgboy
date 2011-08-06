@@ -1,10 +1,11 @@
-Plugins.register(new function () {
+Plugins.register(function () {
 
-    this.name = 'Posterous', this.hijacked = false;
+    this.name = 'Posterous';
+    this.hijacked = false;
 
     this.onSubscriptionPage = function () {
         return ($('meta[name=generator]').attr("content") === "Posterous" || window.location.host.match(/posterous.com$/));
-    },
+    };
 
     this.hijack = function (follow, unfollow) {
         $('#posterous_required_header').hover(function (event) {
@@ -17,7 +18,7 @@ Plugins.register(new function () {
                     }, function () {
                         // done
                     });
-                })
+                });
             }
         }, function () {});
 
@@ -31,7 +32,7 @@ Plugins.register(new function () {
                     }, function () {
                         // Done
                     });
-                })
+                });
             }
         }, function () {});
 
@@ -62,29 +63,29 @@ Plugins.register(new function () {
                 // Done
             });
         });
-    },
+    };
 
     this.isUsing = function (callback) {
         var that = this;
         $.get("http://www.posterous.com/", function (data) {
-            menu = $(data).find("#topnav")
+            menu = $(data).find("#topnav");
             if (menu.length === 0) {
                 callback(false);
             } else {
                 callback(true);
             }
         });
-    },
+    };
 
     this.listSubscriptions = function (callback) {
         this.listSubscriptionsPage(1, [], callback);
-    },
+    };
 
     this.listSubscriptionsPage = function (page, subscriptions, callback) {
         var that = this;
         $.get("http://posterous.com/users/me/subscriptions?page=" + page, function (data) {
             content = $(data);
-            links = content.find("#subscriptions td.image a")
+            links = content.find("#subscriptions td.image a");
             links.each(function (index, link) {
                 subscriptions.push({
                     url: $(link).attr("href") + "/rss.xml",
@@ -96,7 +97,7 @@ Plugins.register(new function () {
             } else {
                 callback(subscriptions);
             }
-        })
-    }
+        });
+    };
 
 });
