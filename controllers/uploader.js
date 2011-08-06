@@ -1,6 +1,6 @@
 // Hopefully this should be part of the regular Msgboy
 if(typeof Msgboy == "undefined") {
-    var Msgboy = {}
+    var Msgboy = {};
 }
 
 // Let's define the helper module.
@@ -18,6 +18,5 @@ Msgboy.helper.uploader.upload = function(client, json) {
     xhr.onreadystatechange = function() {
         // Done
     };
-    
-}
+};
 
