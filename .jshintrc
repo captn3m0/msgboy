@@ -1,5 +1,6 @@
 {
   "predef": [],
+  "bitwise": true,
   "node" : true,
   "asi": false,
   "expr": true,

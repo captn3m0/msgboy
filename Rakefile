@@ -102,6 +102,7 @@ def manifest(destination = "")
   end
 end
 
+task :lint => [:'lint:validate']
 namespace :lint do 
   desc "Validates with jshint"
   task :validate do
@@ -113,7 +114,7 @@ namespace :lint do
         if(lint != "Lint Free!\n" )
           puts "\n--\nCouldn't validate : #{f}"
           puts lint
-          raise ArgumentError, "We couldn't lint your code" 
+          # raise ArgumentError, "We couldn't lint your code" 
         end
       }
     end
