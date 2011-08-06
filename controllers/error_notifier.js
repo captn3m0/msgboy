@@ -22,11 +22,7 @@ var Hoptoad = {
 
   setEnvironment: function(value) {
     var matcher = /<environment-name>.*<\/environment-name>/;
-
-    Hoptoad.NOTICE_XML  = Hoptoad.NOTICE_XML.replace(matcher,
-                                                     '<environment-name>' +
-                                                       value +
-                                                     '</environment-name>')
+    Hoptoad.NOTICE_XML  = Hoptoad.NOTICE_XML.replace(matcher, '<environment-name>' + value + '</environment-name>');
   },
 
   setHost: function(value) {
@@ -67,13 +63,13 @@ var Hoptoad = {
     
     var backtrace = Hoptoad.generateBacktrace(error);
 
-    if (Hoptoad.trim(url) == '' && Hoptoad.trim(component) == '') {
+    if (Hoptoad.trim(url) === '' && Hoptoad.trim(component) === '') {
       xml = xml.replace(/<request>.*<\/request>/, '');
     } else {
       var data    = '';
 
       var cgi_data = error['cgi-data'] || {};
-      cgi_data["HTTP_USER_AGENT"] = navigator.userAgent;
+      cgi_data.HTTP_USER_AGENT = navigator.userAgent;
       data += '<cgi-data>';
       data += Hoptoad.generateVariables(cgi_data);
       data += '</cgi-data>';
@@ -81,12 +77,12 @@ var Hoptoad = {
       var methods = ['params', 'session'];
 
       for (var i = 0; i < 2; i++) {
-        var type = methods[i];
+        var mtype = methods[i];
 
-        if (error[type]) {
-          data += '<' + type + '>';
-          data += Hoptoad.generateVariables(error[type]);
-          data += '</' + type + '>';
+        if (error[mtype]) {
+          data += '<' + mtype + '>';
+          data += Hoptoad.generateVariables(error[mtype]);
+          data += '</' + mtype + '>';
         }
       }
 
@@ -108,7 +104,7 @@ var Hoptoad = {
 
     if (typeof error.stack != 'string') {
       try {
-        (0)();
+        (0)(); // We generate an error.
       } catch(e) {
         error.stack = e.stack;
       }
@@ -124,7 +120,7 @@ var Hoptoad = {
       if (matches && Hoptoad.validBacktraceLine(line)) {
         var file = matches[2].replace(Hoptoad.ROOT, '[PROJECT_ROOT]');
 
-        if (i == 0) {
+        if (i === 0) {
           if (matches[2].match(document.location.href)) {
             backtrace.push('<line method="" file="internal: " number=""/>');
           }
