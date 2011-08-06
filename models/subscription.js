@@ -5,7 +5,7 @@ var Subscription = Backbone.Model.extend({
     defaults: {
         subscribed_at: 0,
         unsubscribed_at:0,
-        state: "unsubscribed",
+        state: "unsubscribed"
     },
     
     initialize: function(attributes) {
@@ -27,9 +27,9 @@ var Subscription = Backbone.Model.extend({
                     error: function() {
                         // We're screwed.
                     }
-                })
+                });
             }.bind(this)
-        })
+        });
     },
     
     needs_refresh: function() {
@@ -91,7 +91,7 @@ var Subscriptions = Backbone.Collection.extend({
 
     clear: function() {
         this.fetch({
-            delete: true,
+            clear: true
         });
     }
     
