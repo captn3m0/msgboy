@@ -4,22 +4,22 @@ Uri = function() {
 
 Uri.prototype = {
     toString: function() {
-        str = ''
+        str = '';
         if(this.protocol) {
-            str += this.protocol + "://"
+            str += this.protocol + "://";
         }
         if(this.authority) {
-            str += this.authority
+            str += this.authority;
         }
         if(this.relative) {
-            str += this.relative
+            str += this.relative;
         }
-        if(this.relative == "") {
-            str += "/"
+        if(this.relative === "") {
+            str += "/";
         }
         return str;
     }
-}
+};
 
 function parseUri (str) {
   var	o   = parseUri.options,
@@ -35,7 +35,7 @@ function parseUri (str) {
   });
 
   return uri;
-};
+}
 
 parseUri.options = {
   strictMode: false,
@@ -98,7 +98,8 @@ Msgboy.helper.cleaner.html = function(string) {
     var div = $("<div/>").html(string);
     var cleaned = $(Msgboy.helper.cleaner.dom(div.get()));
     return cleaned.html();
-}
+};
+
 Msgboy.helper.cleaner.dom = function(element) {
     // Do stuff here :)
     // console.log($(element));
@@ -127,33 +128,33 @@ Msgboy.helper.cleaner.dom = function(element) {
                 }
             }
         }
-        else if(child.nodeName == "P") {
-            if(child.childNodes.length == 0) {
+        else if(child.nodeName === "P") {
+            if(child.childNodes.length === 0) {
                 Msgboy.helper.cleaner.remove(child);
             }
             else {
-                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") == "") {
+                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") === "") {
                     // Msgboy.helper.cleaner.remove(child);
                 }
             }
         }
-        else if(child.nodeName == "NOSCRIPT") {
+        else if(child.nodeName === "NOSCRIPT") {
             Msgboy.helper.cleaner.remove(child);
         }
-        else if(child.nodeName == "IFRAME") {
+        else if(child.nodeName === "IFRAME") {
             Msgboy.helper.cleaner.remove(child);
         }
-        else if(child.nodeName == "DIV") {
-            if(child.childNodes.length == 0) {
+        else if(child.nodeName === "DIV") {
+            if(child.childNodes.length === 0) {
                 Msgboy.helper.cleaner.remove(child);
             }
             else {
-                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") == "") {
+                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") === "") {
                     Msgboy.helper.cleaner.remove(child);
                 }
             }
         }
-        else if(child.nodeName == "CENTER") {
+        else if(child.nodeName === "CENTER") {
             // We need to replace this with a p. We don't want specific formats...
             var p = document.createElement("P");
             p.innerHTML = child.innerHTML;
@@ -198,18 +199,18 @@ Msgboy.helper.cleaner.dom = function(element) {
         $(child).removeAttr("vspace");
         
         Msgboy.helper.cleaner.dom(child);
-    })
+    });
     return element;
-}
+};
 Msgboy.helper.cleaner.remove = function(element) {
     var parent = element.parentNode;
     if(parent) {
         parent.removeChild(element);
-        if(parent.childNodes.length == 0) {
+        if(parent.childNodes.length === 0) {
             Msgboy.helper.cleaner.remove(parent);
         }
     }
-}
+};
 
 // Helper for the DOM elements
 Msgboy.helper.element = {};
@@ -220,10 +221,10 @@ Msgboy.helper.element.original_size = function(el) {
     clone.removeAttr('height');
     clone.removeAttr('width');
     clone.appendTo($("body"));
-    var sizes = {width: clone.width(), height:clone.height()}
+    var sizes = {width: clone.width(), height:clone.height()};
     clone.remove();
     return sizes;
-}
+};
 
 // Helpers for maths
 Msgboy.helper.maths = {};
