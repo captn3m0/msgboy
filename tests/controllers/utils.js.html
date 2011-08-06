@@ -65,7 +65,7 @@
     
     module("Feediscovery");
     asyncTest("it should extract the urls", function () {
-        Msgboy.helper.feediscovery.get("http://blog.superfeedr.com", function(result) {
+        Msgboy.helper.feediscovery.get("http://blog.superfeedr.com", function (result) {
             start();
             equal(result[0].href, "http://blog.superfeedr.com/atom.xml");
             equal(result[0].rel, "alternate");
@@ -76,10 +76,10 @@
     
     asyncTest("it should extract the urls in order", function () {
         var res = [];
-        Msgboy.helper.feediscovery.get("http://blog.superfeedr.com", function(result) {
+        Msgboy.helper.feediscovery.get("http://blog.superfeedr.com", function (result) {
             res.push(result);
         });
-        Msgboy.helper.feediscovery.get("http://blog.msgboy.com", function(result) {
+        Msgboy.helper.feediscovery.get("http://blog.msgboy.com", function (result) {
             start();
             res.push(result);
             equal(res[0][0].href, "http://blog.superfeedr.com/atom.xml");
@@ -96,12 +96,12 @@
     });
     
     module("fibonnacci");
-    test("It should return 1 for a negative number", function() {
+    test("It should return 1 for a negative number", function () {
         equals(Msgboy.helper.maths.number.fibonacci(-1), 0);
     });
 
 
-    test("It should return the fibonacci numbers", function() {
+    test("It should return the fibonacci numbers", function () {
         equals(Msgboy.helper.maths.number.fibonacci(0), 0);
         equals(Msgboy.helper.maths.number.fibonacci(1), 1);
         equals(Msgboy.helper.maths.number.fibonacci(2), 1);

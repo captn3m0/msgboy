@@ -31,8 +31,6 @@
         "/controllers/plugins/digg.js",
         "/controllers/plugins/disqus.js",
         "/controllers/plugins/generic.js",
-        "/controllers/plugins/github-repos.js",
-        "/controllers/plugins/github-users.js",
         "/controllers/plugins/google-reader.js",
         "/controllers/plugins/history.js",
         "/controllers/plugins/posterous.js",

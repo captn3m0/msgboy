@@ -4,7 +4,6 @@ var Plugins = {
     register: function (plugin) {
         this.all.push(plugin);
     },
-    
     import_subscriptions: function (callback) {
         _.each(Plugins.all, function (plugin) {
             plugin.isUsing(function (using) {

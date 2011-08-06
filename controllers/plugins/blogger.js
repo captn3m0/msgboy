@@ -3,7 +3,7 @@ Plugins.register(function () {
 
     this.name = 'Blogger'; // Name for this plugin. The user will be asked which plugins he wants to use.
     this.onSubscriptionPage = function () {
-        return (window.location.host == "www.blogger.com" && window.location.pathname == '/navbar.g');
+        return (window.location.host === "www.blogger.com" && window.location.pathname === '/navbar.g');
     };
 
     this.hijack = function (follow, unfollow) {
@@ -32,15 +32,15 @@ Plugins.register(function () {
     this.listSubscriptions = function (callback) {
         var subscriptions = [];
         $.get("http://www.blogger.com/manage-blogs-following.g", function (data) {
-             var rex = /createSubscriptionInUi\(([\s\S]*?),[\s\S]*?,([\s\S]*?),[\s\S]*?,[\s\S]*?,[\s\S]*?,[\s\S]*?,[\s\S]*?\);/g;
-             var match = rex.exec(data);
-             while (match) {
-                 subscriptions.push({
-                     url: match[2].replace(/"/g,'').trim() + "feeds/posts/default",
-                     title: match[1].replace(/"/g,'').trim()
-                 });
-                 match = rex.exec(data);
-             }
+            var rex = /createSubscriptionInUi\(([\s\S]*?),[\s\S]*?,([\s\S]*?),[\s\S]*?,[\s\S]*?,[\s\S]*?,[\s\S]*?,[\s\S]*?\);/g;
+            var match = rex.exec(data);
+            while (match) {
+                subscriptions.push({
+                    url: match[2].replace(/"/g, '').trim() + "feeds/posts/default",
+                    title: match[1].replace(/"/g, '').trim()
+                });
+                match = rex.exec(data);
+            }
             callback(subscriptions);
         }.bind(this));
     };

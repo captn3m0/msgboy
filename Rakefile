@@ -59,8 +59,6 @@ def manifest(destination = "")
           "/controllers/plugins/digg.js",
           "/controllers/plugins/disqus.js",
           "/controllers/plugins/generic.js",
-          "/controllers/plugins/github-repos.js",
-          "/controllers/plugins/github-users.js",
           "/controllers/plugins/google-reader.js",
           "/controllers/plugins/history.js",
           "/controllers/plugins/posterous.js",
@@ -111,7 +109,7 @@ namespace :lint do
       Dir.glob(File.dirname(__FILE__) + "/#{dir}/**/*.js").each { |f| 
         # And now run jshint
         lint = `jshint #{f}`
-        if(lint != "Lint Free!\n" )
+        if (lint != "Lint Free!\n" )
           puts "\n--\nCouldn't validate : #{f}"
           puts lint
           # raise ArgumentError, "We couldn't lint your code" 
@@ -163,8 +161,8 @@ namespace :version do
   task :change, :version do |task, args|
     # Makes sure we have no pending commits, and that we're on master
     g = Git.open (".")
-    if(g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
-      if(g.branch.name == "master")
+    if (g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
+      if (g.branch.name == "master")
         # First, update the updates.xml
         doc = Nokogiri::XML(File.open("updates.xml"))
         doc.at("updatecheck")["version"] = args[:version]
@@ -257,7 +255,7 @@ namespace :publish do
         :'deploy[local_username]' => local_username,
       })
       
-      if(response.is_a? Net::HTTPOK)
+      if (response.is_a? Net::HTTPOK)
         puts "Tracking changes for #{version}"
       else
         puts "Cannot track changes for #{version}"

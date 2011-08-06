@@ -39,37 +39,37 @@
     
     <script>
         module("fetch_or_create");
-        asyncTest("it should create a subscription when there is none", function() {
+        asyncTest("it should create a subscription when there is none", function () {
             var url = "http://blog.superfeedr.com/atom.xml"
             var subs = new Subscription({id: url});
             
-            var go = function() {
+            var go = function () {
                 var subscription = new Subscription({id: url});
-                subscription.fetch_or_create(function() {
+                subscription.fetch_or_create(function () {
                     start();
                     equals(subscription.id, url)
                 });
             };
             
             subs.destroy({
-                success: function() {
+                success: function () {
                     go();
                 },
-                error: function() {
+                error: function () {
                     go();
                 }
             });
         });
         
-        asyncTest("it should pull a subscription when there is one", function() {
+        asyncTest("it should pull a subscription when there is one", function () {
             var url = "http://blog.superfeedr.com/atom.xml"
             var subs = new Subscription({id: url});
             
-            var go = function() {
+            var go = function () {
                 var subscription = new Subscription({id: url});
-                subscription.fetch_or_create(function() {
+                subscription.fetch_or_create(function () {
                     var notnew = new Subscription({id: url});
-                    notnew.fetch_or_create(function() {
+                    notnew.fetch_or_create(function () {
                         start();
                         equals(notnew.id, subscription.id);
                     });
@@ -77,53 +77,53 @@
             };
             
             subs.destroy({
-                success: function() {
+                success: function () {
                     go();
                 },
-                error: function() {
+                error: function () {
                     go();
                 }
             });
         });
 
         module("needs_refresh");
-        test("new subscriptions should be refreshed", function() {
+        test("new subscriptions should be refreshed", function () {
             var subscription = new Subscription();
             ok(subscription.needs_refresh());
         });
         
-        test("it should return true if the subscription is older than 7 days and there is no unsubscription", function() {
+        test("it should return true if the subscription is older than 7 days and there is no unsubscription", function () {
             var subscription = new Subscription({subscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 *8});
             ok(subscription.needs_refresh());
         });
-        test("it should return true if the subscription is older than 7 days and there is an unsubscription older than 1 month", function() {
+        test("it should return true if the subscription is older than 7 days and there is an unsubscription older than 1 month", function () {
             var subscription = new Subscription({subscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 *8, unsubscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 * 32});
             ok(subscription.needs_refresh());
         });
-        test("it should return false if the subscription is less than 7 days", function() {
+        test("it should return false if the subscription is less than 7 days", function () {
             var subscription = new Subscription({subscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 *6});
             ok(!subscription.needs_refresh());
         });
-        test("it should return false if the unsubscription is less than 31 days", function() {
+        test("it should return false if the unsubscription is less than 31 days", function () {
             var subscription = new Subscription({unsubscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 * 30});
             ok(!subscription.needs_refresh());
         });
         
         module("set_state");
-        asyncTest("it should set the right state on the subscription", function() {
+        asyncTest("it should set the right state on the subscription", function () {
             var url = "http://blog.superfeedr.com/atom.xml"
             var subs = new Subscription({id: url});
-            subs.bind("done", function() {
+            subs.bind("done", function () {
                 start();
                 equals(subs.attributes.state, "done");
             });
             subs.set_state("done");
         });
 
-        asyncTest("it should set the the subcribed_at attribute when the state is subscribed", function() {
+        asyncTest("it should set the the subcribed_at attribute when the state is subscribed", function () {
             var url = "http://blog.superfeedr.com/atom.xml"
             var subs = new Subscription({id: url});
-            subs.bind("subscribed", function() {
+            subs.bind("subscribed", function () {
                 start();
                 equals(subs.attributes.state, "subscribed");
                 ok(subs.attributes.subscribed_at >= new Date().getTime() - 1000);
@@ -132,10 +132,10 @@
             subs.set_state("subscribed");
         });
 
-        asyncTest("it should set the the unsubcribed_at attribute when the state is unsubscribed", function() {
+        asyncTest("it should set the the unsubcribed_at attribute when the state is unsubscribed", function () {
             var url = "http://blog.superfeedr.com/atom.xml"
             var subs = new Subscription({id: url});
-            subs.bind("unsubscribed", function() {
+            subs.bind("unsubscribed", function () {
                 start();
                 equals(subs.attributes.state, "unsubscribed");
                 ok(subs.attributes.unsubscribed_at >= new Date().getTime() - 1000);
@@ -145,7 +145,7 @@
         });
         
         module("pending");
-        asyncTest("it should return only the subscriptions that are in the subscribing state", function() {
+        asyncTest("it should return only the subscriptions that are in the subscribing state", function () {
             subs = [
                 {id: "a", state: "subscribed"},
                 {id: "b", state: "subscribing"},
@@ -163,10 +163,10 @@
             var i = 0;
             
             
-            var over2 = _.after(4, function() {
+            var over2 = _.after(4, function () {
                 var subscriptions = new Subscriptions();
                 subscriptions.pending();
-                subscriptions.bind("reset", function() {
+                subscriptions.bind("reset", function () {
                     new Subscriptions().clear();
                     start();
                     ok(i == 4, "There should be 4 subscriptions with the subscribed state");
@@ -174,22 +174,22 @@
                 })
             })
             
-            var over = _.after(subs.length, function() {
+            var over = _.after(subs.length, function () {
                 var subscriptions = new Subscriptions();
                 subscriptions.pending();
-                subscriptions.bind("add", function(s) {
+                subscriptions.bind("add", function (s) {
                     i++;
                     s.set_state("subscribed");
-                    s.bind("subscribed", function() {
+                    s.bind("subscribed", function () {
                         over2();
                     });
                 })
             });
             
             
-            _.each(subs, function(s) {
+            _.each(subs, function (s) {
                 var t = new Subscription(s);
-                t.fetch_or_create(function() {
+                t.fetch_or_create(function () {
                     over();
                 })
             });

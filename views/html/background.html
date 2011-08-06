@@ -47,8 +47,6 @@
     <script src="../../controllers/plugins/bookmarks.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/digg.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/disqus.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/github-repos.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/github-users.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/google-reader.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/tumblr.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/blogger.js" type="text/javascript"></script> 
@@ -77,7 +75,7 @@
         s.parentNode.insertBefore(ga, s);
     })();
     
-    Msgboy.bind("loaded", function() {
+    Msgboy.bind("loaded", function () {
         Msgboy.inbox = new Inbox();
 
         Msgboy.logEnabled = true;
@@ -87,12 +85,12 @@
         Msgboy.connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
 
         Msgboy.connection.rawInput = function (data) {
-            if(Msgboy.environment() == "development") {
+            if (Msgboy.environment() == "development") {
                 // Msgboy.log('RECV: ' + data);
             }
         };
         Msgboy.connection.rawOutput = function (data) {
-            if(Msgboy.environment() == "development") {
+            if (Msgboy.environment() == "development") {
                 // Msgboy.log('SENT: ' + data);
             }
         };
@@ -124,8 +122,8 @@
                 selected: true
             });
             // And import all plugins.
-            Plugins.import_subscriptions(function(subs) {
-                Msgboy.subscribe(subs.url, function() {
+            Plugins.import_subscriptions(function (subs) {
+                Msgboy.subscribe(subs.url, function () {
                     // Cool. Not much to do.
                 });
             });

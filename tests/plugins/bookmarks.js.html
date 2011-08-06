@@ -35,11 +35,11 @@
     
     <script> 
         var plugin = Plugins.all[0];
-        plugin.listSubscriptions(function(subscriptions) {
+        plugin.listSubscriptions(function (subscriptions) {
             console.log(subscriptions);
         }); 
         
-        plugin.subscribeInBackground(function(message) {
+        plugin.subscribeInBackground(function (message) {
             console.log(message)
         }) 
     </script>

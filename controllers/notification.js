@@ -1,9 +1,9 @@
-if(typeof Msgboy == "undefined") {
+if (typeof Msgboy === "undefined") {
     var Msgboy = {};
 }
 
 // The Notification class
-Msgboy.Notification = function() {
+Msgboy.Notification = function () {
 };
 
 Msgboy.Notification.prototype = {
@@ -12,11 +12,10 @@ Msgboy.Notification.prototype = {
     mouse_over: false,
     current_view: null,
     period: 8000,
-    
-    rotate: function() {
-        setTimeout(function() {
-            if(!this.mouse_over) {
-                if(this.current_view) {
+    rotate: function () {
+        setTimeout(function () {
+            if (!this.mouse_over) {
+                if (this.current_view) {
                     this.current_view.remove();
                 }
                 this.show_next_message();
@@ -24,8 +23,7 @@ Msgboy.Notification.prototype = {
             this.rotate();
         }.bind(this), this.period);
     },
-    
-    show_next_message: function() {
+    show_next_message: function () {
         var message = this.messages.pop();
         if (!message) {
             chrome.extension.sendRequest({
@@ -40,13 +38,13 @@ Msgboy.Notification.prototype = {
                 model: message
             });
 
-            message.bind("up-ed", function() {
+            message.bind("up-ed", function () {
                 this.current_view.remove();
                 this.go_to_message(message);
                 this.show_next_message();
             }.bind(this));
 
-            message.bind("down-ed", function() {
+            message.bind("down-ed", function () {
                 this.current_view.remove();
                 this.show_next_message();
             }.bind(this));
@@ -63,8 +61,7 @@ Msgboy.Notification.prototype = {
             this.current_view.render(); // builds the HTML
         }
     },
-    
-    go_to_message: function(model) {
+    go_to_message: function (model) {
         chrome.extension.sendRequest({
             signature: "tab",
             params: {

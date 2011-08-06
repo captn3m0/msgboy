@@ -1,87 +1,88 @@
-Uri = function() {
+Uri = function () {
     // and URI object
 };
 
 Uri.prototype = {
-    toString: function() {
+    toString: function () {
         str = '';
-        if(this.protocol) {
+        if (this.protocol) {
             str += this.protocol + "://";
         }
-        if(this.authority) {
+        if (this.authority) {
             str += this.authority;
         }
-        if(this.relative) {
+        if (this.relative) {
             str += this.relative;
         }
-        if(this.relative === "") {
+        if (this.relative === "") {
             str += "/";
         }
         return str;
     }
 };
 
-function parseUri (str) {
-  var	o   = parseUri.options,
-  m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
-  uri = new Uri(),
-  i   = 14;
-
-  while (i--) uri[o.key[i]] = m[i] || "";
-
-  uri[o.q.name] = {};
-  uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
-    if ($1) uri[o.q.name][$1] = $2;
-  });
-
-  return uri;
+function parseUri(str) {
+    var o = parseUri.options,
+    m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+    uri = new Uri(),
+    i   = 14;
+    while (i--) {
+        uri[o.key[i]] = m[i] || "";
+    }
+    uri[o.q.name] = {};
+    uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+        if ($1) {
+            uri[o.q.name][$1] = $2;
+        }
+    });
+    return uri;
 }
 
 parseUri.options = {
-  strictMode: false,
-  key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
-  q:   {
-    name:   "queryKey",
-    parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-  },
-  parser: {
-    strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-    loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-  }
+    strictMode: false,
+    key: ["source", "protocol", "authority", "userInfo", "user", "password", "host", "port", "relative", "path", "directory", "file", "query", "anchor"],
+    q:   {
+        name:   "queryKey",
+        parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+    },
+    parser: {
+        strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+        loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+    }
 };
 
 // Hopefully this should be part of the regular Msgboy
-if(typeof Msgboy == "undefined") {
+if (typeof Msgboy === "undefined") {
     var Msgboy = {};
 }
 
 // Let's define the helper module.
-if(typeof Msgboy.helper == "undefined") {
+if (typeof Msgboy.helper === "undefined") {
     Msgboy.helper = {};
 }
 
 // Feediscovery module. The only API that needs to be used is the Msgboy.helper.feediscovery.get
 Msgboy.helper.feediscovery = {};
 Msgboy.helper.feediscovery.stack = [];
-Msgboy.helper.feediscovery.get = function(_url, _callback) {
+Msgboy.helper.feediscovery.get = function (_url, _callback) {
     Msgboy.helper.feediscovery.stack.push([_url, _callback]);
 };
-Msgboy.helper.feediscovery.run = function() {
+Msgboy.helper.feediscovery.run = function () {
     var next = Msgboy.helper.feediscovery.stack.shift();
-    if(next) {
+    if (next) {
         $.ajax({url: "http://feediscovery.appspot.com/",
-          data: {url: next[0]},
-          success: function(data) {
-              next[1](JSON.parse(data));
-              Msgboy.helper.feediscovery.run();
-          },
-          error: function() {
-              // Let's restack, in the back.
-              Msgboy.helper.feediscovery.get(next[0], next[1]);
-          }
+            data: {url: next[0]},
+            success: function (data) {
+                next[1](JSON.parse(data));
+                Msgboy.helper.feediscovery.run();
+            },
+            error: function () {
+                // Let's restack, in the back.
+                Msgboy.helper.feediscovery.get(next[0], next[1]);
+            }
         });
     } else {
-        setTimeout(function() {
+        setTimeout(function () {
             Msgboy.helper.feediscovery.run();
         }, 1000);
     }
@@ -92,7 +93,7 @@ Msgboy.helper.feediscovery.run();
 // The DOM cleaner
 Msgboy.helper.cleaner = {};
 // This function, which requires JQUERY cleans up the HTML that it includes
-Msgboy.helper.cleaner.html = function(string) {
+Msgboy.helper.cleaner.html = function (string) {
     // We must remove the <script> tags from the string first.
     string = string.replace(/(<script([^>]+)>.*<\/script>)/ig, ' ');
     var div = $("<div/>").html(string);
@@ -100,90 +101,81 @@ Msgboy.helper.cleaner.html = function(string) {
     return cleaned.html();
 };
 
-Msgboy.helper.cleaner.dom = function(element) {
+Msgboy.helper.cleaner.dom = function (element) {
     // Do stuff here :)
     // console.log($(element));
     // console.log(element.nodeName);
-    $.each($(element).children(), function(index, child) {
-        if(child.nodeName == "IMG") {
-            if(Msgboy.helper.element.original_size.width < 2 || Msgboy.helper.element.original_size.height < 2) {
+    $.each($(element).children(), function (index, child) {
+        if (child.nodeName === "IMG") {
+            if (Msgboy.helper.element.original_size.width < 2 || Msgboy.helper.element.original_size.height < 2) {
                 Msgboy.helper.cleaner.remove(child);
             }
             else {
                 var src = $(child).attr("src");
-                if(!src) {
+                if (!src) {
                     Msgboy.helper.cleaner.remove(child);
                 }
-                else if(src.match("http://rss.feedsportal.com/.*/*.gif")) {
+                else if (src.match("http://rss.feedsportal.com/.*/*.gif")) {
                     Msgboy.helper.cleaner.remove(child);
                 }
-                else if(src.match("http://da.feedsportal.com/.*/*.img")) {
+                else if (src.match("http://da.feedsportal.com/.*/*.img")) {
                     Msgboy.helper.cleaner.remove(child);
                 }
-                else if(src.match("http://ads.pheedo.com/img.phdo?.*")) {
+                else if (src.match("http://ads.pheedo.com/img.phdo?.*")) {
                     Msgboy.helper.cleaner.remove(child);
                 }
-                else if(src.match("http://feedads.g.doubleclick.net/~at/.*")) {
+                else if (src.match("http://feedads.g.doubleclick.net/~at/.*")) {
                     Msgboy.helper.cleaner.remove(child);
                 }
             }
         }
-        else if(child.nodeName === "P") {
-            if(child.childNodes.length === 0) {
+        else if (child.nodeName === "P") {
+            if (child.childNodes.length === 0) {
+                Msgboy.helper.cleaner.remove(child);
+            }
+        }
+        else if (child.nodeName === "NOSCRIPT") {
+            Msgboy.helper.cleaner.remove(child);
+        }
+        else if (child.nodeName === "IFRAME") {
+            Msgboy.helper.cleaner.remove(child);
+        }
+        else if (child.nodeName === "DIV") {
+            if (child.childNodes.length === 0) {
                 Msgboy.helper.cleaner.remove(child);
             }
             else {
-                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") === "") {
-                    // Msgboy.helper.cleaner.remove(child);
-                }
-            }
-        }
-        else if(child.nodeName === "NOSCRIPT") {
-            Msgboy.helper.cleaner.remove(child);
-        }
-        else if(child.nodeName === "IFRAME") {
-            Msgboy.helper.cleaner.remove(child);
-        }
-        else if(child.nodeName === "DIV") {
-            if(child.childNodes.length === 0) {
-                Msgboy.helper.cleaner.remove(child);
-            }
-            else {
-                if(child.innerHTML.replace(/(<([^>]+)>)/ig,"").replace(/[^a-zA-Z 0-9 ]+/g,"").replace(/^\s+|\s+$/g,"") === "") {
+                if (child.innerHTML.replace(/(<([^>]+)>)/ig, "").replace(/[^a-zA-Z 0-9 ]+/g, "").replace(/^\s+|\s+$/g, "") === "") {
                     Msgboy.helper.cleaner.remove(child);
                 }
             }
         }
-        else if(child.nodeName === "CENTER") {
+        else if (child.nodeName === "CENTER") {
             // We need to replace this with a p. We don't want specific formats...
             var p = document.createElement("P");
             p.innerHTML = child.innerHTML;
-            child.parentNode.replaceChild(p,child);
+            child.parentNode.replaceChild(p, child);
             child = p;
         }
-        else if(child.nodeName == "FONT") {
+        else if (child.nodeName === "FONT") {
             // Let's replace with a span. We don't want specific formats!
             var span = document.createElement("SPAN");
             span.innerHTML = child.innerHTML;
-            child.parentNode.replaceChild(span,child);
+            child.parentNode.replaceChild(span, child);
             child = span;
         }
-        else if(child.nodeName == "BR") {
+        else if (child.nodeName === "BR") {
             Msgboy.helper.cleaner.remove(child);
         }
-        else if(child.nodeName == "OBJECT") {
+        else if (child.nodeName === "OBJECT") {
             Msgboy.helper.cleaner.remove(child);
         }
-        else if(child.nodeName == "SCRIPT") {
+        else if (child.nodeName === "SCRIPT") {
             Msgboy.helper.cleaner.remove(child);
         }
-        else if($(child).hasClass("mf-viral") || $(child).hasClass("feedflare")) {
+        else if ($(child).hasClass("mf-viral") || $(child).hasClass("feedflare")) {
             Msgboy.helper.cleaner.remove(child);
         }
-        else {
-            // Not much
-        }
-        
         // Remove style attributes
         $(child).removeAttr("style");
         $(child).removeAttr("align");
@@ -197,16 +189,15 @@ Msgboy.helper.cleaner.dom = function(element) {
         $(child).removeAttr("border");
         $(child).removeAttr("hspace");
         $(child).removeAttr("vspace");
-        
         Msgboy.helper.cleaner.dom(child);
     });
     return element;
 };
-Msgboy.helper.cleaner.remove = function(element) {
+Msgboy.helper.cleaner.remove = function (element) {
     var parent = element.parentNode;
-    if(parent) {
+    if (parent) {
         parent.removeChild(element);
-        if(parent.childNodes.length === 0) {
+        if (parent.childNodes.length === 0) {
             Msgboy.helper.cleaner.remove(parent);
         }
     }
@@ -215,13 +206,13 @@ Msgboy.helper.cleaner.remove = function(element) {
 // Helper for the DOM elements
 Msgboy.helper.element = {};
 // Returns the original size of the element.
-Msgboy.helper.element.original_size = function(el) {
+Msgboy.helper.element.original_size = function (el) {
     var clone = $(el).clone();
     clone.css("display", "none");
     clone.removeAttr('height');
     clone.removeAttr('width');
     clone.appendTo($("body"));
-    var sizes = {width: clone.width(), height:clone.height()};
+    var sizes = {width: clone.width(), height: clone.height()};
     clone.remove();
     return sizes;
 };
@@ -230,39 +221,38 @@ Msgboy.helper.element.original_size = function(el) {
 Msgboy.helper.maths = {};
 // Helpers for arrays of elements
 Msgboy.helper.maths.array = {};
-Msgboy.helper.maths.array.normalized_deviation = function(array) {
-    return Msgboy.helper.maths.array.deviation(array)/Msgboy.helper.maths.array.average(array);
+Msgboy.helper.maths.array.normalized_deviation = function (array) {
+    return Msgboy.helper.maths.array.deviation(array) / Msgboy.helper.maths.array.average(array);
 };
-Msgboy.helper.maths.array.deviation = function(array) {
-    var avg = Msgboy.helper.maths.array.average(array); 
+Msgboy.helper.maths.array.deviation = function (array) {
+    var avg = Msgboy.helper.maths.array.average(array);
     var count = array.length;
     var i = count - 1;
     var v = 0;
-
-    while(i >= 0) {
-        v += Math.pow((array[ i ] - avg),2);
+    while (i >= 0) {
+        v += Math.pow((array[i] - avg), 2);
         i = i - 1;
     }
-    return Math.sqrt(v/count);
+    return Math.sqrt(v / count);
 };
-Msgboy.helper.maths.array.average = function(array) {
+Msgboy.helper.maths.array.average = function (array) {
     var count = array.length;
     var i = count - 1;
     var sum = 0;
-    while(i >= 0){
+    while (i >= 0) {
         sum += array[i];
         i = i - 1;
     }
-    return sum/count;
+    return sum / count;
 };
 // Helpers for numbers
 Msgboy.helper.maths.number = {};
-Msgboy.helper.maths.number.fibonacci = function(n){
+Msgboy.helper.maths.number.fibonacci = function (n) {
     var o;
-    if(n < 0) {
+    if (n < 0) {
         return 0;
     }
-    else if(n < 2) {
+    else if (n < 2) {
         return n;
     }
     else {

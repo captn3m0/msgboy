@@ -48,7 +48,7 @@
             var inbox = new Inbox({
                 id: 1
             });
-            inbox.create_credentials(function() {
+            inbox.create_credentials(function () {
                 start();
                 console.log(inbox.attributes)
                 ok(inbox.attributes.jid != null, "there should be a jid");

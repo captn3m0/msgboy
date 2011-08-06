@@ -39,16 +39,15 @@
     <div id="log" style=""></div>
     
     <script>
-    Msgboy.bind("loaded", function() {
+    Msgboy.bind("loaded", function () {
         Msgboy.inbox = new Inbox();
-        Msgboy.inbox.bind("change", function() {
+        Msgboy.inbox.bind("change", function () {
             
             var error = {
                 message : "There was an error",
                 stack   : '()@' + "file.js" + ':' + 1337
             }
             var xml = Hoptoad.generateXML(error);
-            console.log(xml);
             
         });
         Msgboy.inbox.fetch();

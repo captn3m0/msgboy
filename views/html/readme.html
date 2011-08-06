@@ -32,7 +32,7 @@
     <img id="signal" src="../images/mb-signal.png" />
     
     <script>
-    $.get("../../README.markdown", function(data) {
+    $.get("../../README.markdown", function (data) {
         converter = new Showdown.converter();
         $("#readme").html(converter.makeHtml(data));
         

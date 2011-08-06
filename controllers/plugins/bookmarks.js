@@ -13,18 +13,18 @@ Plugins.register(function () {
 
     this.listSubscriptions = function (callback) {
         var seen = [];
-        chrome.bookmarks.getRecent(1000, 
-            function(bookmarks) {
+        chrome.bookmarks.getRecent(1000,
+            function (bookmarks) {
                 _.each(bookmarks, function (bookmark) {
                     Msgboy.helper.feediscovery.get(bookmark.url, function (links) {
                         var feeds = [];
                         _.each(links, function (link) {
-                            if(seen.indexOf(link.href) == -1) {
+                            if (seen.indexOf(link.href) === -1) {
                                 feeds.push({title: link.title, url: link.href});
                                 seen.push(link.href);
                             }
                         });
-                        if(feeds.length > 0) {
+                        if (feeds.length > 0) {
                             callback(feeds);
                         }
                     });
@@ -32,13 +32,11 @@ Plugins.register(function () {
             }.bind(this)
         );
     };
-    
     this.isUsing = function (callback) {
         callback(true); // By default we will show.
     };
-    
-    this.subscribeInBackground = function(callback) {
-        chrome.bookmarks.onCreated.addListener(function(id, bookmark) {
+    this.subscribeInBackground = function (callback) {
+        chrome.bookmarks.onCreated.addListener(function (id, bookmark) {
             Msgboy.helper.feediscovery.get(bookmark.url, function (links) {
                 _.each(links, function (link) {
                     callback(link);

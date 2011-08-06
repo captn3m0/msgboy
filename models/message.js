@@ -1,7 +1,6 @@
 var Message = Backbone.Model.extend({
     storeName: "messages",
     database: msgboyDatabase,
-
     defaults: {
         "title":        null,
         "atom_id":      null,
@@ -15,57 +14,51 @@ var Message = Backbone.Model.extend({
         "source":       {},
         "host":         "",
         "alternate":    "",
-        "alternate_new":"",
+        "alternate_new": "",
         "state":        "new",
         "feed":         "",
         "relevance":    0.3
     },
-    
     /* Initializes the messages */
-    initialize: function(attributes) {
-        if(attributes.source && attributes.source.links && attributes.source.links.alternate && attributes.source.links.alternate["text/html"] && attributes.source.links.alternate["text/html"][0]) {
+    initialize: function (attributes) {
+        if (attributes.source && attributes.source.links && attributes.source.links.alternate && attributes.source.links.alternate["text/html"] && attributes.source.links.alternate["text/html"][0]) {
             attributes.alternate = attributes.source.links.alternate["text/html"][0].href;
             attributes.host = parseUri(attributes.source.links.alternate["text/html"][0].href).host;
             attributes.alternate_new = parseUri(attributes.alternate).toString();
         }
         this.attributes = attributes;
-        if(this.attributes.unread_at === 0) {
+        if (this.attributes.unread_at === 0) {
             this.attributes.unread_at = new Date().getTime();
         }
-        if(this.attributes.created_at === 0) {
+        if (this.attributes.created_at === 0) {
             this.attributes.created_at = new Date().getTime();
         }
         return this;
     },
-    
-    /* 
-    Returns the state of the message
-    Valid states include : 
-        - new 
-        - up-ed 
-        - down-ed 
-        - skipped */
-    state: function() {
+    /* Returns the state of the message
+    Valid states include :
+    - new
+    - up-ed
+    - down-ed
+    - skipped */
+    state: function () {
         return this.attributes.state;
     },
-    
     /* Votes the message up */
-    vote_up: function(callback) {
+    vote_up: function (callback) {
         this.set_state("up-ed", callback);
     },
-
     /* Votes the message down */
-    vote_down: function(callback) {
-        this.set_state("down-ed", function(result) {
+    vote_down: function (callback) {
+        this.set_state("down-ed", function (result) {
             // We need to unsubscribe the feed if possible, but only if there is enough negative votes.
             var brothers = new Archive();
-            brothers.for_feed(this.attributes.feed, function() {
-                var states = relevanceMath.percentages(brothers.pluck("state"), ["new", "up-ed", "down-ed", "skipped"], function(member, index) {
+            brothers.for_feed(this.attributes.feed, function () {
+                var states = relevanceMath.percentages(brothers.pluck("state"), ["new", "up-ed", "down-ed", "skipped"], function (member, index) {
                     return 1;
                 });
                 var counts = relevanceMath.counts(brothers.pluck("state"));
-                
-                if(brothers.length > 3 && (!states["up-ed"] || states["up-ed"] < 0.05) && (states["down-ed"] > 0.5 || counts["down-ed"] > 10)) {
+                if (brothers.length > 3 && (!states["up-ed"] || states["up-ed"] < 0.05) && (states["down-ed"] > 0.5 || counts["down-ed"] > 10)) {
                     callback({unsubscribe: true});
                 }
                 else {
@@ -74,64 +67,55 @@ var Message = Backbone.Model.extend({
             });
         }.bind(this));
     },
-
     /* Skip the message */
-    skip: function(callback) {
+    skip: function (callback) {
         this.set_state("skipped", callback);
     },
-    
     /* Sets the state for the message */
-    set_state: function(_state, callback) {
+    set_state: function (_state, callback) {
         this.save({
             state: _state
         }, {
-            success: function() {
-                if(typeof(callback) != "undefined" && callback) {
+            success: function () {
+                if (typeof(callback) !== "undefined" && callback) {
                     callback(true);
                 }
                 this.trigger(_state, this);
-            }.bind(this), 
-            error: function() {
+            }.bind(this),
+            error: function () {
                 console.log("We couldn't save " + this.id);
-                if(typeof(callback) != "undefined" && callback) {
+                if (typeof(callback) !== "undefined" && callback) {
                     callback(false);
                 }
             }.bind(this)
         });
     },
-        
     /* This calculates the relevance for this message and sets it. */
     /* It just calculates the relevance and does not save it. */
-    calculate_relevance: function(callback) {
+    calculate_relevance: function (callback) {
         // See Section 6.3 in Product Requirement Document.
         // We need to get all the messages from this source.
         // Count how many have been voted up, how many have been voted down.
         // First, let's pull all the messages from the same source.
         var brothers = new Archive();
-        brothers.comparator = function(brother) {
+        brothers.comparator = function (brother) {
             return brother.attributes.created_at;
         };
-        brothers.for_feed(this.attributes.feed, function() {
+        brothers.for_feed(this.attributes.feed, function () {
             var relevance = 0.7; // This is the default relevance
-            if(brothers.length === 0) {
-                // We can't compute relevance
-            } else {
+            if (brothers.length > 0) {
                 // So, now, we need to check the ratio of up-ed and down-ed. [TODO : limit the subset?].
                 relevance =  this.relevance_based_on_brothers(brothers.pluck("state"));
             }
-
             // Keywords [TODO]
-            
             // Check when the feed was susbcribed. Add bonus if it's recent! [TODO].
-            
-            if(typeof(callback) != "undefined" && callback) {
+            if (typeof(callback) !== "undefined" && callback) {
                 callback(relevance);
-            } 
+            }
         }.bind(this));
     },
-    
-    relevance_based_on_brothers: function(states) {
-        if(states.length === 0) {
+    relevance_based_on_brothers: function (states) {
+        if (states.length === 0) {
             return 1;
         }
         else {
@@ -145,20 +129,17 @@ var Message = Backbone.Model.extend({
             });
         }
     },
-    
     /* Returns the number of links*/
-    number_of_links: function() {
+    number_of_links: function () {
         return 5;
     },
-    
     /*return the links to the media included in this doc*/
-    media_included: function() {
+    media_included: function () {
         return [];
     },
-    
-    main_link: function() {
-        if(this.attributes.links.alternate) {
-            if(this.attributes.links.alternate["text/html"]) {
+    main_link: function () {
+        if (this.attributes.links.alternate) {
+            if (this.attributes.links.alternate["text/html"]) {
                 return this.attributes.links.alternate["text/html"][0].href;
             }
             else {
@@ -170,86 +151,79 @@ var Message = Backbone.Model.extend({
             return "";
         }
     },
-    
-    source_link: function() {
-        if(this.attributes.source && this.attributes.source.links && this.attributes.source.links.alternate && this.attributes.source.links.alternate["text/html"] && this.attributes.source.links.alternate["text/html"][0]) {
+    source_link: function () {
+        if (this.attributes.source && this.attributes.source.links && this.attributes.source.links.alternate && this.attributes.source.links.alternate["text/html"] && this.attributes.source.links.alternate["text/html"][0]) {
             return this.attributes.source.links.alternate["text/html"][0].href;
         }
         else {
             return "";
         }
     },
-    
     // This returns the longest text!
-    text: function() {
-        if(this.attributes.content) {
-            if(this.attributes.summary && this.attributes.summary.length > this.attributes.content.length) {
+    text: function () {
+        if (this.attributes.content) {
+            if (this.attributes.summary && this.attributes.summary.length > this.attributes.content.length) {
                 return this.attributes.summary;
             }
             else {
                 return this.attributes.content;
             }
-        } 
-        else if(this.attributes.summary) {
+        }
+        else if (this.attributes.summary) {
             return this.attributes.summary;
         }
         else {
             return "...";
         }
     }
-    
-
 });
-
-
 var relevanceMath = {
-
-    counts: function(array, defaults, weight) {
+    counts: function (array, defaults, weight) {
         var counts = {}, sum = 0;
-        _.each(array, function(element, index, list) {
-            if(!counts[element]) {
+        _.each(array, function (element, index, list) {
+            if (!counts[element]) {
                 counts[element] = 0;
             }
-            if(typeof(weight) != "undefined") {
+            if (typeof(weight) !== "undefined") {
                 counts[element] += weight(element, index);
             }
             else {
                 counts[element] += 1;
             }
         });
-        sum = _.reduce(counts, function(memo, num){ return memo + num; }, 0);
+        sum = _.reduce(counts, function (memo, num) {
+            return memo + num;
+        }, 0);
         return counts;
     },
-
     // Returns the percentages of each element in an array.
-    percentages: function(array) {
+    percentages: function (array) {
         var counts = {}, percentages = {}, sum = 0;
-        _.each(array, function(element, index, list) {
-            if(!counts[element]) {
+        _.each(array, function (element, index, list) {
+            if (!counts[element]) {
                 counts[element] = 0;
             }
             counts[element] += 1;
         });
-        sum = _.reduce(counts, function(memo, num){ return memo + num; }, 0);
-        
-        _.each(_.keys(counts), function(key) {
-            percentages[key] = counts[key]/sum;
+        sum = _.reduce(counts, function (memo, num) {
+            return memo + num;
+        }, 0);
+        _.each(_.keys(counts), function (key) {
+            percentages[key] = counts[key] / sum;
         });
-        
         return percentages;
     },
-    
     // Returns the average based on the weights and the percentages.
-    average: function(percentages, weights) {
+    average: function (percentages, weights) {
         var sum = 0, norm = 0;
-        _.each(_.keys(percentages), function(key) {
+        _.each(_.keys(percentages), function (key) {
             sum += percentages[key] * weights[key];
-            norm+= percentages[key];
+            norm += percentages[key];
         });
-        if(norm === 0) {
+        if (norm === 0) {
             return sum;
         } else {
-            return sum/norm;
+            return sum / norm;
         }
         return sum;
     }

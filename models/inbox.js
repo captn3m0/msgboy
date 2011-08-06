@@ -7,7 +7,6 @@ var Inbox = Backbone.Model.extend({
             relevance: 0.5
         }
     },
-     
     initialize: function () {
     },
 
@@ -24,7 +23,7 @@ var Inbox = Backbone.Model.extend({
 
         $.post(base + "/users.json", params, function (data) {
             var success = true;
-            if(!data.user) {
+            if (!data.user) {
                 success = false;
             }
             else {
@@ -44,7 +43,6 @@ var Inbox = Backbone.Model.extend({
                         callback();
                     },
                     error: function () {
-                        // WTF? This is bad. 
                         Msgboy.log("Failed to create inbox for " + data.user.username);
                     }
                 });

@@ -1,28 +1,28 @@
-$(document).bind('subscribe', function(element, object) {
+$(document).bind('subscribe', function (element, object) {
     Msgboy.log("Request : subscribe " + object.request.params.url);
-    Msgboy.subscribe(object.request.params.url, function(result) {
+    Msgboy.subscribe(object.request.params.url, function (result) {
         // Nothing to do.
     });
 });
 
-$(document).bind('unsubscribe', function(element, object) {
+$(document).bind('unsubscribe', function (element, object) {
     Msgboy.log("Request : unsubscribe " + object.request.params);
-    Msgboy.unsubscribe(object.request.params, function(result) {
+    Msgboy.unsubscribe(object.request.params, function (result) {
         // Nothing to do.
     });
 });
 
-$(document).bind('notify', function(element, object) {
+$(document).bind('notify', function (element, object) {
     Msgboy.log("Request : notify", object.request.params);
     Msgboy.notify(object.request.params);
     // Nothing to do.
 });
 
-$(document).bind('notification_ready', function(element, object) {
+$(document).bind('notification_ready', function (element, object) {
     Msgboy.log("Request : notification_ready", {});
     Msgboy.currentNotification.ready = true;
     // We should then start sending all notifications.
-    while(Msgboy.messageStack.length > 0) {
+    while (Msgboy.messageStack.length > 0) {
         chrome.extension.sendRequest({
             signature: "notify",
             params: Msgboy.messageStack.pop()
@@ -32,15 +32,15 @@ $(document).bind('notification_ready', function(element, object) {
     }
 });
 
-$(document).bind('tab', function(element, object) {
+$(document).bind('tab', function (element, object) {
     Msgboy.log("Request : tab " + object.request.params.url);
     var active_window = null;
-    chrome.windows.getAll({}, function(windows) {
-        windows = _.select(windows, function(win) {
+    chrome.windows.getAll({}, function (windows) {
+        windows = _.select(windows, function (win) {
             return win.type === "normal" && win.focused;
         }, this);
         // If no window is focused and "normal"
-        if(windows.length === 0) {
+        if (windows.length === 0) {
             window.open(object.request.params.url); // Can't use Chrome's API as it's buggy :(
         }
         else {
@@ -52,7 +52,7 @@ $(document).bind('tab', function(element, object) {
     });
 });
 
-$(document).bind('close', function(element, object) {
+$(document).bind('close', function (element, object) {
     Msgboy.log("Request : close ");
     Msgboy.currentNotification = null;
     object.sendResponse({
@@ -61,7 +61,7 @@ $(document).bind('close', function(element, object) {
 });
 
 // When reloading the inbox is needed (after a change in settings eg)
-$(document).bind('reload', function(element, object) {
+$(document).bind('reload', function (element, object) {
     Msgboy.log("Request : reload ");
     Msgboy.inbox.fetch();
 });
