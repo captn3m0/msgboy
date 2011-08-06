@@ -2,6 +2,7 @@ if(typeof Msgboy == "undefined") {
     var Msgboy = {};
 }
 
+// The Notification class
 Msgboy.Notification = function() {
 };
 
@@ -10,6 +11,7 @@ Msgboy.Notification.prototype = {
     started: false,
     mouse_over: false,
     current_view: null,
+    period: 8000,
     
     rotate: function() {
         setTimeout(function() {
@@ -20,7 +22,7 @@ Msgboy.Notification.prototype = {
                 this.show_next_message();
             }
             this.rotate();
-        }.bind(this), 8000);
+        }.bind(this), this.period);
     },
     
     show_next_message: function() {
