@@ -1,10 +1,17 @@
-var MsgboyNotification = function() {
-    this.messages = [],
-    this.started = false,
-    this.mouse_over = false
-    this.current_view = null
+if(typeof Msgboy == "undefined") {
+    var Msgboy = {};
+}
+
+Msgboy.Notification = function() {
+};
+
+Msgboy.Notification.prototype = {
+    messages: [],
+    started: false,
+    mouse_over: false,
+    current_view: null,
     
-    this.rotate = function() {
+    rotate: function() {
         setTimeout(function() {
             if(!this.mouse_over) {
                 if(this.current_view) {
@@ -16,7 +23,7 @@ var MsgboyNotification = function() {
         }.bind(this), 8000);
     },
     
-    this.show_next_message= function() {
+    show_next_message: function() {
         var message = this.messages.pop();
         if (!message) {
             chrome.extension.sendRequest({
@@ -55,7 +62,7 @@ var MsgboyNotification = function() {
         }
     },
     
-    this.go_to_message = function(model) {
+    go_to_message: function(model) {
         chrome.extension.sendRequest({
             signature: "tab",
             params: {
@@ -63,6 +70,5 @@ var MsgboyNotification = function() {
                 selected: true
             }
         });
-    };
-    
+    }
 };
