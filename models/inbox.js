@@ -18,18 +18,18 @@ var Inbox = Backbone.Model.extend({
 
         var params = {
             'user[username]': (new Date()).getTime().toString() + Math.floor((Math.random() * Math.pow(10, 3))).toString(),
-            'user[password]': Math.floor((Math.random() * Math.pow(10, 16))).toString(),
+            'user[password]': Math.floor((Math.random() * Math.pow(10, 16))).toString()
         };
         params['user[password_confirmation]'] = params['user[password]'];
 
         $.post(base + "/users.json", params, function (data) {
             var success = true;
             if(!data.user) {
-                success = false
+                success = false;
             }
             else {
                 _.each(data.user.errors, function (error, field) {
-                    success = false
+                    success = false;
                 });
             }
 
@@ -61,7 +61,7 @@ var Inbox = Backbone.Model.extend({
     fetch_and_prepare: function () {
         this.fetch({
             success: function () {
-                if (this.attributes.jid && this.attributes.jid != "" && this.attributes.password && this.attributes.password != "") {
+                if (this.attributes.jid && this.attributes.jid !== "" && this.attributes.password && this.attributes.password !== "") {
                     Msgboy.log("Loaded inbox for " + this.attributes.jid);
                     this.trigger("ready", this);
                 } else {
@@ -79,15 +79,14 @@ var Inbox = Backbone.Model.extend({
                     this.trigger("new", this);
                 }.bind(this));
             }.bind(this)
-        })
-
+        });
     },
 
     // Adds a message in the inbox
     add_message: function (msg, options) {
         // Adds the message if the message isn't yet present
         var message = new Message({
-            'id': msg.id,
+            'id': msg.id
         });
 
         message.fetch({
@@ -101,7 +100,7 @@ var Inbox = Backbone.Model.extend({
                                 relevance: _relevance
                             }, {
                                 success: function () {
-                                    this.trigger("messages:added", message)
+                                    this.trigger("messages:added", message);
                                     options.success(message);
                                 }.bind(this)
                             });
