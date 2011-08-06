@@ -5,7 +5,7 @@ var MessageView = Backbone.View.extend({
     events: {
         "click" : "click",
         "click .up": "up",
-        "click .down": "down",
+        "click .down": "down"
     },
 
     initialize: function() {
@@ -42,8 +42,8 @@ var MessageView = Backbone.View.extend({
                 if(img_size.width > $(this.el).width() && img_size.height > $(this.el).height()) {
                     //this.$("p").remove();
                     this.$("p").addClass("darkened");
-                    var img = $("<img/>").attr("src", $(img).attr("src"));
-                    img.appendTo($(this.el));
+                    var image = $("<img/>").attr("src", $(img).attr("src"));
+                    image.appendTo($(this.el));
                     // Resize the image.
                     if(img_size.width/img_size.height > $(this.el).width()/$(this.el).height()) {
                         this.$(".message > img").css("min-height", "150%");
@@ -62,7 +62,7 @@ var MessageView = Backbone.View.extend({
         this.$("h1").css("background-image", "url('http://g.etfv.co/" + this.model.source_link() + "?defaulticon=lightpng')");
 
         // Chose a color for the box.
-        var sum = 0
+        var sum = 0;
         _.each(this.model.attributes.source.title.split(""), function(c) {
             sum += c.charCodeAt(0);
         });
@@ -128,6 +128,6 @@ var MessageView = Backbone.View.extend({
         
         // Trigger rendered
         this.trigger("rendered");
-    },
+    }
 });
 
