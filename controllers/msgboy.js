@@ -1,10 +1,11 @@
-// Hopefully this should be part of the regular Msgboy
 if(typeof Msgboy == "undefined") {
     var Msgboy = {};
 }
 
+// Extending Msgboy with the Backbone events
 _.extend(Msgboy, Backbone.Events);
 
+// Attributes
 Msgboy.logEnabled = false;
 Msgboy.autoReconnect = true;
 Msgboy.currentNotification = null;
@@ -23,6 +24,7 @@ Msgboy.log = function(msg) {
     }
 };
 
+// Returns the environment in which this msgboy is running
 Msgboy.environment = function() {
     if(chrome.i18n.getMessage("@@extension_id") == "ligglcbjgpiljeoenbhnnfdipkealakb") {
         return "production";
@@ -32,6 +34,7 @@ Msgboy.environment = function() {
     }
 };
 
+// Runs the msgboy (when the document was loaded and when we were able to extract the msgboy's information)
 Msgboy.run =  function() {
     $(document).ready(function () {
         chrome.management.get(chrome.i18n.getMessage("@@extension_id"), function (extension_infos) {
@@ -72,6 +75,7 @@ Msgboy.on_connect = function(status) {
     Msgboy.log(msg);
 };
 
+// Reconnects the Msgboy
 Msgboy.auto_reconnect = function() {
     Msgboy.reconnectDelay += 1;
     if(!Msgboy.reconnectionTimeout) {
