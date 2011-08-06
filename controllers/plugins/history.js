@@ -1,15 +1,18 @@
-Plugins.register(new function () {
+Plugins.register(function () {
 
-    this.name = 'Browsing History', this.visits_to_be_popular = 3, this.deviation = 1, this.elapsed = 1000 * 60 * 60 * 3,
+    this.name = 'Browsing History';
+    this.visits_to_be_popular = 3;
+    this.deviation = 1;
+    this.elapsed = 1000 * 60 * 60 * 3;
 
     this.onSubscriptionPage = function () {
         // This method returns true if the plugin needs to be applied on this page.
         return true;
-    },
+    };
 
     this.hijack = function (follow, unfollow) {
         // Hum. Nothing to do as we can't use the chrome.* apis from content scripts
-    },
+    };
 
     this.listSubscriptions = function (callback) {
         var seen = [];
@@ -17,7 +20,7 @@ Plugins.register(new function () {
         chrome.history.search({
             'text': '',
             // Return every history item....
-            'startTime': ((new Date).getTime() - 1000 * 60 * 60 * 24 * 31),
+            'startTime': ((new Date()).getTime() - 1000 * 60 * 60 * 24 * 31),
             // that was accessed less than one month ago.
             'maxResults': 10000
         }, function (historyItems) {
@@ -40,11 +43,11 @@ Plugins.register(new function () {
                 }
             }.bind(this));
         }.bind(this));
-    },
+    };
 
     this.isUsing = function (callback) {
-        callback(true) // By default we will show.
-    }
+        callback(true); // By default we will show.
+    };
     
     this.visits_regularly = function(url, callback) {
         chrome.history.getVisits({url: url}, function(visits) {
@@ -61,7 +64,7 @@ Plugins.register(new function () {
                 callback();
             }
         }.bind(this));        
-    }
+    };
     
     this.subscribeInBackground = function(callback) {
         chrome.history.onVisited.addListener(function(historyItem) {
@@ -75,7 +78,7 @@ Plugins.register(new function () {
                 });
             }
         }.bind(this));
-    }
+    };
     
 
 });
