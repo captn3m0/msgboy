@@ -102,6 +102,24 @@ def manifest(destination = "")
   end
 end
 
+namespace :lint do 
+  desc "Validates with jshint"
+  task :validate do
+    dirs = ["controllers", "models", "views"]
+    dirs.each do |dir|
+      Dir.glob(File.dirname(__FILE__) + "/#{dir}/**/*.js").each { |f| 
+        # And now run jshint
+        lint = `jshint #{f}`
+        if(lint != "Lint Free!\n" )
+          puts "\n--\nCouldn't validate : #{f}"
+          puts lint
+          raise ArgumentError, "We couldn't lint your code" 
+        end
+      }
+    end
+  end
+end
+
 namespace :test do 
   desc "Run tests for models"
   task :models do
@@ -138,8 +156,10 @@ end
 task :version => [:'version:current']
 
 namespace :version do
+  task :bump => [:"lint:validate", :"version:change"]
+  
   desc "Bumps version for the extension, both in the updates.xml and the manifest file."
-  task :bump, :version do |task, args|
+  task :change, :version do |task, args|
     # Makes sure we have no pending commits, and that we're on master
     g = Git.open (".")
     if(g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
