@@ -33,20 +33,20 @@ $(document).bind('notification_ready', function(element, object) {
 });
 
 $(document).bind('tab', function(element, object) {
-    Msgboy.log("Request : tab " + object.request.params.url)
-    var active_window = null
+    Msgboy.log("Request : tab " + object.request.params.url);
+    var active_window = null;
     chrome.windows.getAll({}, function(windows) {
         windows = _.select(windows, function(win) {
-            return win.type == "normal" && win.focused
+            return win.type === "normal" && win.focused;
         }, this);
         // If no window is focused and "normal"
-        if(windows.length == 0) {
+        if(windows.length === 0) {
             window.open(object.request.params.url); // Can't use Chrome's API as it's buggy :(
         }
         else {
             // Just open an extra tab.
-            options = object.request.params
-            options.windowId = windows[0].id
+            options = object.request.params;
+            options.windowId = windows[0].id;
             chrome.tabs.create(options);
         }
     });
