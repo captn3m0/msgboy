@@ -54,7 +54,7 @@ var ArchiveView = Backbone.View.extend({
         
         view.bind("change", function() {
             $('#container').isotope('reLayout');
-        })
+        });
         
         view.bind("rendered", function() {
             this.complete_page();
@@ -83,6 +83,6 @@ var ArchiveView = Backbone.View.extend({
                 });
             }
         });
-    },
+    }
 });
 
