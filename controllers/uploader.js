@@ -1,6 +1,6 @@
 // Hopefully this should be part of the regular Msgboy
 if(typeof Msgboy == "undefined") {
-    var Msgboy = new function () {}
+    var Msgboy = {}
 }
 
 // Let's define the helper module.
