@@ -41,7 +41,7 @@ var Archive = Backbone.Collection.extend({
             conditions: condition,
             limit: number,
             addIndividually: true
-        }
+        };
         if(this.current) {
             options.from = this.current;
         }
