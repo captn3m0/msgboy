@@ -29,10 +29,10 @@ var Message = Backbone.Model.extend({
             attributes.alternate_new = parseUri(attributes.alternate).toString();
         }
         this.attributes = attributes;
-        if(this.attributes.unread_at == 0) {
+        if(this.attributes.unread_at === 0) {
             this.attributes.unread_at = new Date().getTime();
         }
-        if(this.attributes.created_at == 0) {
+        if(this.attributes.created_at === 0) {
             this.attributes.created_at = new Date().getTime();
         }
         return this;
@@ -92,7 +92,7 @@ var Message = Backbone.Model.extend({
                 this.trigger(_state, this);
             }.bind(this), 
             error: function() {
-                console.log("We couldn't save " + this.id)
+                console.log("We couldn't save " + this.id);
                 if(typeof(callback) != "undefined" && callback) {
                     callback(false);
                 }
@@ -110,14 +110,14 @@ var Message = Backbone.Model.extend({
         var brothers = new Archive();
         brothers.comparator = function(brother) {
             return brother.attributes.created_at;
-        }
+        };
         brothers.for_feed(this.attributes.feed, function() {
             var relevance = 0.7; // This is the default relevance
-            if(brothers.length == 0) {
+            if(brothers.length === 0) {
                 // We can't compute relevance
             } else {
                 // So, now, we need to check the ratio of up-ed and down-ed. [TODO : limit the subset?].
-                relevance =  this.relevance_based_on_brothers(brothers.pluck("state"))
+                relevance =  this.relevance_based_on_brothers(brothers.pluck("state"));
             }
 
             // Keywords [TODO]
@@ -131,7 +131,7 @@ var Message = Backbone.Model.extend({
     },
     
     relevance_based_on_brothers: function(states) {
-        if(states.length == 0) {
+        if(states.length === 0) {
             return 1;
         }
         else {
@@ -157,9 +157,9 @@ var Message = Backbone.Model.extend({
     },
     
     main_link: function() {
-        if(this.attributes.links["alternate"]) {
-            if(this.attributes.links["alternate"]["text/html"]) {
-                return this.attributes.links["alternate"]["text/html"][0].href;
+        if(this.attributes.links.alternate) {
+            if(this.attributes.links.alternate["text/html"]) {
+                return this.attributes.links.alternate["text/html"][0].href;
             }
             else {
                 // Hum, let's see what other types we have!
@@ -172,8 +172,8 @@ var Message = Backbone.Model.extend({
     },
     
     source_link: function() {
-        if(this.attributes.source && this.attributes.source.links && this.attributes.source.links["alternate"] && this.attributes.source.links["alternate"]["text/html"] && this.attributes.source.links["alternate"]["text/html"][0]) {
-            return this.attributes.source.links["alternate"]["text/html"][0].href;
+        if(this.attributes.source && this.attributes.source.links && this.attributes.source.links.alternate && this.attributes.source.links.alternate["text/html"] && this.attributes.source.links.alternate["text/html"][0]) {
+            return this.attributes.source.links.alternate["text/html"][0].href;
         }
         else {
             return "";
@@ -194,7 +194,7 @@ var Message = Backbone.Model.extend({
             return this.attributes.summary;
         }
         else {
-            return "..."
+            return "...";
         }
     }
     
@@ -216,7 +216,7 @@ var relevanceMath = {
             else {
                 counts[element] += 1;
             }
-        })
+        });
         sum = _.reduce(counts, function(memo, num){ return memo + num; }, 0);
         return counts;
     },
@@ -229,7 +229,7 @@ var relevanceMath = {
                 counts[element] = 0;
             }
             counts[element] += 1;
-        })
+        });
         sum = _.reduce(counts, function(memo, num){ return memo + num; }, 0);
         
         _.each(_.keys(counts), function(key) {
@@ -246,12 +246,11 @@ var relevanceMath = {
             sum += percentages[key] * weights[key];
             norm+= percentages[key];
         });
-        if(norm == 0) {
+        if(norm === 0) {
             return sum;
         } else {
             return sum/norm;
         }
         return sum;
-    },
-}
-
+    }
+};
