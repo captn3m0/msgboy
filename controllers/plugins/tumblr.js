@@ -1,10 +1,10 @@
 // Tumblr
-Plugins.register(new function () {
+Plugins.register(function () {
 
-    this.name = 'Tumblr', // Name for this plugin. The user will be asked which plugins he wants to use.
+    this.name = 'Tumblr'; // Name for this plugin. The user will be asked which plugins he wants to use.
     this.onSubscriptionPage = function () {
-        return (window.location.host == "www.tumblr.com" && window.location.pathname == '/dashboard/iframe')
-    },
+        return (window.location.host == "www.tumblr.com" && window.location.pathname == '/dashboard/iframe');
+    };
 
     this.hijack = function (follow, unfollow) {
         $('form[action|="/follow"]').submit(function (event) {
@@ -15,34 +15,34 @@ Plugins.register(new function () {
                 // Done
             });
         });
-    }
+    };
 
 
     this.listSubscriptions = function (callback) {
         this.listSubscriptionsPage(1, [], callback);
-    },
+    };
 
     this.isUsing = function (callback) {
         var that = this;
         $.get("http://www.tumblr.com/", function (data) {
-            menu = $(data).find("#logout_button")
+            menu = $(data).find("#logout_button");
             if (menu.length === 0) {
                 callback(false);
             } else {
                 callback(true);
             }
         });
-    },
+    };
 
     this.listSubscriptionsPage = function (page, subscriptions, callback) {
         $.get("http://www.tumblr.com/following/page/" + page, function (data) {
             content = $(data);
-            links = content.find(".follower .name a")
+            links = content.find(".follower .name a");
             links.each(function (index, link) {
                 subscriptions.push({
                     url: $(link).attr("href") + "rss",
                     title: $(link).html() + " on Tumblr"
-                })
+                });
             });
             if (links.length > 0) {
                 this.listSubscriptionsPage(page + 1, subscriptions, callback);
@@ -50,5 +50,5 @@ Plugins.register(new function () {
                 callback(subscriptions);
             }
         }.bind(this));
-    }
+    };
 });
