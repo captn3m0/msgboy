@@ -54,5 +54,5 @@ Msgboy.plugins.bookmarks = function () {
             });
         }.bind(this));
     };
-}
+};
 Plugins.register(new Msgboy.plugins.bookmarks());
