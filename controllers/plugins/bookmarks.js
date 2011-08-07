@@ -1,4 +1,14 @@
-Plugins.register(function () {
+// Hopefully this should be part of the regular Msgboy
+if (typeof Msgboy === "undefined") {
+    var Msgboy = {};
+}
+
+// Let's define the helper module.
+if (typeof Msgboy.plugins === "undefined") {
+    Msgboy.plugins = {};
+}
+
+Msgboy.plugins.bookmarks = function () {
 
     this.name = 'Browser Bookmarks';
 
@@ -44,4 +54,5 @@ Plugins.register(function () {
             });
         }.bind(this));
     };
-});
+}
+Plugins.register(new Msgboy.plugins.bookmarks());

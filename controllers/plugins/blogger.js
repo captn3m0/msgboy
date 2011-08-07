@@ -1,5 +1,15 @@
 // Blogger
-Plugins.register(function () {
+// Hopefully this should be part of the regular Msgboy
+if (typeof Msgboy === "undefined") {
+    var Msgboy = {};
+}
+
+// Let's define the helper module.
+if (typeof Msgboy.plugins === "undefined") {
+    Msgboy.plugins = {};
+}
+
+Msgboy.plugins.blogger = function () {
 
     this.name = 'Blogger'; // Name for this plugin. The user will be asked which plugins he wants to use.
     this.onSubscriptionPage = function () {
@@ -44,4 +54,6 @@ Plugins.register(function () {
             callback(subscriptions);
         }.bind(this));
     };
-});
+};
+
+Plugins.register(new Msgboy.plugins.blogger());

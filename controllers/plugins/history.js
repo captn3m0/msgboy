@@ -1,4 +1,14 @@
-Plugins.register(function () {
+// Hopefully this should be part of the regular Msgboy
+if (typeof Msgboy === "undefined") {
+    var Msgboy = {};
+}
+
+// Let's define the helper module.
+if (typeof Msgboy.plugins === "undefined") {
+    Msgboy.plugins = {};
+}
+
+Msgboy.plugins.history = function () {
     this.name = 'Browsing History';
     this.visits_to_be_popular = 3;
     this.deviation = 1;
@@ -71,4 +81,6 @@ Plugins.register(function () {
             }
         }.bind(this));
     };
-});
+};
+
+Plugins.register(new Msgboy.plugins.history());

@@ -1,5 +1,15 @@
 // Google Reader
-Plugins.register(function () {
+// Hopefully this should be part of the regular Msgboy
+if (typeof Msgboy === "undefined") {
+    var Msgboy = {};
+}
+
+// Let's define the helper module.
+if (typeof Msgboy.plugins === "undefined") {
+    Msgboy.plugins = {};
+}
+
+Msgboy.plugins.google_reader = function () {
 
     this.name = 'Google Reader'; // Name for this plugin. The user will be asked which plugins he wants to use.
 
@@ -52,5 +62,6 @@ Plugins.register(function () {
             }
         });
     };
+};
 
-});
+Plugins.register(new Msgboy.plugins.google_reader());

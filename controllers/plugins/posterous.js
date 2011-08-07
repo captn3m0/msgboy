@@ -1,4 +1,14 @@
-Plugins.register(function () {
+// Hopefully this should be part of the regular Msgboy
+if (typeof Msgboy === "undefined") {
+    var Msgboy = {};
+}
+
+// Let's define the helper module.
+if (typeof Msgboy.plugins === "undefined") {
+    Msgboy.plugins = {};
+}
+
+Msgboy.plugins.posterous = function () {
 
     this.name = 'Posterous';
     this.hijacked = false;
@@ -99,5 +109,6 @@ Plugins.register(function () {
             }
         });
     };
+};
 
-});
+Plugins.register(new Msgboy.plugins.posterous());
