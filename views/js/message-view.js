@@ -39,13 +39,16 @@ var MessageView = Backbone.View.extend({
             "class": "full-content",
             "style": "display:none"
         }).html(Msgboy.helper.cleaner.html(this.model.text())).appendTo($(this.el));
-        // Let's allow for the images to be loaded... but how long should we wait?
+        
+        
+        // here we look through all images to add them to our global count
         this.$(".full-content img").each(function() {
             window.total += 1;
             totalEl.text(window.total);
             updateColor();
         });
         
+        // here's the load event for all those same images. So we have a number to compare.
         this.$(".full-content img").load(function() {
             var img = $(this),
                 img_size = Msgboy.helper.element.original_size(img);
@@ -55,7 +58,7 @@ var MessageView = Backbone.View.extend({
             loadedEl.text(window.loaded);
             updateColor();
             
-            // eliminate the tracking 
+            // eliminate the tracking pixels and set min of at least 50x50
             if (this.width > 50 && this.height > 50) {
                 hasImage = true;
                 self.$("p").addClass("darkened");
