@@ -16,7 +16,12 @@ var MessageView = Backbone.View.extend({
           totalEl = $('#total'),
           loadedEl = $('#loaded'),
           shownEl = $('#shown'),
+          imgDebug = $('#imgDebug'),
           hasImage = false;
+        
+        function updateColor() {
+            imgDebug.css({background: (window.total === window.loaded) ? 'green' : 'red'});
+        }
         
         $("<button>", {
             "class" : "vote down",
@@ -38,6 +43,7 @@ var MessageView = Backbone.View.extend({
         this.$(".full-content img").each(function() {
             window.total += 1;
             totalEl.text(window.total);
+            updateColor();
         });
         
         this.$(".full-content img").load(function() {
@@ -47,9 +53,10 @@ var MessageView = Backbone.View.extend({
             // TODO: remove me
             window.loaded += 1;
             loadedEl.text(window.loaded);
+            updateColor();
             
             // eliminate the tracking 
-            if (this.width !== 1 && this.height !== 1) {
+            if (this.width > 50 && this.height > 50) {
                 hasImage = true;
                 self.$("p").addClass("darkened");
                 var img = $("<img/>").attr("src", $(img).attr("src"));
