@@ -15,8 +15,11 @@ var MessageView = Backbone.View.extend({
         var controls = $("<span>", {
               class:"controls"
           }).appendTo($(this.el)),
-          self = this;
-          
+          self = this,
+          totalEl = $('#total'),
+          loadedEl = $('#loaded'),
+          shownEl = $('#shown');
+        
         $("<button>", {
             class:"vote down",
             html:"<img class='vote down' src='../images/minus.png' />"
@@ -39,13 +42,26 @@ var MessageView = Backbone.View.extend({
         
         // Let's allow for the images to be loaded... but how long should we wait?
         this.$(".full-content img").load(function() {
+            window.total += 1;
+            totalEl.text(window.total);
+        });
+        
+        this.$(".full-content img").load(function() {
             var img = $(this),
                 img_size = MsgboyHelper.get_original_element_size(img);
+            
+            window.loaded += 1;
+            loadedEl.text(window.loaded);
+            
             if(img_size.width > $(self.el).width() && img_size.height > $(self.el).height()) {
                 //this.$("p").remove();
                 self.$("p").addClass("darkened");
                 var img = $("<img/>").attr("src", $(img).attr("src"));
                 img.appendTo($(self.el));
+                
+                window.shown += 1;
+                shownEl.text(window.shown);
+                
                 // Resize the image.
                 if(img_size.width/img_size.height > $(self.el).width()/$(self.el).height()) {
                     self.$(".message > img").css("min-height", "150%");
