@@ -58,7 +58,7 @@
         </div>
         
         <script type="text/javascript">
-            Msgboy.bind("loaded", function() {
+            Msgboy.bind("loaded", function () {
                 $('#container').isotope({
                     itemSelector: '.message',
                     filter: '.brick-2 .brick-3 .brick-4',
@@ -84,7 +84,7 @@
                     BayesianFilter.train_with_message(message)
                 });
 
-                $("#new_messages").click(function() {
+                $("#new_messages").click(function () {
                     // Refresh the page! Maybe it would actually be fancier to add the elements to the archive and then push them in front. TODO
                     window.location.reload(true);
                 }) 
@@ -100,7 +100,7 @@
                         // Cool, we have a new message. Let's see if we add it to the top, or reload the page.
                         // Let's get the content of $("#new_messages")
                         var count = parseInt($("#new_messages").attr("data-unread"));
-                        if(count) {
+                        if (count) {
                             $("#new_messages").attr("data-unread", count + 1);
                             $("#new_messages").text("view " + (count + 1) + " new messages");
                         } else {

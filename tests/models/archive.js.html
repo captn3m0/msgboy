@@ -18,6 +18,7 @@
     <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script>
     <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script>
     <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script>
+    <script src="../../controllers/msgboy.js" type="text/javascript"></script>
     <script src="../../controllers/utils.js" type="text/javascript"></script>
     
     <script src="../../models/database.js" type="text/javascript"></script>
@@ -41,15 +42,15 @@
     <script>        
         module("delete_all");
 
-        asyncTest("it should delete all the messages that match the criteria submitted", function() {
-            messageFixtures.clean_add(function() {
+        asyncTest("it should delete all the messages that match the criteria submitted", function () {
+            messageFixtures.clean_add(function () {
                 // Let's now fetch all elements matching the alternate index
                 var archive = new Archive();
-                archive.all({alternate: "http://blog.superfeedr.com"}, function() {
+                archive.all({alternate: "http://blog.superfeedr.com"}, function () {
                     start();
                     equals(archive.length, 3, "There should be 3 items in the array matching this criteria");
-                    archive.delete_all({alternate: "http://blog.superfeedr.com"}, function() {
-                        archive.all( {alternate: "http://blog.superfeedr.com"}, function() {
+                    archive.delete_all({alternate: "http://blog.superfeedr.com"}, function () {
+                        archive.all( {alternate: "http://blog.superfeedr.com"}, function () {
                             start();
                             ok(archive.length == 0, "There should be no more items in the array matching this criteria");
                             // We should make sure other items are still there as well....
@@ -59,15 +60,15 @@
             });
         });
 
-        asyncTest("it should delete all the messages if there is no criteria", function() {
-            messageFixtures.clean_add(function() {
+        asyncTest("it should delete all the messages if there is no criteria", function () {
+            messageFixtures.clean_add(function () {
                 // Let's now fetch all elements matching the alternate index
                 var archive = new Archive();
-                archive.all(function() {
+                archive.all(function () {
                     start();
                     ok(archive.length == 5, "There should be 5 items in the array of messages");
-                    archive.delete_all(function() {
-                        archive.all(function() {
+                    archive.delete_all(function () {
+                        archive.all(function () {
                             start();
                             ok(archive.length == 0, "There should be no more items in the array matching this criteria");
                             // We should make sure other items are still there as well....
@@ -79,10 +80,10 @@
         });
         
         module("for_source");
-        asyncTest("it should only get items from that source (alternate link)", function() {
-            messageFixtures.clean_add(function() {
+        asyncTest("it should only get items from that source (alternate link)", function () {
+            messageFixtures.clean_add(function () {
                 var archive = new Archive();
-                archive.for_source("http://www.nytimes.com/", function() {
+                archive.for_source("http://www.nytimes.com/", function () {
                     start();
                     
                     deepEqual(archive.pluck("alternate"), [

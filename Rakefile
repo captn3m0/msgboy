@@ -7,6 +7,7 @@ require 'aws/s3'
 require 'selenium-webdriver'
 require 'json'
 require 'net/http'
+require 'git'
 
 s3 = JSON.load(File.read("s3.json"))
 
@@ -58,8 +59,6 @@ def manifest(destination = "")
           "/controllers/plugins/digg.js",
           "/controllers/plugins/disqus.js",
           "/controllers/plugins/generic.js",
-          "/controllers/plugins/github-repos.js",
-          "/controllers/plugins/github-users.js",
           "/controllers/plugins/google-reader.js",
           "/controllers/plugins/history.js",
           "/controllers/plugins/posterous.js",
@@ -101,6 +100,25 @@ def manifest(destination = "")
   end
 end
 
+task :lint => [:'lint:validate']
+namespace :lint do 
+  desc "Validates with jshint"
+  task :validate do
+    dirs = ["controllers", "models", "views"]
+    dirs.each do |dir|
+      Dir.glob(File.dirname(__FILE__) + "/#{dir}/**/*.js").each { |f| 
+        # And now run jshint
+        lint = `jshint #{f}`
+        if (lint != "Lint Free!\n" )
+          puts "\n--\nCouldn't validate : #{f}"
+          puts lint
+          # raise ArgumentError, "We couldn't lint your code" 
+        end
+      }
+    end
+  end
+end
+
 namespace :test do 
   desc "Run tests for models"
   task :models do
@@ -137,14 +155,30 @@ end
 task :version => [:'version:current']
 
 namespace :version do
+  task :bump => [:"lint:validate", :"version:change"]
+  
   desc "Bumps version for the extension, both in the updates.xml and the manifest file."
-  task :bump, :version do |task, args|
-    # First, update the updates.xml
-    doc = Nokogiri::XML(File.open("updates.xml"))
-    doc.at("updatecheck")["version"] = args[:version]
-    File.open('updates.xml','w') { |f| 
-      doc.write_xml_to f
-    }
+  task :change, :version do |task, args|
+    # Makes sure we have no pending commits, and that we're on master
+    g = Git.open (".")
+    if (g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
+      if (g.branch.name == "master")
+        # First, update the updates.xml
+        doc = Nokogiri::XML(File.open("updates.xml"))
+        doc.at("updatecheck")["version"] = args[:version]
+        File.open('updates.xml','w') { |f| 
+          doc.write_xml_to f
+        }
+        manifest() # Rewrite the manifest
+        # # Finally, let's tag the repo
+        g.commit("Version bump #{version}", { :add_all => true,  :allow_empty => true})
+        g.add_tag(version)
+      else 
+        puts "Please make sure you use the master branch to package new versions"
+      end
+    else 
+      puts "You have pending changed. Please commit them first."
+    end
   end
 
   desc "Prints the version for the extension"
@@ -157,7 +191,7 @@ task :publish => [:'publish:chrome:pack', :'publish:upload']
 
 namespace :publish do
 
-  task :upload => [:'upload:crx', :'upload:updates_xml', :'airbrake:track']
+  task :upload => [:'upload:crx', :'upload:updates_xml', :'airbrake:track', :'upload:push_git']
 
   namespace :upload do
     desc "Uploads the extension"
@@ -194,6 +228,14 @@ namespace :publish do
       )
       puts "Updates.xml #{version} uploaded"
     end
+    
+    desc "Pushes to the git remotes"
+    task :push_git do
+      g = Git.open (".")
+      res = g.push("origin", "master", true)
+      puts res
+    end
+    
   end
   
   namespace :airbrake do
@@ -213,7 +255,7 @@ namespace :publish do
         :'deploy[local_username]' => local_username,
       })
       
-      if(response.is_a? Net::HTTPOK)
+      if (response.is_a? Net::HTTPOK)
         puts "Tracking changes for #{version}"
       else
         puts "Cannot track changes for #{version}"

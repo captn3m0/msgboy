@@ -25,13 +25,23 @@ Clicking on <code>/views/html/background.html</code> will let you inspect the ba
 
 If you submit bug reports, please provide as much content as possible (Chrome version, as well as the logs from the background page).
 
+
+### Code standards
+Code standards for the project are enforced with node-jshint. If you install the 'ignore' branch of this project: [https://github.com/jshint/node-jshint/tree/ignore](https://github.com/jshint/node-jshint/tree/ignore) then you can run `jshint .` at the root of the project and it will check all js files that are not in `.jshintignore` against the linting options specified in the `.jshintrc` file.
+
+Note that you can't simply install it with `npm` you have to download the `ignore` branch specifically and then from the root of that project you can do:
+
+    npm install . -g
+
+After that, the `jshint` command should be available. 
+
 ### Plugins
 
 When installing the msgboy, it will look at several existing services where the user may have already subscribed/followed/watched topics, users, or any kind of resource. The msgboy assumes that if a user has done that in the past, it means that he may care about this resource, so the msgboy will subscribe to that source. It is important that this source provide RSS/Atom feeds to allow for the subscription, obviously.
 
 Similarly, when the user continues to use his favorite web services, he may subscribe/follow/watch additional resources. The msgboy then maps these new subscriptions and subscribes to the corresponding feeds.
 
-All this is done with the help of the *plugins*. We have already implemented [several plugins](https://github.com/superfeedr/msgboy/tree/master/controllers/plugins) for some well known services. There is one for [Tumblr](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/tumblr.js), [Github's Repo](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/github-repos.js), or [Google Reader](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/google-reader.js), but also for the [browser bookmarks](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/bookmarks.js), the [browser history](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/history.js)... etc.
+All this is done with the help of the *plugins*. We have already implemented [several plugins](https://github.com/superfeedr/msgboy/tree/master/controllers/plugins) for some well known services. There is one for [Tumblr](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/tumblr.js), or [Google Reader](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/google-reader.js), but also for the [browser bookmarks](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/bookmarks.js), the [browser history](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/history.js)... etc.
 
 We have also implemented a [generic](https://github.com/superfeedr/msgboy/blob/master/controllers/plugins/generic.js) bookmark that uses HTML5's data attributes to add a source to the msgboy when the user interacts with a page element. For example, if you have the msgboy installed and <a href="" class="msgboy-follow" data-msgboy-url="http://blog.msgboy.com/rss" >click on this link</a>, your msgboy will have a subscription for our blog.
 
@@ -59,8 +69,10 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 * More plugins for websites that have some kind of subscription scheme.
 * Keyboard navigation for the dashboard and notifications.
 * Grouping of items in the dashboard (by source, and by topic).
-* Set git tags when bumping
-* Throttle down importing of sources, to avoid slowness at setup. Since everything happens in the background. It's ok to take more time.
+* <del>Set git tags when bumping</del>
+* <del>Throttle down importing of sources, to avoid slowness at setup. Since everything happens in the background. It's ok to take more time</del>.
+* <del>Show messages when there was no subscription performed at all...</del>
+* Show more help in the msgboy dashboard in the form of boxes. These should indicate what needs to be done to subscribe to more content (bookmarking stuff!).
 
 ## Publishers
 

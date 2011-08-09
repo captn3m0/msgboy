@@ -40,23 +40,23 @@
     </head>
     <body>
         <script>
-        Msgboy.bind("loaded", function() {
-            var notification =  new MsgboyNotification();
+        Msgboy.bind("loaded", function () {
+            var notification =  new Msgboy.Notification();
 
-            $("body").mouseover(function() {
+            $("body").mouseover(function () {
                 notification.mouse_over = true;
             });
 
-            $("body").mouseout(function() {
+            $("body").mouseout(function () {
                 notification.mouse_over = false;
             });
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // Tell everyone we're ready.
                 chrome.extension.sendRequest({
                     signature: "notification_ready",
                     params: {}
-                }, function() {
+                }, function () {
                     // Nothing to do.
                 })
 

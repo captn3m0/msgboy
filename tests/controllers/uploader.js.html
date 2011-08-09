@@ -18,6 +18,7 @@
     <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script>
     <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script>
     <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script>
+    <script src="../../controllers/msgboy.js" type="text/javascript"></script> 
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins.js" type="text/javascript"></script> 
     <script src="../../controllers/uploader.js" type="text/javascript"></script> 
@@ -33,7 +34,7 @@
     <div id="log" style=""></div>
     
     <script>
-        MsgboyHelper.uploader.upload("0123456789", {a:1, b:2, c: {d:3, e:4}});
+        Msgboy.helper.uploader.upload("0123456789", {a:1, b:2, c: {d:3, e:4}});
     </script>
     
 </body>

@@ -1,22 +1,29 @@
-var MsgboyNotification = function() {
-    this.messages = [],
-    this.started = false,
-    this.mouse_over = false
-    this.current_view = null
-    
-    this.rotate = function() {
-        setTimeout(function() {
-            if(!this.mouse_over) {
-                if(this.current_view) {
+if (typeof Msgboy === "undefined") {
+    var Msgboy = {};
+}
+
+// The Notification class
+Msgboy.Notification = function () {
+};
+
+Msgboy.Notification.prototype = {
+    messages: [],
+    started: false,
+    mouse_over: false,
+    current_view: null,
+    period: 8000,
+    rotate: function () {
+        setTimeout(function () {
+            if (!this.mouse_over) {
+                if (this.current_view) {
                     this.current_view.remove();
                 }
                 this.show_next_message();
             }
             this.rotate();
-        }.bind(this), 8000);
+        }.bind(this), this.period);
     },
-    
-    this.show_next_message= function() {
+    show_next_message: function () {
         var message = this.messages.pop();
         if (!message) {
             chrome.extension.sendRequest({
@@ -31,13 +38,13 @@ var MsgboyNotification = function() {
                 model: message
             });
 
-            message.bind("up-ed", function() {
+            message.bind("up-ed", function () {
                 this.current_view.remove();
                 this.go_to_message(message);
                 this.show_next_message();
             }.bind(this));
 
-            message.bind("down-ed", function() {
+            message.bind("down-ed", function () {
                 this.current_view.remove();
                 this.show_next_message();
             }.bind(this));
@@ -54,8 +61,7 @@ var MsgboyNotification = function() {
             this.current_view.render(); // builds the HTML
         }
     },
-    
-    this.go_to_message = function(model) {
+    go_to_message: function (model) {
         chrome.extension.sendRequest({
             signature: "tab",
             params: {
@@ -63,6 +69,5 @@ var MsgboyNotification = function() {
                 selected: true
             }
         });
-    };
-    
+    }
 };

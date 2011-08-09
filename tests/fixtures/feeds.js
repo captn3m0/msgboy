@@ -38,11 +38,11 @@ FeedFixtures.prototype = {
         }
     },
 
-    clean_all: function(done) {
+    clean_all: function (done) {
         // We need to clean all the items.
         var ids = _.pluck(this.feeds, 'id'); 
         var deleted_all = _.after(ids.length, done)
-        _.each(ids, function(_id) {
+        _.each(ids, function (_id) {
             var feed = new Feed({id: _id})
             feed.destroy({
                 success: deleted_all,
@@ -51,8 +51,8 @@ FeedFixtures.prototype = {
         });
     },
     
-    clean_add: function(done) {
-        this.clean_all(function() {
+    clean_add: function (done) {
+        this.clean_all(function () {
             this.add_all(done);
         }.bind(this));
     }

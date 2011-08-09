@@ -4,10 +4,10 @@ var OptionsView = Backbone.View.extend({
     },
     el: "#options",
 
-    initialize: function() {
+    initialize: function () {
         _.bindAll(this, "render", "change");
         this.model = new Inbox();
-        this.model.bind("change", function() {
+        this.model.bind("change", function () {
             this.render();
             chrome.extension.sendRequest({
                 signature: "reload",
@@ -17,14 +17,14 @@ var OptionsView = Backbone.View.extend({
         this.model.fetch();
     },
 
-    render: function() {
+    render: function () {
         this.$("#relevance").val((1 - this.model.attributes.options.relevance) * 100);
     },
 
-    change: function(event) {
+    change: function (event) {
         var attributes = {};
         attributes.options = {};
-        attributes.options[event.target.id] = 1 - $(event.target).val()/100 ;
+        attributes.options[event.target.id] = 1 - $(event.target).val() / 100;
         this.model.save(attributes);
     }
 });

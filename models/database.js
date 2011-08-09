@@ -23,7 +23,7 @@ var msgboyDatabase = {
     }, {
         version: "0.0.2",
         migrate: function (db, versionRequest, next) {
-            var store = versionRequest.transaction.objectStore("messages")
+            var store = versionRequest.transaction.objectStore("messages");
             store.createIndex("createdAtIndex", "created_at", {
                 unique: false
             });
@@ -32,7 +32,7 @@ var msgboyDatabase = {
     }, {
         version: "0.0.3",
         migrate: function (db, versionRequest, next) {
-            var store = versionRequest.transaction.objectStore("messages")
+            var store = versionRequest.transaction.objectStore("messages");
             store.createIndex("readAtIndex", "read_at", {
                 unique: false
             });
@@ -71,20 +71,16 @@ var msgboyDatabase = {
             var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange; // No prefix in moz
             // We need to add the missing fields, on the host, and the feed's alternate url.
             var transaction = db.transaction(["messages"], IDBTransaction.READ_ONLY);
-            
-            var store = transaction.objectStore("messages")
+            var store = transaction.objectStore("messages");
             var cursor = store.openCursor();
             var messages_to_save = [];
             cursor.onsuccess = function (e) {
                 cursor = e.target.result;
                 if (cursor) {
-                    if (typeof (cursor.value.host) == "undefined" || typeof (cursor.value.alternate) == "undefined" || cursor.value.host == null || cursor.value.alternate == null) {
+                    if (typeof (cursor.value.host) === "undefined" || typeof (cursor.value.alternate) === "undefined" || !cursor.value.host || !cursor.value.alternate) {
                         messages_to_save.push(cursor.value);
                     }
-                    cursor.
-                    continue ();
-                } else {
-                    // Fine, we have all the elements
+                    cursor._continue();
                 }
             };
             transaction.oncomplete = function () {
@@ -104,7 +100,7 @@ var msgboyDatabase = {
                 }, function () {
                     next();
                 });
-            }
+            };
         }
     }, {
         version: "0.0.6",
@@ -127,13 +123,10 @@ var msgboyDatabase = {
             cursor.onsuccess = function (e) {
                 cursor = e.target.result;
                 if (cursor) {
-                    if (typeof (cursor.value.alternate_new) == "undefined" || cursor.value.alternate_new == null) {
+                    if (typeof (cursor.value.alternate_new) === "undefined" || !cursor.value.alternate_new) {
                         messages_to_save.push(cursor.value);
                     }
-                    cursor.
-                    continue ();
-                } else {
-                    // Fine, we have all the elements
+                    cursor._continue();
                 }
             };
             transaction.oncomplete = function () {
@@ -152,7 +145,7 @@ var msgboyDatabase = {
                 }, function () {
                     next();
                 });
-            }
+            };
         }
     }, {
         version: "0.0.7",
@@ -174,13 +167,10 @@ var msgboyDatabase = {
             cursor.onsuccess = function (e) {
                 cursor = e.target.result;
                 if (cursor) {
-                    if (typeof (cursor.value.state) == "undefined" || cursor.value.state == null) {
+                    if (typeof (cursor.value.state) === "undefined" || !cursor.value.state) {
                         messages_to_save.push(cursor.value);
                     }
-                    cursor.
-                    continue ();
-                } else {
-                    // Fine, we have all the elements
+                    cursor._continue();
                 }
             };
             transaction.oncomplete = function () {
@@ -199,7 +189,7 @@ var msgboyDatabase = {
                 }, function () {
                     next();
                 });
-            }
+            };
         }
     }, {
         version: "0.0.8",
@@ -221,13 +211,10 @@ var msgboyDatabase = {
             cursor.onsuccess = function (e) {
                 cursor = e.target.result;
                 if (cursor) {
-                    if (typeof (cursor.value.feed) == "undefined" || cursor.value.feed == null) {
+                    if (typeof (cursor.value.feed) === "undefined" || !cursor.value.feed) {
                         messages_to_save.push(cursor.value);
                     }
-                    cursor.
-                    continue ();
-                } else {
-                    // Fine, we have all the elements
+                    cursor._continue();
                 }
             };
             transaction.oncomplete = function () {
@@ -246,11 +233,11 @@ var msgboyDatabase = {
                 }, function () {
                     next();
                 });
-            }
+            };
         }
     }, {
         version: "0.0.9",
-        migrate: function(db, versionRequest, next) {
+        migrate: function (db, versionRequest, next) {
             var subscriptions = db.createObjectStore("subscriptions");
             subscriptions.createIndex("stateIndex", "state", {unique: false});
             subscriptions.createIndex("subscribedAtIndex", "subscribed_at", {unique: false});
