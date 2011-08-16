@@ -10,8 +10,21 @@ var MessageView = Backbone.View.extend({
         _.bindAll(this, "render", "up", "down");
         this.model.view = this;
         var controls = $("<span>", {
-            "class" : "controls"
-        }).appendTo($(this.el));
+              class:"controls"
+          }).appendTo($(this.el)),
+          self = this,
+          totalEl = $('#total'),
+          loadedEl = $('#loaded'),
+          shownEl = $('#shown'),
+          imgDebug = $('#imgDebug'),
+          hasImage = false;
+        
+        
+        // turns the background green if all images have been loaded
+        function updateColor() {
+            imgDebug.css({background: (window.total === window.loaded) ? 'green' : 'red'});
+        }
+        
         $("<button>", {
             "class" : "vote down",
             "html" : "<img class='vote down' src='../images/minus.png' />"
@@ -28,26 +41,49 @@ var MessageView = Backbone.View.extend({
             "class": "full-content",
             "style": "display:none"
         }).html(Msgboy.helper.cleaner.html(this.model.text())).appendTo($(this.el));
-        // Let's allow for the images to be loaded... but how long should we wait?
-        setTimeout(function () {
-            this.$(".full-content img").each(function (idx, img) {
-                var img_size = Msgboy.helper.element.original_size(img);
-                if (img_size.width > $(this.el).width() && img_size.height > $(this.el).height()) {
-                    //this.$("p").remove();
-                    this.$("p").addClass("darkened");
-                    var image = $("<img/>").attr("src", $(img).attr("src"));
-                    image.appendTo($(this.el));
-                    // Resize the image.
-                    if (img_size.width / img_size.height > $(this.el).width() / $(this.el).height()) {
-                        this.$(".message > img").css("min-height", "150%");
-                        //this.$("img").css("height", "100%");
-                    } else {
-                        this.$(".message > img").css("min-width", "100%");
-                        //this.$("img").css("width", "100%");
-                    }
+        
+        
+        // here we look through all images to add them to our global count
+        this.$(".full-content img").each(function() {
+            window.total += 1;
+            totalEl.text(window.total);
+            updateColor();
+        });
+        
+        // here's the load event for all those same images. So we have a number to compare.
+        this.$(".full-content img").load(function() {
+            var img = $(this),
+                img_size = Msgboy.helper.element.original_size(img);
+            
+            // TODO: remove me
+            window.loaded += 1;
+            loadedEl.text(window.loaded);
+            updateColor();
+            
+            // eliminate the tracking pixels and set min of at least 50x50
+            if (this.width > 50 && this.height > 50) {
+                hasImage = true;
+                self.$("p").addClass("darkened");
+                var img = $("<img/>").attr("src", $(img).attr("src"));
+                img.appendTo($(self.el));
+                
+                // TODO: remove me
+                window.shown += 1;
+                shownEl.text(window.shown);
+                
+                // Resize the image.
+                if(img_size.width/img_size.height > $(self.el).width()/$(self.el).height()) {
+                    self.$(".message > img").css("min-height", "150%");
+                } else {
+                    self.$(".message > img").css("min-width", "100%");
                 }
-            }.bind(this));
-        }.bind(this), 2000); // For now, let's wait for 2 seconds. It would be much much better if we had a callback that works when images have been loaded.
+    
+                // show the source title.
+                self.$("h1").text(self.model.attributes.source.title).appendTo($(self.el));
+                
+            }
+        });
+        
         // Adding the rest of the content.
         $("<p>").html(Msgboy.helper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
         $("<h1>").text(this.model.attributes.source.title).appendTo($(this.el));

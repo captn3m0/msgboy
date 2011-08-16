@@ -115,7 +115,7 @@ var AirbrakeNotifier = {
 
     getStackTrace: function (error) {
         return [];
-    }
+    },
 
     validBacktraceLine: function (line) {
         for (var i = 0; i < AirbrakeNotifier.backtrace_filters.length; i++) {
