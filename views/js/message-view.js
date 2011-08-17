@@ -13,9 +13,6 @@ var MessageView = Backbone.View.extend({
               class:"controls"
           }).appendTo($(this.el)),
           self = this,
-          totalEl = $('#total'),
-          loadedEl = $('#loaded'),
-          shownEl = $('#shown'),
           hasImage = false;
         
         
@@ -37,22 +34,11 @@ var MessageView = Backbone.View.extend({
         }).html(Msgboy.helper.cleaner.html(this.model.text())).appendTo($(this.el));
         
         
-        // here we look through all images to add them to our global count
-        this.$(".full-content img").each(function() {
-            window.total += 1;
-            totalEl.text(window.total);
-            updateColor();
-        });
         
         // here's the load event for all those same images. So we have a number to compare.
         this.$(".full-content img").load(function() {
             var img = $(this),
                 img_size = Msgboy.helper.element.original_size(img);
-            
-            // TODO: remove me
-            window.loaded += 1;
-            loadedEl.text(window.loaded);
-            updateColor();
             
             // eliminate the tracking pixels and set min of at least 50x50
             if (this.width > 50 && this.height > 50) {
@@ -60,10 +46,6 @@ var MessageView = Backbone.View.extend({
                 self.$("p").addClass("darkened");
                 var img = $("<img/>").attr("src", $(img).attr("src"));
                 img.appendTo($(self.el));
-                
-                // TODO: remove me
-                window.shown += 1;
-                shownEl.text(window.shown);
                 
                 // Resize the image.
                 if(img_size.width/img_size.height > $(self.el).width()/$(self.el).height()) {
