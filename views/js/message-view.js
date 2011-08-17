@@ -16,14 +16,8 @@ var MessageView = Backbone.View.extend({
           totalEl = $('#total'),
           loadedEl = $('#loaded'),
           shownEl = $('#shown'),
-          imgDebug = $('#imgDebug'),
           hasImage = false;
         
-        
-        // turns the background green if all images have been loaded
-        function updateColor() {
-            imgDebug.css({background: (window.total === window.loaded) ? 'green' : 'red'});
-        }
         
         $("<button>", {
             "class" : "vote down",
