@@ -79,10 +79,10 @@
     window.onerror = function (message, file, line) {
         setTimeout(function () {
             var error = {
-                message  : message,
                 arguments: [],
-                stack    : [], // We need a better way to extract the stack. The problem with this method is that the context changes with onerror and there is no way to retrieve te actual error/exception object.
-                type     : ""
+                message  : message.match(/Uncaught (.*): (.*)/)[2],
+                stack    : ["-" + " (" + file + ":" + line + ":0)"],
+                type     : message.match(/Uncaught (.*): (.*)/)[1]
             }
 
             console.log(AirbrakeNotifier.generateXML(error));

@@ -1,3 +1,41 @@
+/** 
+    CONFIGURATION:
+    // Set your Airbrake API key here [REQ]
+    AirbrakeNotifier.setKey("XXXX");
+    
+    // Set the environment. [OPT]
+    AirbrakeNotifier.setEnvironment("development");
+    
+    // Set the app version [OPT]
+    AirbrakeNotifier.setAppVersion("1.3.3.7");
+
+    // Set the session variables [OPT]
+    AirbrakeNotifier.setSessionVars({hello: "world"});
+
+    // Set the Params [OPT]
+    AirbrakeNotifier.setParams({page: 1});
+    
+    
+    USAGE
+    1. You can just catch errors and then do :
+    try {
+        ... die ...
+    } catch(e) {
+        AirbrakeNotifier.notify(e));
+    }
+
+    2. You can also use the window.onerror call, however, this call 'lost' the error object, so you have to create a new one (feel free to customize it)
+    window.onerror = function (message, file, line) {
+        var error = {
+            arguments: [],
+            message  : message.match(/Uncaught (.*): (.*)/)[2],
+            stack    : ["-" + " (" + file + ":" + line + ":0)"],
+            type     : message.match(/Uncaught (.*): (.*)/)[1]
+        }
+        AirbrakeNotifier.notify(e));
+    };
+*/
+
 var AirbrakeNotifier = {
     AIRBRAKE_KEY      : '',
     APP_VERSION       : '1.0',
@@ -91,7 +129,10 @@ var AirbrakeNotifier = {
             data += AirbrakeNotifier.generateVariables(AirbrakeNotifier.PARAMS_VARS);
             data += '</params>';
             
-            xml = xml.replace('</request>', data + '</request>').replace('REQUEST_URL', url).replace('REQUEST_COMPONENT', component);
+            xml = xml.replace('</request>', data + '</request>');
+            xml = xml.replace('REQUEST_URL', url);
+            xml = xml.replace('REQUEST_COMPONENT', component);
+            xml = xml.replace('REQUEST_ACTION', ""); // Not applicable to Chrome Applications
         }
         
         xml = xml.replace('PROJECT_ROOT', AirbrakeNotifier.escapeText(AirbrakeNotifier.ROOT));
@@ -109,6 +150,10 @@ var AirbrakeNotifier = {
         error = error || {};
         var backtrace  = [];
         var stacktrace = error.stack;
+
+        if(error.stack.length === 0) {
+            stacktrace = AirbrakeNotifier.getStackTrace();
+        }
 
         for (var i = 0, l = stacktrace.length; i < l; i++) {
             var line    = stacktrace[i];
@@ -173,6 +218,8 @@ var AirbrakeNotifier = {
     }
 };
 
+
+
 window.onerror = function (message, file, line) {
     // Set your Airbrake API key here [REQ]
     AirbrakeNotifier.setKey("47bdc2ad25b662cee947d0a1c353e974");
@@ -184,17 +231,17 @@ window.onerror = function (message, file, line) {
     AirbrakeNotifier.setAppVersion(Msgboy.infos.version);
 
     // Set the session variables [OPT]
-    AirbrakeNotifier.setSessionVars({
-        jid: "1337"
-    });
+    AirbrakeNotifier.setSessionVars({jid: "1337"});
 
     // Set the Params [OPT]
     AirbrakeNotifier.setParams([]);
     
     setTimeout(function () {
         AirbrakeNotifier.notify({
-            message : message,
-            stack   : [] // We need a better way to extract the stack. The problem with this method is that the context changes with onerror and there is no way to retrieve te actual error/exception object.
+            arguments: [],
+            message  : message.match(/Uncaught (.*): (.*)/)[2],
+            stack    : ["-" + " (" + file + ":" + line + ":0)"],
+            type     : message.match(/Uncaught (.*): (.*)/)[1]
         });
     }, 100);
     return true;
