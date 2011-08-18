@@ -155,10 +155,9 @@ end
 task :version => [:'version:current']
 
 namespace :version do
-  # task :bump => [:"lint:validate", :"version:change"]
-  
   desc "Bumps version for the extension, both in the updates.xml and the manifest file."
   task :bump, :version do |task, args|
+    Rake::Task["lint:validate"].invoke # Let's lint before
     # Makes sure we have no pending commits, and that we're on master
     g = Git.open (".")
     # if (g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
