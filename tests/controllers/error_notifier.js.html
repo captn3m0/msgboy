@@ -12,12 +12,12 @@
     <script src="../../lib/strophejs/base64.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/md5.js" type="text/javascript"></script> 
     <script src="../../lib/strophejs/core.js" type="text/javascript"></script> 
-
-    <!-- Lib includes -->
     <script src="../../lib/jquery/jquery.js" type="text/javascript"></script>
     <script src="../../lib/underscore/underscore-min.js" type="text/javascript"></script>
     <script src="../../lib/backbone/backbone-min.js" type="text/javascript"></script>
     <script src="../../lib/backbone-indexeddb/backbone-indexeddb.js" type="text/javascript"></script>
+
+
     <script src="../../controllers/msgboy.js" type="text/javascript"></script> 
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     <script src="../../controllers/error_notifier.js" type="text/javascript"></script> 
@@ -39,21 +39,59 @@
     <div id="log" style=""></div>
     
     <script>
-    Msgboy.bind("loaded", function () {
-        Msgboy.inbox = new Inbox();
-        Msgboy.inbox.bind("change", function () {
-            
-            var error = {
-                message : "There was an error",
-                stack   : '()@' + "file.js" + ':' + 1337
+
+        var getStackTrace = function() {
+          var obj = {};
+          Error.captureStackTrace(obj, getStackTrace);
+          var lines = obj.stack.split("\n");
+          var stack = [];
+          lines.forEach(function(line) {
+              stack.push(line.trim().replace("at", "").trim());
+          })
+          return stack;
+        };
+        
+        function dieInHell() {
+            dieInHell2();
+        }
+        function dieInHell2() {
+            dieInHell3();
+        }
+        function dieInHell3() {
+            try {
+                dieInHell5()
             }
-            var xml = Hoptoad.generateXML(error);
+            catch(e) {
+                e.stack = getStackTrace();
+                console.log(AirbrakeNotifier.generateXML(e));
+            }
+            dieInHell4();
             
+        }
+
+        window.onerror = function (message, file, line) {
+            setTimeout(function () {
+                var error = {
+                    message  : message,
+                    arguments: [],
+                    stack    : [], // We need a better way to extract the stack. The problem with this method is that the context changes with onerror and there is no way to retrieve te actual error/exception object.
+                    type     : ""
+                }
+                
+                console.log(AirbrakeNotifier.generateXML(error));
+                
+            }, 100);
+            return true;
+        };
+        
+        Msgboy.bind("loaded", function () {
+            Msgboy.inbox = new Inbox();
+            Msgboy.inbox.bind("change", function () {
+                dieInHell();
+            });
+            Msgboy.inbox.fetch();
         });
-        Msgboy.inbox.fetch();
-    });
-    Msgboy.run();
-    
+        Msgboy.run();
     </script>
     
 </body>
