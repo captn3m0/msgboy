@@ -240,10 +240,10 @@ window.onerror = function (message, file, line) {
 
     setTimeout(function () {
         AirbrakeNotifier.notify({
-            arguments: [],
-            message  : message.match(/Uncaught (.*): (.*)/)[2],
-            stack    : ["-" + " (" + file + ":" + line + ":0)"],
-            type     : message.match(/Uncaught (.*): (.*)/)[1]
+            "arguments": [],
+            "message"  : message.match(/Uncaught (.*): (.*)/)[2],
+            "stack"    : ["-" + " (" + file + ":" + line + ":0)"],
+            "type"     : message.match(/Uncaught (.*): (.*)/)[1]
         });
     }, 100);
     return true;

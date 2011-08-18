@@ -10,12 +10,9 @@ var MessageView = Backbone.View.extend({
         _.bindAll(this, "render", "up", "down");
         this.model.view = this;
         var controls = $("<span>", {
-              class:"controls"
-          }).appendTo($(this.el)),
-          self = this,
-          hasImage = false;
-        
-        
+            "class": "controls"
+        }).appendTo($(this.el)), self = this, hasImage = false;
+
         $("<button>", {
             "class" : "vote down",
             "html" : "<img class='vote down' src='../images/minus.png' />"
@@ -32,34 +29,29 @@ var MessageView = Backbone.View.extend({
             "class": "full-content",
             "style": "display:none"
         }).html(Msgboy.helper.cleaner.html(this.model.text())).appendTo($(this.el));
-        
-        
-        
+
         // here's the load event for all those same images. So we have a number to compare.
-        this.$(".full-content img").load(function() {
+        this.$(".full-content img").load(function () {
             var img = $(this),
                 img_size = Msgboy.helper.element.original_size(img);
-            
+
             // eliminate the tracking pixels and set min of at least 50x50
             if (this.width > 50 && this.height > 50) {
                 hasImage = true;
                 self.$("p").addClass("darkened");
-                var img = $("<img/>").attr("src", $(img).attr("src"));
-                img.appendTo($(self.el));
-                
+                var img_tag = $("<img/>").attr("src", $(img).attr("src"));
+                img_tag.appendTo($(self.el));
                 // Resize the image.
-                if(img_size.width/img_size.height > $(self.el).width()/$(self.el).height()) {
+                if (img_size.width / img_size.height > $(self.el).width() / $(self.el).height()) {
                     self.$(".message > img").css("min-height", "150%");
                 } else {
                     self.$(".message > img").css("min-width", "100%");
                 }
-    
                 // show the source title.
                 self.$("h1").text(self.model.attributes.source.title).appendTo($(self.el));
-                
             }
         });
-        
+
         // Adding the rest of the content.
         $("<p>").html(Msgboy.helper.cleaner.html(this.model.attributes.title)).appendTo($(this.el));
         $("<h1>").text(this.model.attributes.source.title).appendTo($(this.el));
