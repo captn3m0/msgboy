@@ -1,11 +1,11 @@
-/** 
+/**
     CONFIGURATION:
     // Set your Airbrake API key here [REQ]
     AirbrakeNotifier.setKey("XXXX");
-    
+
     // Set the environment. [OPT]
     AirbrakeNotifier.setEnvironment("development");
-    
+
     // Set the app version [OPT]
     AirbrakeNotifier.setAppVersion("1.3.3.7");
 
@@ -14,8 +14,8 @@
 
     // Set the Params [OPT]
     AirbrakeNotifier.setParams({page: 1});
-    
-    
+
+
     USAGE
     1. You can just catch errors and then do :
     try {
@@ -47,7 +47,7 @@ var AirbrakeNotifier = {
     NOTICE_XML        : '<?xml version="1.0" encoding="UTF-8"?><notice version="2.1"><api-key>AIRBRAKE_KEY</api-key><notifier><name>chrome_app_airbrake_notifier</name><version>0.1.0</version><url></url></notifier><error><class>EXCEPTION_CLASS</class><message>EXCEPTION_MESSAGE</message><backtrace>BACKTRACE_LINES</backtrace></error><request><url>REQUEST_URL</url><component>REQUEST_COMPONENT</component><action>REQUEST_ACTION</action></request><server-environment><project-root>PROJECT_ROOT</project-root><environment-name>APP_ENVIRONMENT</environment-name><app-version>APP_VERSION</app-version></server-environment></notice>',
     ROOT              : window.location.protocol + '//' + window.location.host,
     BACKTRACE_MATCHER : /^(.*) \((.*):(.*):(.*)\)$/,
-    
+
     // Generates the error XML and sends it to Airbrake's servers thru the inclusion of an iframe element.
     notify: function (error) {
         var xml     = escape(AirbrakeNotifier.generateXML(error));
@@ -92,7 +92,7 @@ var AirbrakeNotifier = {
     },
 
     // Sets the app version
-    setAppVersion: function(value) {
+    setAppVersion: function (value) {
         AirbrakeNotifier.APP_VERSION = value;
     },
 
@@ -128,13 +128,13 @@ var AirbrakeNotifier = {
             data += '<params>';
             data += AirbrakeNotifier.generateVariables(AirbrakeNotifier.PARAMS_VARS);
             data += '</params>';
-            
+
             xml = xml.replace('</request>', data + '</request>');
             xml = xml.replace('REQUEST_URL', url);
             xml = xml.replace('REQUEST_COMPONENT', component);
             xml = xml.replace('REQUEST_ACTION', ""); // Not applicable to Chrome Applications
         }
-        
+
         xml = xml.replace('PROJECT_ROOT', AirbrakeNotifier.escapeText(AirbrakeNotifier.ROOT));
         xml = xml.replace('EXCEPTION_CLASS', type);
         xml = xml.replace('APP_VERSION', AirbrakeNotifier.APP_VERSION);
@@ -151,7 +151,7 @@ var AirbrakeNotifier = {
         var backtrace  = [];
         var stacktrace = error.stack;
 
-        if(error.stack.length === 0) {
+        if (error.stack.length === 0) {
             stacktrace = AirbrakeNotifier.getStackTrace();
         }
 
@@ -206,27 +206,29 @@ var AirbrakeNotifier = {
     },
 
     // Returns a stack Trace
-    getStackTrace: function() {
+    getStackTrace: function () {
         var obj = {};
         Error.captureStackTrace(obj, AirbrakeNotifier.getStackTrace);
         var lines = obj.stack.split("\n");
         var stack = [];
-        lines.forEach(function(line) {
-            stack.push(line.trim().replace("at", "").trim());
-        });
+        for (var line in lines) {
+            stack.push(lines[line].trim().replace("at", "").trim());
+        }
         return stack;
     }
 };
 
 
-
+/**
+ * Msgboy specifics
+ */
 window.onerror = function (message, file, line) {
     // Set your Airbrake API key here [REQ]
     AirbrakeNotifier.setKey("47bdc2ad25b662cee947d0a1c353e974");
-    
+
     // Set the environment. [OPT]
     AirbrakeNotifier.setEnvironment(Msgboy.environment());
-    
+
     // Set the app version [OPT]
     AirbrakeNotifier.setAppVersion(Msgboy.infos.version);
 
@@ -235,7 +237,7 @@ window.onerror = function (message, file, line) {
 
     // Set the Params [OPT]
     AirbrakeNotifier.setParams([]);
-    
+
     setTimeout(function () {
         AirbrakeNotifier.notify({
             arguments: [],
