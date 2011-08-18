@@ -96,13 +96,11 @@ var AirbrakeNotifier = {
         for (var i = 0, l = stacktrace.length; i < l; i++) {
             var line    = stacktrace[i];
             var matches = line.match(AirbrakeNotifier.BACKTRACE_MATCHER);
-            // 
             if (matches) {
                 var file = matches[2].replace(AirbrakeNotifier.ROOT, '[PROJECT_ROOT]');
                 backtrace.push('<line method="' + AirbrakeNotifier.escapeText(matches[1]) + '" file="' + AirbrakeNotifier.escapeText(file) + '" number="' + matches[3] + '" />');
             }
         }
-        
         return backtrace;
     },
 
