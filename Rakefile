@@ -155,15 +155,16 @@ end
 task :version => [:'version:current']
 
 namespace :version do
-  task :bump => [:"lint:validate", :"version:change"]
+  # task :bump => [:"lint:validate", :"version:change"]
   
   desc "Bumps version for the extension, both in the updates.xml and the manifest file."
-  task :change, :version do |task, args|
+  task :bump, :version do |task, args|
     # Makes sure we have no pending commits, and that we're on master
     g = Git.open (".")
-    if (g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
+    # if (g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
       if (g.branch.name == "master")
         # First, update the updates.xml
+        puts args.inspect
         doc = Nokogiri::XML(File.open("updates.xml"))
         doc.at("updatecheck")["version"] = args[:version]
         File.open('updates.xml','w') { |f| 
@@ -176,9 +177,9 @@ namespace :version do
       else 
         puts "Please make sure you use the master branch to package new versions"
       end
-    else 
-      puts "You have pending changed. Please commit them first."
-    end
+    # else 
+    #   puts "You have pending changed. Please commit them first."
+    # end
   end
 
   desc "Prints the version for the extension"
