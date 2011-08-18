@@ -1,13 +1,15 @@
-/* This was shamelessly stolen from the regular Airbrake JS notifier. We have to do this because there is an issue with the scheme used to build the URL to which errors are sent. */
 var AirbrakeNotifier = {
-    KEY               : '47bdc2ad25b662cee947d0a1c353e974',
+    AIRBRAKE_KEY      : '',
+    APP_VERSION       : '1.0',
+    SESSION_VARS      : [],
+    PARAMS_VARS       : [],
+    REQUEST_COMPONENT : "",
+    APP_ENVIRONMENT   : 'development',
     HOST              : 'hoptoadapp.com',
-    NOTICE_XML        : '<?xml version="1.0" encoding="UTF-8"?><notice version="2.1"><api-key></api-key><notifier><name>msgboy_airbrake_notifier</name><version>0.1.0</version><url>http://msgboy.com</url></notifier><error><class>EXCEPTION_CLASS</class><message>EXCEPTION_MESSAGE</message><backtrace>BACKTRACE_LINES</backtrace></error><request><url>REQUEST_URL</url><component>REQUEST_COMPONENT</component><action>REQUEST_ACTION</action></request><server-environment><project-root>PROJECT_ROOT</project-root><environment-name></environment-name><app-version>APP_VERSION</app-version></server-environment></notice>',
+    NOTICE_XML        : '<?xml version="1.0" encoding="UTF-8"?><notice version="2.1"><api-key>AIRBRAKE_KEY</api-key><notifier><name>chrome_app_airbrake_notifier</name><version>0.1.0</version><url></url></notifier><error><class>EXCEPTION_CLASS</class><message>EXCEPTION_MESSAGE</message><backtrace>BACKTRACE_LINES</backtrace></error><request><url>REQUEST_URL</url><component>REQUEST_COMPONENT</component><action>REQUEST_ACTION</action></request><server-environment><project-root>PROJECT_ROOT</project-root><environment-name>APP_ENVIRONMENT</environment-name><app-version>APP_VERSION</app-version></server-environment></notice>',
     ROOT              : window.location.protocol + '//' + window.location.host,
     BACKTRACE_MATCHER : /^(.*) \((.*):(.*):(.*)\)$/,
-    backtrace_filters : [/notifier\.js/],
-
-
+    
     // Generates the error XML and sends it to Airbrake's servers thru the inclusion of an iframe element.
     notify: function (error) {
         var xml     = escape(AirbrakeNotifier.generateXML(error));
@@ -23,19 +25,27 @@ var AirbrakeNotifier = {
 
     // Sets the environment
     setEnvironment: function (value) {
-        var matcher = /<environment-name>.*<\/environment-name>/;
-        AirbrakeNotifier.NOTICE_XML  = AirbrakeNotifier.NOTICE_XML.replace(matcher, '<environment-name>' + value + '</environment-name>');
+        AirbrakeNotifier.APP_ENVIRONMENT = value;
     },
 
     // Sets the host
     setHost: function (value) {
-        AirbrakeNotifier.host = value;
+        AirbrakeNotifier.HOST = value;
+    },
+
+    // Sets the session variables
+    setSessionVars: function (value) {
+        AirbrakeNotifier.SESSION_VARS = value;
+    },
+
+    // Sets the params
+    setParams: function (value) {
+        AirbrakeNotifier.PARAMS_VARS = value;
     },
 
     // Sets the API Key
     setKey: function (value) {
-        var matcher = /<api-key>.*<\/api-key>/;
-        AirbrakeNotifier.NOTICE_XML = AirbrakeNotifier.NOTICE_XML.replace(matcher, '<api-key>' + value + '</api-key>');
+        AirbrakeNotifier.AIRBRAKE_KEY = value;
     },
 
     // Sets the defaults for the error
@@ -43,21 +53,21 @@ var AirbrakeNotifier = {
         AirbrakeNotifier.errorDefaults = value;
     },
 
+    // Sets the app version
+    setAppVersion: function(value) {
+        AirbrakeNotifier.APP_VERSION = value;
+    },
+
     // Generates XML
     generateXML: function (errorWithoutDefaults) {
-        AirbrakeNotifier.setEnvironment(Msgboy.environment());
         errorWithoutDefaults.url = window.location.href;
         var error = AirbrakeNotifier.mergeDefault(AirbrakeNotifier.errorDefaults, errorWithoutDefaults);
-        if (Msgboy.inbox && Msgboy.inbox.attributes && Msgboy.inbox.attributes.jid) {
-            error.session = AirbrakeNotifier.mergeDefault({jid: Msgboy.inbox.attributes.jid}, error.session);
-        }
 
         var xml       = AirbrakeNotifier.NOTICE_XML;
         var baseUrl   = error.url     || '';
         var hash      = location.hash || '';
         var url       = AirbrakeNotifier.escapeText((baseUrl + hash) || '');
         var component = AirbrakeNotifier.escapeText(error.component  || '');
-        var action    = AirbrakeNotifier.escapeText(error.action     || '');
         var type      = AirbrakeNotifier.escapeText(error.type       || 'Error');
         var message   = AirbrakeNotifier.escapeText(error.message    || 'Unknown error.');
 
@@ -72,19 +82,26 @@ var AirbrakeNotifier = {
             data += '<cgi-data>';
             data += AirbrakeNotifier.generateVariables(cgi_data);
             data += '</cgi-data>';
-            var methods = ['params', 'session'];
-            for (var i = 0; i < 2; i++) {
-                var mtype = methods[i];
 
-                if (error[mtype]) {
-                    data += '<' + mtype + '>';
-                    data += AirbrakeNotifier.generateVariables(error[mtype]);
-                    data += '</' + mtype + '>';
-                }
-            }
-            xml = xml.replace('</request>', data + '</request>').replace('REQUEST_URL', url).replace('REQUEST_ACTION', action).replace('REQUEST_COMPONENT', component);
+            data += '<session>';
+            data += AirbrakeNotifier.generateVariables(AirbrakeNotifier.SESSION_VARS);
+            data += '</session>';
+
+            data += '<params>';
+            data += AirbrakeNotifier.generateVariables(AirbrakeNotifier.PARAMS_VARS);
+            data += '</params>';
+            
+            xml = xml.replace('</request>', data + '</request>').replace('REQUEST_URL', url).replace('REQUEST_COMPONENT', component);
         }
-        return xml.replace('PROJECT_ROOT', AirbrakeNotifier.ROOT).replace('EXCEPTION_CLASS', type).replace('APP_VERSION', Msgboy.infos.version).replace('EXCEPTION_MESSAGE', message).replace('BACKTRACE_LINES', backtrace.join(''));
+        
+        xml = xml.replace('PROJECT_ROOT', AirbrakeNotifier.escapeText(AirbrakeNotifier.ROOT));
+        xml = xml.replace('EXCEPTION_CLASS', type);
+        xml = xml.replace('APP_VERSION', AirbrakeNotifier.APP_VERSION);
+        xml = xml.replace('EXCEPTION_MESSAGE', message);
+        xml = xml.replace('BACKTRACE_LINES', backtrace.join(''));
+        xml = xml.replace('AIRBRAKE_KEY', AirbrakeNotifier.escapeText(AirbrakeNotifier.AIRBRAKE_KEY));
+        xml = xml.replace('APP_ENVIRONMENT', AirbrakeNotifier.escapeText(AirbrakeNotifier.APP_ENVIRONMENT));
+        return xml;
     },
 
     // Generates the XML backtrace to be sent.
@@ -141,10 +158,39 @@ var AirbrakeNotifier = {
             }
         }
         return cloned;
+    },
+
+    // Returns a stack Trace
+    getStackTrace: function() {
+        var obj = {};
+        Error.captureStackTrace(obj, AirbrakeNotifier.getStackTrace);
+        var lines = obj.stack.split("\n");
+        var stack = [];
+        lines.forEach(function(line) {
+            stack.push(line.trim().replace("at", "").trim());
+        });
+        return stack;
     }
 };
 
 window.onerror = function (message, file, line) {
+    // Set your Airbrake API key here [REQ]
+    AirbrakeNotifier.setKey("47bdc2ad25b662cee947d0a1c353e974");
+    
+    // Set the environment. [OPT]
+    AirbrakeNotifier.setEnvironment(Msgboy.environment());
+    
+    // Set the app version [OPT]
+    AirbrakeNotifier.setAppVersion(Msgboy.infos.version);
+
+    // Set the session variables [OPT]
+    AirbrakeNotifier.setSessionVars({
+        jid: "1337"
+    });
+
+    // Set the Params [OPT]
+    AirbrakeNotifier.setParams([]);
+    
     setTimeout(function () {
         AirbrakeNotifier.notify({
             message : message,
