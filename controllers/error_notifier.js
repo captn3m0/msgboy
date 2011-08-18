@@ -44,7 +44,7 @@ var AirbrakeNotifier = {
     REQUEST_COMPONENT : "",
     APP_ENVIRONMENT   : 'development',
     HOST              : 'hoptoadapp.com',
-    NOTICE_XML        : '<?xml version="1.0" encoding="UTF-8"?><notice version="2.1"><api-key>AIRBRAKE_KEY</api-key><notifier><name>chrome_app_airbrake_notifier</name><version>0.1.0</version><url></url></notifier><error><class>EXCEPTION_CLASS</class><message>EXCEPTION_MESSAGE</message><backtrace>BACKTRACE_LINES</backtrace></error><request><url>REQUEST_URL</url><component>REQUEST_COMPONENT</component><action>REQUEST_ACTION</action></request><server-environment><project-root>PROJECT_ROOT</project-root><environment-name>APP_ENVIRONMENT</environment-name><app-version>APP_VERSION</app-version></server-environment></notice>',
+    NOTICE_XML        : '<?xml version="1.0" encoding="UTF-8"?><notice version="2.1"><api-key>AIRBRAKE_KEY</api-key><notifier><name>chrome_app_airbrake_notifier</name><version>0.1.0</version><url>https://gist.github.com/1155334</url></notifier><error><class>EXCEPTION_CLASS</class><message>EXCEPTION_MESSAGE</message><backtrace>BACKTRACE_LINES</backtrace></error><request><url>REQUEST_URL</url><component>REQUEST_COMPONENT</component><action>REQUEST_ACTION</action></request><server-environment><project-root>PROJECT_ROOT</project-root><environment-name>APP_ENVIRONMENT</environment-name><app-version>APP_VERSION</app-version></server-environment></notice>',
     ROOT              : window.location.protocol + '//' + window.location.host,
     BACKTRACE_MATCHER : /^(.*) \((.*):(.*):(.*)\)$/,
 
