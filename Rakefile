@@ -160,7 +160,7 @@ namespace :version do
     Rake::Task["lint:validate"].invoke # Let's lint before
     # Makes sure we have no pending commits, and that we're on master
     g = Git.open (".")
-    # if (g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
+    if (g.status.added.empty? and g.status.changed.empty? and g.status.deleted.empty?)
       if (g.branch.name == "master")
         # First, update the updates.xml
         puts args.inspect
@@ -172,13 +172,13 @@ namespace :version do
         manifest() # Rewrite the manifest
         # # Finally, let's tag the repo
         g.commit("Version bump #{version}", { :add_all => true,  :allow_empty => true})
-        # g.add_tag(version)
+        g.add_tag(version)
       else 
         puts "Please make sure you use the master branch to package new versions"
       end
-    # else 
-    #   puts "You have pending changed. Please commit them first."
-    # end
+    else 
+      puts "You have pending changed. Please commit them first."
+    end
   end
 
   desc "Prints the version for the extension"
