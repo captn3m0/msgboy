@@ -58,5 +58,6 @@
     "48": "views/icons/icon48.png",
     "128": "views/icons/icon128.png"
   },
-  "version": "0.1.2.3"
+  "update_url": "http://sup.ee/update-msgboy",
+  "version": "0.1.2.4"
 }
