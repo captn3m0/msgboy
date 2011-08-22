@@ -177,6 +177,7 @@ var Message = Backbone.Model.extend({
         }
     }
 });
+
 var relevanceMath = {
     counts: function (array, defaults, weight) {
         var counts = {}, sum = 0;
@@ -228,3 +229,170 @@ var relevanceMath = {
         return sum;
     }
 };
+
+// Welcome messages
+var welcomeMessages = [{
+    "title": "Welcome to Msgboy",
+    "atom_id": "welcome-" + new Date().getTime(),
+    "summary": "",
+    "content": null,
+    "links": {
+        "alternate": {
+            "text/html": [{
+                "href": chrome.extension.getURL('/views/html/help.html'),
+                "rel": "alternate",
+                "title": "Welcome to Msgboy",
+                "type": "text/html"
+            }]
+        },
+    },
+    "read_at": 0,
+    "unread_at": new Date().getTime(),
+    "starred_at": 0,
+    "created_at": new Date().getTime(),
+    "source": {
+        "title": "Msgboy",
+        "url": "http://blog.msgboy.com/",
+        "links": {
+            "alternate": {
+                "text/html": [{
+                    "href": "http://blog.msgboy.com/",
+                    "rel": "alternate",
+                    "title": "",
+                    "type": "text/html"
+                }]
+            }
+        }
+    },
+    "host": "msgboy.com",
+    "alternate": "http://msgboy.com/",
+    "alternate_new": "http://msgboy.com/",
+    "state": "new",
+    "feed": "http://blog.msgboy.com/rss",
+    "relevance": 1.0,
+    "published": new Date().toISOString(),
+    "updated": new Date().toISOString()
+}, {
+    "title": "Click on + to see more similar messages",
+    "atom_id": "vote-plus" + new Date().getTime(),
+    "summary": "",
+    "content": null,
+    "links": {
+        "alternate": {
+            "text/html": [{
+                "href": chrome.extension.getURL('/views/html/help.html'),
+                "rel": "alternate",
+                "title": "Welcome to Msgboy",
+                "type": "text/html"
+            }]
+        },
+    },
+    "read_at": 0,
+    "unread_at": new Date().getTime(),
+    "starred_at": 0,
+    "created_at": new Date().getTime(),
+    "source": {
+        "title": "Msgboy",
+        "url": "http://blog.msgboy.com/",
+        "links": {
+            "alternate": {
+                "text/html": [{
+                    "href": "http://blog.msgboy.com/",
+                    "rel": "alternate",
+                    "title": "",
+                    "type": "text/html"
+                }]
+            }
+        }
+    },
+    "host": "msgboy.com",
+    "alternate": "http://msgboy.com/",
+    "alternate_new": "http://msgboy.com/",
+    "state": "new",
+    "feed": "http://blog.msgboy.com/rss",
+    "relevance": 0.3,
+    "published": new Date().toISOString(),
+    "updated": new Date().toISOString()
+}, {
+    "title": "Click on - to see less similar messages",
+    "atom_id": "vote-minus-" + new Date().getTime(),
+    "summary": "",
+    "content": null,
+    "links": {
+        "alternate": {
+            "text/html": [{
+                "href": chrome.extension.getURL('/views/html/help.html'),
+                "rel": "alternate",
+                "title": "Welcome to Msgboy",
+                "type": "text/html"
+            }]
+        },
+    },
+    "read_at": 0,
+    "unread_at": new Date().getTime(),
+    "starred_at": 0,
+    "created_at": new Date().getTime(),
+    "source": {
+        "title": "Msgboy",
+        "url": "http://blog.msgboy.com/",
+        "links": {
+            "alternate": {
+                "text/html": [{
+                    "href": "http://blog.msgboy.com/",
+                    "rel": "alternate",
+                    "title": "",
+                    "type": "text/html"
+                }]
+            }
+        }
+    },
+    "host": "msgboy.com",
+    "alternate": "http://msgboy.com/",
+    "alternate_new": "http://msgboy.com/",
+    "state": "new",
+    "feed": "http://blog.msgboy.com/rss",
+    "relevance": 0.6,
+    "published": new Date().toISOString(),
+    "updated": new Date().toISOString()
+}, {
+    "title": "Bookmark sites you really love to get the msgboy to send more stories from these",
+    "atom_id": "bookmark-" + new Date().getTime(),
+    "summary": "",
+    "content": null,
+    "links": {
+        "alternate": {
+            "text/html": [{
+                "href": chrome.extension.getURL('/views/html/help.html'),
+                "rel": "alternate",
+                "title": "Welcome to Msgboy",
+                "type": "text/html"
+            }]
+        },
+    },
+    "read_at": 0,
+    "unread_at": new Date().getTime(),
+    "starred_at": 0,
+    "created_at": new Date().getTime(),
+    "source": {
+        "title": "Msgboy",
+        "url": "http://blog.msgboy.com/",
+        "links": {
+            "alternate": {
+                "text/html": [{
+                    "href": "http://blog.msgboy.com/",
+                    "rel": "alternate",
+                    "title": "",
+                    "type": "text/html"
+                }]
+            }
+        }
+    },
+    "host": "msgboy.com",
+    "alternate": "http://msgboy.com/",
+    "alternate_new": "http://msgboy.com/",
+    "state": "new",
+    "feed": "http://blog.msgboy.com/rss",
+    "relevance": 0.6,
+    "published": new Date().toISOString(),
+    "updated": new Date().toISOString()
+},]

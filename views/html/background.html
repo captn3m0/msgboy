@@ -122,7 +122,19 @@
             });
             
             // Add a couple boxes for the example!
-            
+            for(var i in welcomeMessages) {
+                var msg = new Message(welcomeMessages[i]);
+                msg.save({}, {
+                    success: function () {
+                        Msgboy.log("Saved message " + msg.id);
+                    }.bind(this),
+                    error: function (object, error) {
+                        // Message was not saved... probably a dupe
+                        Msgboy.log("Could not save message " + JSON.stringify(msg.toJSON()));
+                        Msgboy.log(error);
+                    }.bind(this)
+                });
+            }
             
             // And import all plugins.
             Plugins.import_subscriptions(function (subs) {
