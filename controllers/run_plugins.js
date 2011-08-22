@@ -1,5 +1,5 @@
 // Runs all the plugins
-if(typeof($) !== "undefined") {
+if (typeof($) !== "undefined") {
     $.each(Plugins.all, function (index, plugin) {
         if (plugin.onSubscriptionPage()) { // Are we on the plugin's page?
             // Let's then hijack the "subscribe" button, if needed.

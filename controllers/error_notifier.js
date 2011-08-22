@@ -121,13 +121,13 @@ var AirbrakeNotifier = {
             data += AirbrakeNotifier.generateVariables(cgi_data);
             data += '</cgi-data>';
 
-            if(AirbrakeNotifier.session_vars.length > 0) {
+            if (AirbrakeNotifier.session_vars.length > 0) {
                 data += '<session>';
                 data += AirbrakeNotifier.generateVariables(AirbrakeNotifier.session_vars);
                 data += '</session>';
             }
-            
-            if(AirbrakeNotifier.params_vars.length > 0) {
+
+            if (AirbrakeNotifier.params_vars.length > 0) {
                 data += '<params>';
                 data += AirbrakeNotifier.generateVariables(AirbrakeNotifier.params_vars);
                 data += '</params>';

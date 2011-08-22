@@ -244,7 +244,7 @@ var welcomeMessages = [{
                 "title": "Welcome to Msgboy",
                 "type": "text/html"
             }]
-        },
+        }
     },
     "read_at": 0,
     "unread_at": new Date().getTime(),
@@ -285,7 +285,7 @@ var welcomeMessages = [{
                 "title": "Welcome to Msgboy",
                 "type": "text/html"
             }]
-        },
+        }
     },
     "read_at": 0,
     "unread_at": new Date().getTime(),
@@ -326,7 +326,7 @@ var welcomeMessages = [{
                 "title": "Welcome to Msgboy",
                 "type": "text/html"
             }]
-        },
+        }
     },
     "read_at": 0,
     "unread_at": new Date().getTime(),
@@ -367,7 +367,7 @@ var welcomeMessages = [{
                 "title": "Welcome to Msgboy",
                 "type": "text/html"
             }]
-        },
+        }
     },
     "read_at": 0,
     "unread_at": new Date().getTime(),
@@ -395,4 +395,4 @@ var welcomeMessages = [{
     "relevance": 0.6,
     "published": new Date().toISOString(),
     "updated": new Date().toISOString()
-},]
+}];

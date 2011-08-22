@@ -57,8 +57,8 @@ var Inbox = Backbone.Model.extend({
                     }.bind(this), 10000);
                 }
             }.bind(this),
-            error: function(e) {
-                window.alert("it looks like the msgboy cannot connect to the internet, so we couldn't finish the setup. It will try again soon.")
+            error: function (e) {
+                window.alert("it looks like the msgboy cannot connect to the internet, so we couldn't finish the setup. It will try again soon.");
             },
             dataType: 'json'
         });
@@ -136,6 +136,4 @@ var Inbox = Backbone.Model.extend({
             });
         });
     }
-    
-
 });
