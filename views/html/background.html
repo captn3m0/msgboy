@@ -24,13 +24,6 @@
 	<script src="../../lib/strophe.superfeedr.js" type="text/javascript" ></script>
 	<script src="../../lib/brain-0.3.5.min.js" type="text/javascript" ></script>
 	<script src="../../lib/stemmer.js" type="text/javascript" ></script>
-    
-    <!-- Model includes -->
-    <script src="../../models/database.js" type="text/javascript"></script> 
-    <script src="../../models/message.js" type="text/javascript"></script> 
-    <script src="../../models/archive.js" type="text/javascript"></script> 
-    <script src="../../models/inbox.js" type="text/javascript"></script> 
-    <script src="../../models/subscription.js" type="text/javascript"></script> 
 
     <!-- Controller includes -->
     <script src="../../controllers/msgboy.js" type="text/javascript"></script> 
@@ -38,6 +31,13 @@
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     <script src="../../controllers/uploader.js" type="text/javascript"></script> 
     <script src="../../controllers/bayesian_filter.js" type="text/javascript"></script> 
+    
+    <!-- Model includes -->
+    <script src="../../models/database.js" type="text/javascript"></script> 
+    <script src="../../models/message.js" type="text/javascript"></script> 
+    <script src="../../models/archive.js" type="text/javascript"></script> 
+    <script src="../../models/inbox.js" type="text/javascript"></script> 
+    <script src="../../models/subscription.js" type="text/javascript"></script> 
     
     <!-- Plugins includes -->
     <script src="../../controllers/plugins.js" type="text/javascript"></script> 
@@ -60,12 +60,11 @@
 <body>
     <div id="log"></div>
     <script language='javascript'>
-    
     // Google Analytics
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-22746593-1']);
     _gaq.push(['_trackPageview']);
-
+    
     (function () {
         var ga = document.createElement('script');
         ga.type = 'text/javascript';
@@ -121,6 +120,10 @@
                 url: chrome.extension.getURL('/views/html/help.html'),
                 selected: true
             });
+            
+            // Add a couple boxes for the example!
+            
+            
             // And import all plugins.
             Plugins.import_subscriptions(function (subs) {
                 Msgboy.subscribe(subs.url, function () {
@@ -135,9 +138,6 @@
             var msg = Msgboy.connection.superfeedr.convertAtomToJson(notification.payload);
             msg.source = notification.source;
             msg.feed = notification.source.url;
-            if (notification.via) {
-                msg.via = notification.via
-            }
             var message = Msgboy.inbox.add_message(msg, {
                 success: function () {
                     Msgboy.log("Saved message " + msg.id);
