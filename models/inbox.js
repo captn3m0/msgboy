@@ -21,38 +21,47 @@ var Inbox = Backbone.Model.extend({
         };
         params['user[password_confirmation]'] = params['user[password]'];
 
-        $.post(base + "/users.json", params, function (data) {
-            var success = true;
-            if (!data.user) {
-                success = false;
-            }
-            else {
-                _.each(data.user.errors, function (error, field) {
+        $.ajax({
+            type: 'POST',
+            url: base + "/users.json",
+            data: params,
+            success: function (data) {
+                var success = true;
+                if (!data.user) {
                     success = false;
-                });
-            }
+                }
+                else {
+                    _.each(data.user.errors, function (error, field) {
+                        success = false;
+                    });
+                }
 
-            if (success) {
-                this.save({
-                    epoch: new Date().getTime(),
-                    jid: data.user.username,
-                    password: params["user[password]"]
-                }, {
-                    success: function () {
-                        Msgboy.log("Inbox created for " + data.user.username);
-                        callback();
-                    },
-                    error: function () {
-                        Msgboy.log("Failed to create inbox for " + data.user.username);
-                    }
-                });
-            } else {
-                setTimeout(function () {
-                    console.log("We couldn't create credentials : " + JSON.stringify(data));
-                    this.create_credentials(callback); // We retry. That may be dangerrous though.
-                }.bind(this), 10000);
-            }
-        }.bind(this));
+                if (success) {
+                    this.save({
+                        epoch: new Date().getTime(),
+                        jid: data.user.username,
+                        password: params["user[password]"]
+                    }, {
+                        success: function () {
+                            Msgboy.log("Inbox created for " + data.user.username);
+                            callback();
+                        },
+                        error: function () {
+                            Msgboy.log("Failed to create inbox for " + data.user.username);
+                        }
+                    });
+                } else {
+                    setTimeout(function () {
+                        console.log("We couldn't create credentials : " + JSON.stringify(data));
+                        this.create_credentials(callback); // We retry. That may be dangerrous though.
+                    }.bind(this), 10000);
+                }
+            }.bind(this),
+            error: function(e) {
+                window.alert("it looks like the msgboy cannot connect to the internet, so we couldn't finish the setup. It will try again soon.")
+            },
+            dataType: 'json'
+        });
     },
 
     // Fetches and prepares the inbox if needed.
@@ -72,6 +81,7 @@ var Inbox = Backbone.Model.extend({
             }.bind(this),
             error: function () {
                 // Looks like there is no such inbox.
+                Msgboy.log("Creating new inbox");
                 this.create_credentials(function () {
                     this.trigger("ready", this);
                     this.trigger("new", this);
@@ -126,5 +136,6 @@ var Inbox = Backbone.Model.extend({
             });
         });
     }
+    
 
 });
