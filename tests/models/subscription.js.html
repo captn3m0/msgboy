@@ -88,16 +88,15 @@
 
         module("needs_refresh");
         test("new subscriptions should be refreshed", function () {
-            var subscription = new Subscription();
+            var subscription = new Subscription({id: "http://blog.msgboy.com/rss"});
             ok(subscription.needs_refresh());
         });
-        
         test("it should return true if the subscription is older than 7 days and there is no unsubscription", function () {
-            var subscription = new Subscription({subscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 *8});
+            var subscription = new Subscription({id: "http://blog.msgboy.com/rss", subscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 *8});
             ok(subscription.needs_refresh());
         });
         test("it should return true if the subscription is older than 7 days and there is an unsubscription older than 1 month", function () {
-            var subscription = new Subscription({subscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 *8, unsubscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 * 32});
+            var subscription = new Subscription({id: "http://blog.msgboy.com/rss", subscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 *8, unsubscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 * 32});
             ok(subscription.needs_refresh());
         });
         test("it should return false if the subscription is less than 7 days", function () {
@@ -106,6 +105,14 @@
         });
         test("it should return false if the unsubscription is less than 31 days", function () {
             var subscription = new Subscription({unsubscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 * 30});
+            ok(!subscription.needs_refresh());
+        });
+        test("it should return false for wikipedia feeds", function() {
+            var subscription = new Subscription({
+                subscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 *8, 
+                unsubscribed_at: new Date().getTime() - 1000 * 60 * 60 * 24 * 32,
+                id: "http://en.wikipedia.org/w/index.php?title=Special:RecentChanges&amp;feed=atom"
+            });
             ok(!subscription.needs_refresh());
         });
         
