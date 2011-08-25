@@ -29,13 +29,12 @@ var Subscription = Backbone.Model.extend({
         });
     },
     needs_refresh: function () {
-        if (this.attributes.subscribed_at < new Date().getTime() - 1000 * 60 * 60 * 24 * 7 &&
-            this.attributes.unsubscribed_at < new Date().getTime() - 1000 * 60 * 60 * 24 * 31) {
-                for (i in Blacklist) {
-                    if(!this.attributes.id || this.attributes.id.match(Blacklist[i])) {
-                        return false;
-                    }
+        if (this.attributes.subscribed_at < new Date().getTime() - 1000 * 60 * 60 * 24 * 7 && this.attributes.unsubscribed_at < new Date().getTime() - 1000 * 60 * 60 * 24 * 31) {
+            for (var i in Blacklist) {
+                if (!this.attributes.id || this.attributes.id.match(Blacklist[i])) {
+                    return false;
                 }
+            }
             return true;
         }
         return false;
@@ -89,4 +88,4 @@ var Subscriptions = Backbone.Collection.extend({
 
 var Blacklist = [
     /.*wikipedia\.org\/.*/
-]
+];
