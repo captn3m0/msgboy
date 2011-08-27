@@ -74,6 +74,7 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 * <del>Show messages when there was no subscription performed at all...</del>
 * Show more help in the msgboy dashboard in the form of boxes. These should indicate what needs to be done to subscribe to more content (bookmarking stuff!).
 * Add some feeds in blacklists (like wikipedia's feeds).
+* Check safari bookmarks
 
 ## Publishers
 
