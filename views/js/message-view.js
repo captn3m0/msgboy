@@ -116,6 +116,9 @@ var MessageView = Backbone.View.extend({
         }
         // Trigger rendered
         this.trigger("rendered");
+    },
+    group_with: function(view) {
+        console.log(this.cid + " NEEDS GROUPING WITH " + view.cid);
     }
 });
 

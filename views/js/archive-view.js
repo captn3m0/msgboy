@@ -3,6 +3,7 @@ var ArchiveView = Backbone.View.extend({
     days: 1,
     loaded: 20,
     to_load: 20,
+    latest: null,
     events: {
     },
     initialize: function () {
@@ -55,6 +56,10 @@ var ArchiveView = Backbone.View.extend({
             $('#container').isotope('reLayout');
         }.bind(this));
         view.render(); // builds the HTML
+        if(this.latest && this.latest.attributes.alternate === message.attributes.alternate) {
+            view.group_with(this.latest.view);
+        }
+        this.latest = message;
     },
     delete_from_feed: function (feed) {
         _.each(this.collection.models, function (model) {
