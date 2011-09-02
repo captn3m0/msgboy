@@ -19,6 +19,7 @@ var Message = Backbone.Model.extend({
         "feed":         "",
         "relevance":    0.3
     },
+    groupedMessages: new Backbone.Collection(),
     /* Initializes the messages */
     initialize: function (attributes) {
         if (attributes.source && attributes.source.links && attributes.source.links.alternate && attributes.source.links.alternate["text/html"] && attributes.source.links.alternate["text/html"][0]) {

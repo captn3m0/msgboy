@@ -101,19 +101,26 @@ var MessageView = Backbone.View.extend({
         }.bind(this));
     },
     render: function () {
-        $(this.el).attr("data-msgboy-state", this.model.attributes.state);
+        var el = $(this.el);
+        el.attr("data-msgboy-state", this.model.attributes.state);
         // Let's remove all the brick classes
-        for (var i = 0; i <= 4; i = i + 1) {
-            $(this.el).removeClass("brick-" + i);
-        }
+        el.removeClass("brick-1 brick-2 brick-3 brick-4");
         // And add the right ones.
         if (this.model.attributes.state === "down-ed") {
-            $(this.el).addClass("brick-1");
+            el.addClass("brick-1");
         } else if (this.model.attributes.state === "up-ed") {
-            $(this.el).addClass("brick-4");
+            el.addClass("brick-4");
         } else {
-            $(this.el).addClass("brick-" + Math.ceil(this.model.attributes.relevance * 4));
+            el.addClass("brick-" + Math.ceil(this.model.attributes.relevance * 4));
         }
+        if (this.model.groupedMessages) {
+            this.model.groupedMessages.bind('add', function () {
+                el.addClass('group');
+                el.css('border', '3px solid blue');
+            });
+            
+        }
+        
         // Trigger rendered
         this.trigger("rendered");
     },

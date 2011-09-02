@@ -9,9 +9,8 @@ var ArchiveView = Backbone.View.extend({
     initialize: function () {
         _.bindAll(this, 'render', 'delete_from_feed', 'show_new', 'complete_page', 'load_next');
         $(document).scroll(this.complete_page);
-        this.collection.comparator = function (message) {
-            return -message.attributes.created_at;
-        };
+        window.archive = this;
+        window.messages = this.collection;
         this.collection.bind("add", this.show_new);
         this.load_next();
     },
@@ -36,28 +35,30 @@ var ArchiveView = Backbone.View.extend({
         $(".message").remove(); // Cleanup
     },
     show_new: function (message) {
-        this.loaded++;
-        var view = new MessageView({
-            model: message
-        });
-        view.bind("change", function () {
-            $('#container').isotope('reLayout');
-        });
-        view.bind("rendered", function () {
-            this.complete_page();
-            $('#container').isotope('appended', $(view.el), function () {
-                $(view.el).show();
+        if (this.lastRendered && this.lastRendered.get('alternate') === message.get('alternate')) {
+            this.lastRendered.groupedMessages.add(message);
+        } else {
+            this.loaded++;
+            var view = new MessageView({
+                model: message
+            });
+            view.bind("change", function () {
+                $('#container').isotope('reLayout');
+            });
+            view.bind("rendered", function () {
+                this.complete_page();
+                $('#container').isotope('appended', $(view.el), function () {
+                    $(view.el).show();
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
-        $(view.el).hide();
-        $("#container").append(view.el); // Adds the view in the document.
-        view.bind("delete-from-feed", function (url) {
-            this.delete_from_feed(url);
-            $('#container').isotope('reLayout');
-        }.bind(this));
-        view.render(); // builds the HTML
-        if(this.latest && this.latest.attributes.alternate === message.attributes.alternate) {
-            view.group_with(this.latest.view);
+            $(view.el).hide();
+            $("#container").append(view.el); // Adds the view in the document.
+            view.bind("delete-from-feed", function (url) {
+                this.delete_from_feed(url);
+                $('#container').isotope('reLayout');
+            }.bind(this));
+            view.render(); // builds the HTML
+            this.lastRendered = message; // store reference to last rendered
         }
         this.latest = message;
     },
