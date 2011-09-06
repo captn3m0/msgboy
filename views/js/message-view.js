@@ -7,6 +7,7 @@ var MessageView = Backbone.View.extend({
         "click .expand": "handleExpandClick",
         "click": "handleClick"
     },
+    // TODO: i'd prefer is we didn't set style attributes. Also, the favicon can be an img tag, just for cleanliness when writing to the template.
     template: _.template([
         '<span class="controls">',
             '<button class="vote down">',
@@ -20,6 +21,7 @@ var MessageView = Backbone.View.extend({
         '<p><%= Msgboy.helper.cleaner.html(model.attributes.title) %></p>',
         '<h1 style="background-image: url(<%= model.faviconUrl() %>)"><%= Msgboy.helper.cleaner.html(model.attributes.source.title) %></h1>'
     ].join('')),
+    // TODO: get actual group styling html, (this is just a placeholder)
     groupTemplate: _.template([
         '<h1 style="background-image: url(<%= model.faviconUrl() %>)">GROUP: <%= Msgboy.helper.cleaner.html(model.attributes.source.title) %></h1>',
         '<button class="expand"><br><br>EXPAND!<br><br><br></button>',
@@ -94,6 +96,8 @@ var MessageView = Backbone.View.extend({
     handleExpandClick: function (e) {
         console.log('expand called');
         e.stopImmediatePropagation();
+        
+        // TODO: this is where we want to figure out how to insert items without pissing off isotope. It started stacking items when I tried using the insert method. Also tried inserting manually and doing reLayout.
         
         /*
         var self = this,
