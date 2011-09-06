@@ -36,7 +36,7 @@ var ArchiveView = Backbone.View.extend({
     },
     show_new: function (message) {
         if (this.lastRendered && this.lastRendered.get('alternate') === message.get('alternate')) {
-            this.lastRendered.groupedMessages.add(message);
+            this.lastRendered.messages.add(message);
         } else {
             this.loaded++;
             var view = new MessageView({
@@ -46,13 +46,19 @@ var ArchiveView = Backbone.View.extend({
                 $('#container').isotope('reLayout');
             });
             view.bind("rendered", function () {
-                this.complete_page();
+            }.bind(this));
+            $(view.el).hide();
+            
+            
+            
+            $("#container").append(view.el); // Adds the view in the document.
+            
+            this.complete_page();
                 $('#container').isotope('appended', $(view.el), function () {
                     $(view.el).show();
                 }.bind(this));
-            }.bind(this));
-            $(view.el).hide();
-            $("#container").append(view.el); // Adds the view in the document.
+            
+            
             view.bind("delete-from-feed", function (url) {
                 this.delete_from_feed(url);
                 $('#container').isotope('reLayout');
