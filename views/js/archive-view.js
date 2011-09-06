@@ -9,8 +9,8 @@ var ArchiveView = Backbone.View.extend({
     initialize: function () {
         _.bindAll(this, 'render', 'delete_from_feed', 'show_new', 'complete_page', 'load_next');
         $(document).scroll(this.complete_page);
-        window.archive = this;
-        window.messages = this.collection;
+        
+        Msgboy.archiveView = this; // store a global reference
         this.collection.bind("add", this.show_new);
         this.load_next();
     },
@@ -42,26 +42,11 @@ var ArchiveView = Backbone.View.extend({
             var view = new MessageView({
                 model: message
             });
-            view.bind("change", function () {
-                $('#container').isotope('reLayout');
-            });
-            view.bind("rendered", function () {
-            }.bind(this));
             $(view.el).hide();
-            
-            
-            
             $("#container").append(view.el); // Adds the view in the document.
-            
             this.complete_page();
-                $('#container').isotope('appended', $(view.el), function () {
-                    $(view.el).show();
-                }.bind(this));
-            
-            
-            view.bind("delete-from-feed", function (url) {
-                this.delete_from_feed(url);
-                $('#container').isotope('reLayout');
+            $('#container').isotope('appended', $(view.el), function () {
+                $(view.el).show();
             }.bind(this));
             view.render(); // builds the HTML
             this.lastRendered = message; // store reference to last rendered
@@ -71,6 +56,7 @@ var ArchiveView = Backbone.View.extend({
     delete_from_feed: function (feed) {
         _.each(this.collection.models, function (model) {
             if (model.attributes.feed === feed) {
+                $('#container').isotope('remove', $(model.view.el));
                 model.view.remove();
                 model.destroy({
                     success: function () {
@@ -78,6 +64,8 @@ var ArchiveView = Backbone.View.extend({
                 });
             }
         });
+        //$('#container').isotope('reLayout');
+        //
     }
 });
 

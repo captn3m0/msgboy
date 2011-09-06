@@ -23,7 +23,6 @@ var MessageView = Backbone.View.extend({
     groupTemplate: _.template([
         '<h1 style="background-image: url(<%= model.faviconUrl() %>)">GROUP: <%= Msgboy.helper.cleaner.html(model.attributes.source.title) %></h1>',
         '<button class="expand"><br><br>EXPAND!<br><br><br></button>',
-        
         '<div>Contains: <%= model.messages.length %></div>'
     ].join('')),
     initialize: function () {
@@ -33,12 +32,13 @@ var MessageView = Backbone.View.extend({
         this.render();
     },
     render: function () {
-        var el = $(this.el);
+        var el = $(this.el),
+            isGroup = this.model.messages.length > 1;
         
         // set some attributes on the container div
         $(this.el).attr({
             'data-msgboy-relevance': this.model.get('relevance'),
-            'id': this.model.id,
+            'id': isGroup ? 'group_' + this.model.id : this.model.id,
             'data-msgboy-state': this.model.get('state')
         });
         
@@ -48,7 +48,7 @@ var MessageView = Backbone.View.extend({
         el.addClass(this.getBoxColor());
         
         // render our compiled template
-        if (this.model.messages.length > 1) {
+        if (isGroup) {
             el.html(this.groupTemplate({model: this.model}));
         } else {
             el.html(this.template({model: this.model}));
@@ -87,13 +87,36 @@ var MessageView = Backbone.View.extend({
                     params: this.model.attributes.feed
                 };
                 chrome.extension.sendRequest(request);
-                this.trigger("delete-from-feed", this.model.attributes.feed);
+                Msgboy.delete_from_feed(this.model.attributes.feed);
             }
         }.bind(this));
     },
     handleExpandClick: function (e) {
         console.log('expand called');
         e.stopImmediatePropagation();
+        
+        /*
+        var self = this,
+            newViews = $();
+        
+        this.model.messages.each(function (message) {
+            var view = new MessageView({
+                model: message
+            });
+            view.render();
+            newViews = newViews.after(view.el);
+            //$('#container').isotope('insert', $(view.el));
+        });
+        
+        $(self.el).after(newViews);
+        
+        $('#container').isotope('remove', $(this.el));
+        
+        $('#container').isotope( 'reloadItems' ).isotope('reLayout');
+        
+        //$('#container').isotope('reLayout');
+        $(this.el).remove();
+        */
         return false;
     },
     handleImageLoad: function (e) {
