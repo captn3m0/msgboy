@@ -78,9 +78,18 @@
         Msgboy.inbox = new Inbox();
 
         Msgboy.logEnabled = true;
-        Msgboy.connection = new Strophe.Connection({
-            protocol: new Strophe.Websocket('ws://ws1.msgboy.com:5280')
-        });
+        
+        if(parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10) > 13) {
+            Msgboy.connection = new Strophe.Connection({
+                protocol: new Strophe.Websocket('ws://ws2.msgboy.com:5281')
+            });
+        }
+        else {
+            Msgboy.connection = new Strophe.Connection({
+                protocol: new Strophe.Websocket('ws://ws2.msgboy.com:5280')
+            });
+        }
+        
         Msgboy.connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
 
         Msgboy.connection.rawInput = function (data) {
