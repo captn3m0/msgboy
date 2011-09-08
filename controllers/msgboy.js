@@ -81,7 +81,7 @@ Msgboy.on_connect = function (status) {
 
 // Reconnects the Msgboy
 Msgboy.auto_reconnect = function () {
-    Msgboy.reconnectDelay = Math.max(Msgboy.reconnectDelay + 1, 10); // We max at one attempt every minute.
+    Msgboy.reconnectDelay = Math.min(Msgboy.reconnectDelay + 1, 10); // We max at one attempt every minute.
     if (!Msgboy.reconnectionTimeout) {
         Msgboy.reconnectionTimeout = setTimeout(function () {
             Msgboy.reconnectionTimeout = null;
