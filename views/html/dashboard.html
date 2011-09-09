@@ -60,12 +60,9 @@
         <script type="text/javascript">
             Msgboy.bind("loaded", function () {
                 $('#container').isotope({
-                    itemSelector: '.message',
-                    filter: '.brick-2 .brick-3 .brick-4',
                     masonry: {
-                        columnWidth: 10,
-                    },
-                    sortBy: 'random',
+                        columnWidth: 10
+                    }
                 });
 
                 var archive = new Archive();
@@ -76,9 +73,10 @@
                 });
 
                 // When a message was changed
-                archive.bind("change", function (message) {
+                /*archive.bind("change", function (message) {
                     $('#container').isotope('reLayout');
                 });
+                */
                 
                 archive.bind("down-ed", function (message) {
                     BayesianFilter.train_with_message(message)

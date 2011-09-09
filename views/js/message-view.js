@@ -94,33 +94,35 @@ var MessageView = Backbone.View.extend({
         }.bind(this));
     },
     handleExpandClick: function (e) {
-        console.log('expand called');
         e.stopImmediatePropagation();
         
         // TODO: this is where we want to figure out how to insert items without pissing off isotope. It started stacking items when I tried using the insert method. Also tried inserting manually and doing reLayout.
         
-        /*
         var self = this,
             newViews = $();
         
         this.model.messages.each(function (message) {
             var view = new MessageView({
-                model: message
-            });
-            view.render();
-            newViews = newViews.after(view.el);
-            //$('#container').isotope('insert', $(view.el));
+                    model: message
+                });
+            if (message !== self.model) {
+                newViews = newViews.after(view.el);
+                view.render();
+            }
         });
         
+        // append them at the right spot
         $(self.el).after(newViews);
         
-        $('#container').isotope('remove', $(this.el));
+        // empty all the contained models
+        this.model.messages.reset();
         
-        $('#container').isotope( 'reloadItems' ).isotope('reLayout');
+        // re-draw self
+        this.render();
         
-        //$('#container').isotope('reLayout');
-        $(this.el).remove();
-        */
+        // reload existing items, relayout, 
+        $('#container').isotope( 'reloadItems' ).isotope('reLayout').isotope({sortBy: 'original-order'});
+        
         return false;
     },
     handleImageLoad: function (e) {
