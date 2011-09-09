@@ -129,8 +129,8 @@
     text-align: right;
 }
 
-.brick-1 {
-    /* These shouldn't be displayed anyway...*/
+/*.brick-1 {
+    /* These shouldn't be displayed anyway...
     display: none;
     width: 0;
     height: 0;
@@ -138,9 +138,9 @@
     max-width: 0;
     margin: 0;
     line-height: 0;
-}
+}*/
 
-.brick-2 {     
+.brick-2, .brick-1 {     
     font-size:0.8em;
     width: 100px;
     height: 210px;

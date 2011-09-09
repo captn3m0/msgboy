@@ -57,6 +57,11 @@ var MessageView = Backbone.View.extend({
         }
         
         $(this.el).find('.full-content img').load(this.handleImageLoad.bind(this));
+
+        // adding for initial load attention-getting. not sure if this is the right spot for this. -eric
+        $('.message .controls button').addClass('shimmer');
+        console.log('shimmer');
+        console.log($('.message .controls button').attr('class'));
     },
     
     
@@ -80,6 +85,8 @@ var MessageView = Backbone.View.extend({
     },
     handleUpClick: function () {
         this.model.vote_up();
+
+        $('#container').isotope('reLayout');
     },
     handleDownClick: function () {
         this.model.vote_down(function (result) {
@@ -92,6 +99,8 @@ var MessageView = Backbone.View.extend({
                 Msgboy.delete_from_feed(this.model.attributes.feed);
             }
         }.bind(this));
+
+        $('#container').isotope('reLayout');
     },
     handleExpandClick: function (e) {
         e.stopImmediatePropagation();
@@ -121,8 +130,15 @@ var MessageView = Backbone.View.extend({
         this.render();
         
         // reload existing items, relayout, 
-        $('#container').isotope( 'reloadItems' ).isotope('reLayout').isotope({sortBy: 'original-order'});
+        $('#container').isotope('reloadItems').isotope('reLayout').isotope({sortBy:'originalOrder'});
         
+        // $('#container').isotope({
+        //     masonry: {
+        //         columnWidth: 10
+        //     }
+        // })
+
+
         return false;
     },
     handleImageLoad: function (e) {
