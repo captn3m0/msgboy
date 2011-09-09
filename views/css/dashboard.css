@@ -143,19 +143,19 @@
 .brick-2, .brick-1 {     
     font-size:0.8em;
     width: 100px;
-    height: 210px;
+    height: 200px;
 }
 
 .brick-3 {
     font-size:1.0em;
-    width: 210px;
-    height: 210px;
+    width: 220px;
+    height: 200px;
 }
 
 .brick-4 {
     font-size:1.2em;
-    width: 440px;
-    height: 440px;
+    width: 460px;
+    height: 420px;
 }
 
 .isotope, .isotope .isotope-item {
