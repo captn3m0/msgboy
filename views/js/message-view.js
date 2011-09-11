@@ -66,7 +66,7 @@ var MessageView = Backbone.View.extend({
 
         $('.shimmer').bind('webkitAnimationEnd', function(){
             $('.controls').fadeOut('slow');
-            //$(this).removeClass('shimmer');
+            $(this).removeClass('shimmer');
         });
 
     },
@@ -102,7 +102,7 @@ var MessageView = Backbone.View.extend({
 
         $('.shimmer').bind('webkitAnimationEnd', function(){
             $('.controls').fadeOut('slow');
-            //$(this).removeClass('shimmer');
+            $(this).removeClass('shimmer');
         });
     },
     handleDownClick: function () {
@@ -126,7 +126,7 @@ var MessageView = Backbone.View.extend({
 
         $('.shimmer').bind('webkitAnimationEnd', function(){
             $('.controls').fadeOut('slow');
-            //$(this).removeClass('shimmer');
+            $(this).removeClass('shimmer');
         });
     },
     handleExpandClick: function (e) {
@@ -159,13 +159,6 @@ var MessageView = Backbone.View.extend({
         // reload existing items, relayout, 
         $('#container').isotope('reloadItems').isotope('reLayout').isotope({sortBy:'originalOrder'});
         
-        // $('#container').isotope({
-        //     masonry: {
-        //         columnWidth: 10
-        //     }
-        // })
-
-
         return false;
     },
     handleImageLoad: function (e) {
