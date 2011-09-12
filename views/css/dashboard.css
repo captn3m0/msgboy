@@ -77,7 +77,7 @@
 }
 
 .message:hover .controls {
-    display:block;
+    display: block !important;
     z-index: 10;
 }
 
@@ -129,8 +129,38 @@
     text-align: right;
 }
 
-.brick-1 {
-    /* These shouldn't be displayed anyway...*/
+
+/* shimmer boxes on load */
+.controls button.shimmer {
+    background: -webkit-gradient(linear, 100% 0%, 0% 0%, from(rgba(255,255,255,.2)), to(rgba(255,255,255,.2)), color-stop(.5,rgba(235,235,235,.8))); 
+    background-repeat: repeat-x;
+    background-position: 0 0;
+    -webkit-animation: moveIt .3s ease-out .3s 1;
+    -moz-animation: moveIt 1s linear infinite;
+}
+
+@-webkit-keyframes moveIt {
+    0%   { 
+        background-position: 0 0; 
+    }    
+    100% { 
+        background-position: 30px 0;
+    }
+}
+
+@-moz-keyframes moveIt {
+    0%   { 
+        background-position: 0 0; 
+    }    
+    100% { 
+        background-position: 500px 0; 
+    }
+}
+/* end shimmer stuff */
+
+
+/*.brick-1 {
+    /* These shouldn't be displayed anyway...
     display: none;
     width: 0;
     height: 0;
@@ -138,9 +168,9 @@
     max-width: 0;
     margin: 0;
     line-height: 0;
-}
+}*/
 
-.brick-2 {     
+.brick-2, .brick-1 {     
     font-size:0.8em;
     width: 100px;
     height: 210px;
@@ -148,14 +178,14 @@
 
 .brick-3 {
     font-size:1.0em;
-    width: 210px;
+    width: 220px;
     height: 210px;
 }
 
 .brick-4 {
     font-size:1.2em;
-    width: 430px;
-    height: 430px;
+    width: 460px;
+    height: 440px;
 }
 
 .isotope, .isotope .isotope-item {
@@ -215,14 +245,14 @@
 
 .brick-3 p {
     font-size: 1em;
-    width: 190px;
+    width: 200px;
     height: 73px;    /*padding is 10*/
     line-height: 20px;
 }
 
 .brick-4 p {
     font-size: 1.4em;
-    width: 410px;
+    width: 440px;
     height: 73px;    /*padding is 10*/
     line-height: 26px;
 }

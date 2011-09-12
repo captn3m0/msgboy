@@ -62,6 +62,18 @@ var MessageView = Backbone.View.extend({
         }
         
         $(this.el).find('.full-content img').load(this.handleImageLoad.bind(this));
+
+
+
+        // adding for initial load attention-getting shimmer. not sure if this is the right spot for this. -eric
+        $('.controls').fadeIn();
+        $('.message:nth-child(3n+1) .controls button').addClass('shimmer');
+
+        $('.shimmer').bind('webkitAnimationEnd', function(){
+            $('.controls').fadeOut('slow');
+            $(this).removeClass('shimmer');
+        });
+
     },
     
     
@@ -85,6 +97,18 @@ var MessageView = Backbone.View.extend({
     },
     handleUpClick: function () {
         this.model.vote_up();
+
+
+        // added by eric. self-reminder.
+        $('#container').isotope('reLayout');
+
+        $('.controls').fadeIn();
+        $('.message:nth-child(3n+1) .controls button').addClass('shimmer');
+
+        $('.shimmer').bind('webkitAnimationEnd', function(){
+            $('.controls').fadeOut('slow');
+            $(this).removeClass('shimmer');
+        });
     },
     handleDownClick: function () {
         this.model.vote_down(function (result) {
@@ -97,6 +121,18 @@ var MessageView = Backbone.View.extend({
                 Msgboy.delete_from_feed(this.model.attributes.feed);
             }
         }.bind(this));
+
+
+        // added by eric. self-reminder.
+        $('#container').isotope('reLayout');
+
+        $('.controls').fadeIn();
+        $('.message:nth-child(3n+1) .controls button').addClass('shimmer');
+
+        $('.shimmer').bind('webkitAnimationEnd', function(){
+            $('.controls').fadeOut('slow');
+            $(this).removeClass('shimmer');
+        });
     },
     handleExpandClick: function (e) {
         e.stopImmediatePropagation();
@@ -124,7 +160,7 @@ var MessageView = Backbone.View.extend({
         this.render();
         
         // reload existing items, relayout, 
-        $('#container').isotope( 'reloadItems' ).isotope('reLayout').isotope({sortBy: 'original-order'});
+        $('#container').isotope('reloadItems').isotope('reLayout').isotope({sortBy:'originalOrder'});
         
         return false;
     },
