@@ -154,8 +154,8 @@
 
 .brick-4 {
     font-size:1.2em;
-    width: 430px;
-    height: 430px;
+    width: 440px;
+    height: 440px;
 }
 
 .isotope, .isotope .isotope-item {
@@ -222,7 +222,7 @@
 
 .brick-4 p {
     font-size: 1.4em;
-    width: 410px;
+    width: 420px;
     height: 73px;    /*padding is 10*/
     line-height: 26px;
 }
