@@ -10,22 +10,22 @@ Msgboy.Notification.prototype = {
     messages: [],
     started: false,
     mouse_over: false,
-    current_view: null,
     period: 8000,
     rotate: function () {
         setTimeout(function () {
             if (!this.mouse_over) {
-                if (this.current_view) {
-                    this.current_view.remove();
+                if (this.messages[0]) {
+                    this.messages[0].view.remove();
                 }
+                this.messages.pop();
                 this.show_next_message();
             }
             this.rotate();
         }.bind(this), this.period);
     },
     show_next_message: function () {
-        var message = this.messages.pop();
-        if (!message) {
+        var message = this.messages[0];
+        if (!this.messages[0]) {
             chrome.extension.sendRequest({
                 signature: "close",
                 params: null
@@ -34,38 +34,41 @@ Msgboy.Notification.prototype = {
             });
         } else {
             window.focus(); // Put this alert in front!
-            this.current_view = new MessageView({
-                model: message
+            this.messages[0].view = new MessageView({
+                model: this.messages[0]
             });
 
-            message.bind("up-ed", function () {
-                this.current_view.remove();
-                this.go_to_message(message);
+            this.messages[0].bind("up-ed", function () {
+                this.messages[0].view.remove();
+                this.go_to_message(this.messages[0]);
+                this.messages.pop();
                 this.show_next_message();
             }.bind(this));
 
-            message.bind("down-ed", function () {
-                this.current_view.remove();
+            this.messages[0].bind("down-ed", function () {
+                this.messages[0].view.remove();
+                this.messages.pop();
                 this.show_next_message();
             }.bind(this));
 
-            this.current_view.bind("clicked", function () {
-                this.current_view.remove();
+            this.messages[0].view.bind("clicked", function () {
+                this.messages[0].view.remove();
+                this.messages.pop();
                 this.show_next_message();
             }.bind(this));
 
-            this.current_view.bind("rendered", function () {
-                $(this.current_view.el).appendTo($("body"));
+            this.messages[0].view.bind("rendered", function () {
+                $(this.messages[0].view.el).appendTo($("body"));
             }.bind(this));
 
-            this.current_view.render(); // builds the HTML
+            this.messages[0].view.render(); // builds the HTML
         }
     },
     go_to_message: function (model) {
         chrome.extension.sendRequest({
             signature: "tab",
             params: {
-                url: this.current_view.model.main_link(),
+                url: this.messages[0].main_link(),
                 selected: true
             }
         });

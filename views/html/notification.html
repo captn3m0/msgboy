@@ -64,10 +64,14 @@
                 chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
                     if (request.signature == "notify" && request.params) {
                         var message = new Message(request.params);
-                        notification.messages.push(message);
-                        if (!notification.started) {
-                            notification.started = true // Initiate the loop.
-                            notification.show_next_message();
+                        if (_.indexOf(_.pluck(_.pluck(_.pluck(notification.messages, "attributes"), "source"), "url"), message.attributes.source.url) >= 0) {
+                            // Skipped this message because we have already a pending message from this source.
+                        } else {
+                            notification.messages.push(message);
+                            if (!notification.started) {
+                                notification.started = true // Initiate the loop.
+                                notification.show_next_message();
+                            }
                         }
                     }
                 });
