@@ -231,10 +231,11 @@ var relevanceMath = {
 };
 
 // Welcome messages
-var welcomeMessages = [{
-    "title": "Welcome to Msgboy",
+var welcomeMessages = [
+{
+    "title": "Welcome to msgboy!",
     "atom_id": "welcome-" + new Date().getTime(),
-    "summary": "",
+    "summary": "<img src='" + chrome.extension.getURL('/views/images/msgboy-help-screen-1.png') + "' />",
     "content": null,
     "links": {
         "alternate": {
@@ -272,10 +273,11 @@ var welcomeMessages = [{
     "relevance": 1.0,
     "published": new Date().toISOString(),
     "updated": new Date().toISOString()
-}, {
-    "title": "Click on + to see more similar messages",
+}, 
+{
+    "title": "Bookmark sites you love.",
     "atom_id": "vote-plus" + new Date().getTime(),
-    "summary": "",
+    "summary": "<img src='" + chrome.extension.getURL('/views/images/msgboy-help-screen-2.png') + "' />",
     "content": null,
     "links": {
         "alternate": {
@@ -290,7 +292,7 @@ var welcomeMessages = [{
     "read_at": 0,
     "unread_at": new Date().getTime(),
     "starred_at": 0,
-    "created_at": new Date().getTime(),
+    "created_at": new Date().getTime() - 1000,
     "source": {
         "title": "Msgboy",
         "url": "http://blog.msgboy.com/",
@@ -310,13 +312,14 @@ var welcomeMessages = [{
     "alternate_new": "http://msgboy.com/",
     "state": "new",
     "feed": "http://blog.msgboy.com/rss",
-    "relevance": 0.3,
+    "relevance": 0.6,
     "published": new Date().toISOString(),
     "updated": new Date().toISOString()
-}, {
-    "title": "Click on - to see less similar messages",
+}, 
+{
+    "title": "Newly posted stories appear in realtime.",
     "atom_id": "vote-minus-" + new Date().getTime(),
-    "summary": "",
+    "summary": "<img src='" + chrome.extension.getURL('/views/images/msgboy-help-screen-3.png') + "' />",
     "content": null,
     "links": {
         "alternate": {
@@ -331,7 +334,7 @@ var welcomeMessages = [{
     "read_at": 0,
     "unread_at": new Date().getTime(),
     "starred_at": 0,
-    "created_at": new Date().getTime(),
+    "created_at": new Date().getTime() - 2000,
     "source": {
         "title": "Msgboy",
         "url": "http://blog.msgboy.com/",
@@ -354,10 +357,11 @@ var welcomeMessages = [{
     "relevance": 0.6,
     "published": new Date().toISOString(),
     "updated": new Date().toISOString()
-}, {
-    "title": "Bookmark sites you really love to get the msgboy to send more stories from these",
+}, 
+{
+    "title": "Train msgboy to give you what you want.",
     "atom_id": "bookmark-" + new Date().getTime(),
-    "summary": "",
+    "summary": "<img src='" + chrome.extension.getURL('/views/images/msgboy-help-screen-5.png') + "' />",
     "content": null,
     "links": {
         "alternate": {
@@ -372,7 +376,7 @@ var welcomeMessages = [{
     "read_at": 0,
     "unread_at": new Date().getTime(),
     "starred_at": 0,
-    "created_at": new Date().getTime(),
+    "created_at": new Date().getTime() - 3000,
     "source": {
         "title": "Msgboy",
         "url": "http://blog.msgboy.com/",
@@ -395,4 +399,173 @@ var welcomeMessages = [{
     "relevance": 0.6,
     "published": new Date().toISOString(),
     "updated": new Date().toISOString()
-}];
+}, 
+{
+    "title": "Click '+' for more like this.",
+    "atom_id": "bookmark-" + new Date().getTime(),
+    "summary": "<img src='" + chrome.extension.getURL('/views/images/msgboy-help-screen-6.png') + "' />",
+    "content": null,
+    "links": {
+        "alternate": {
+            "text/html": [{
+                "href": chrome.extension.getURL('/views/html/help.html'),
+                "rel": "alternate",
+                "title": "Welcome to Msgboy",
+                "type": "text/html"
+            }]
+        }
+    },
+    "read_at": 0,
+    "unread_at": new Date().getTime(),
+    "starred_at": 0,
+    "created_at": new Date().getTime() - 4000,
+    "source": {
+        "title": "Msgboy",
+        "url": "http://blog.msgboy.com/",
+        "links": {
+            "alternate": {
+                "text/html": [{
+                    "href": "http://blog.msgboy.com/",
+                    "rel": "alternate",
+                    "title": "",
+                    "type": "text/html"
+                }]
+            }
+        }
+    },
+    "host": "msgboy.com",
+    "alternate": "http://msgboy.com/",
+    "alternate_new": "http://msgboy.com/",
+    "state": "new",
+    "feed": "http://blog.msgboy.com/rss",
+    "relevance": 0.8,
+    "published": new Date().toISOString(),
+    "updated": new Date().toISOString()
+}, 
+{
+    "title": "Hit '-' if you're not interested.",
+    "atom_id": "bookmark-" + new Date().getTime(),
+    "summary": "<img src='" + chrome.extension.getURL('/views/images/msgboy-help-screen-7.png') + "' />",
+    "content": null,
+    "links": {
+        "alternate": {
+            "text/html": [{
+                "href": chrome.extension.getURL('/views/html/help.html'),
+                "rel": "alternate",
+                "title": "Welcome to Msgboy",
+                "type": "text/html"
+            }]
+        }
+    },
+    "read_at": 0,
+    "unread_at": new Date().getTime(),
+    "starred_at": 0,
+    "created_at": new Date().getTime() - 5000,
+    "source": {
+        "title": "Msgboy",
+        "url": "http://blog.msgboy.com/",
+        "links": {
+            "alternate": {
+                "text/html": [{
+                    "href": "http://blog.msgboy.com/",
+                    "rel": "alternate",
+                    "title": "",
+                    "type": "text/html"
+                }]
+            }
+        }
+    },
+    "host": "msgboy.com",
+    "alternate": "http://msgboy.com/",
+    "alternate_new": "http://msgboy.com/",
+    "state": "new",
+    "feed": "http://blog.msgboy.com/rss",
+    "relevance": 0.6,
+    "published": new Date().toISOString(),
+    "updated": new Date().toISOString()
+}, 
+{
+    "title": "Follow and rate stories with notifications.",
+    "atom_id": "bookmark-" + new Date().getTime(),
+    "summary": "<img src='" + chrome.extension.getURL('/views/images/msgboy-help-screen-8.png') + "' />",
+    "content": null,
+    "links": {
+        "alternate": {
+            "text/html": [{
+                "href": chrome.extension.getURL('/views/html/help.html'),
+                "rel": "alternate",
+                "title": "Welcome to Msgboy",
+                "type": "text/html"
+            }]
+        }
+    },
+    "read_at": 0,
+    "unread_at": new Date().getTime(),
+    "starred_at": 0,
+    "created_at": new Date().getTime() - 6000,
+    "source": {
+        "title": "Msgboy",
+        "url": "http://blog.msgboy.com/",
+        "links": {
+            "alternate": {
+                "text/html": [{
+                    "href": "http://blog.msgboy.com/",
+                    "rel": "alternate",
+                    "title": "",
+                    "type": "text/html"
+                }]
+            }
+        }
+    },
+    "host": "msgboy.com",
+    "alternate": "http://msgboy.com/",
+    "alternate_new": "http://msgboy.com/",
+    "state": "new",
+    "feed": "http://blog.msgboy.com/rss",
+    "relevance": 0.6,
+    "published": new Date().toISOString(),
+    "updated": new Date().toISOString()
+}, 
+{
+    "title": "You can throttle notifications in settings.",
+    "atom_id": "bookmark-" + new Date().getTime(),
+    "summary": "<img src='" + chrome.extension.getURL('/views/images/msgboy-help-screen-9.png') + "' />",
+    "content": null,
+    "links": {
+        "alternate": {
+            "text/html": [{
+                "href": chrome.extension.getURL('/views/html/help.html'),
+                "rel": "alternate",
+                "title": "Welcome to Msgboy",
+                "type": "text/html"
+            }]
+        }
+    },
+    "read_at": 0,
+    "unread_at": new Date().getTime(),
+    "starred_at": 0,
+    "created_at": new Date().getTime() - 7000,
+    "source": {
+        "title": "Msgboy",
+        "url": "http://blog.msgboy.com/",
+        "links": {
+            "alternate": {
+                "text/html": [{
+                    "href": "http://blog.msgboy.com/",
+                    "rel": "alternate",
+                    "title": "",
+                    "type": "text/html"
+                }]
+            }
+        }
+    },
+    "host": "msgboy.com",
+    "alternate": "http://msgboy.com/",
+    "alternate_new": "http://msgboy.com/",
+    "state": "new",
+    "feed": "http://blog.msgboy.com/rss",
+    "relevance": 0.6,
+    "published": new Date().toISOString(),
+    "updated": new Date().toISOString()
+}
+];

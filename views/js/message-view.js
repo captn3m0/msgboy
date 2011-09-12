@@ -61,7 +61,7 @@ var MessageView = Backbone.View.extend({
         _.each(this.model.attributes.source.title.split(""), function (c) {
             sum += c.charCodeAt(0);
         });
-        $(this.el).addClass("color" + sum % 7);
+        $(this.el).addClass("color" + (sum + 2) % 7); // We add 2 just to get the right background on the setup boxes.
         // using grayscale for the time being. pending new color palette. -&yet:eric
         //$(this.el).css("background-color", "hsl(240,0%," + (sum%7)*10 + "%)");
         //$("<p>").html(Msgboy.helper.cleaner.html(sum%7)).appendTo($(this.el));
