@@ -25,6 +25,11 @@ var MessageView = Backbone.View.extend({
     groupTemplate: _.template([
         '<h1 style="background-image: url(<%= model.faviconUrl() %>)">GROUP: <%= Msgboy.helper.cleaner.html(model.attributes.source.title) %></h1>',
         '<button class="expand"><br><br>EXPAND!<br><br><br></button>',
+        '<div class="stories">',
+            '<% model.messages.each(function(story) { %>',
+            '<img class="main" style="display: none"/><span><%= story.get("title")%></span>',
+            '<% }); %>',
+        '</div>',
         '<div>Contains: <%= model.messages.length %></div>'
     ].join('')),
     initialize: function () {
@@ -95,8 +100,6 @@ var MessageView = Backbone.View.extend({
     },
     handleExpandClick: function (e) {
         e.stopImmediatePropagation();
-        
-        // TODO: this is where we want to figure out how to insert items without pissing off isotope. It started stacking items when I tried using the insert method. Also tried inserting manually and doing reLayout.
         
         var self = this,
             newViews = $();
