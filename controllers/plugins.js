@@ -6,15 +6,17 @@ var Plugins = {
     },
     import_subscriptions: function (callback, errback) {
         var plugins_count = 0;
-        var susbcriptions_count = 0;
-        var done_with_plugins = _.after(Plugins.all.length, function() {
+        var subscriptions_count = 0;
+        
+        var done_with_plugin = _.after(Plugins.all.length, function() {
             // Called when we have processed all plugins.
+            console.log("Done with all plugins (" + plugins_count + " out of " + Plugins.all.length + ", and subscribed to " + subscriptions_count + ")");
         });
         
         _.each(Plugins.all, function (plugin) {
             plugin.isUsing(function (using) {
                 if (using) {
-                    plugins_count += 1;
+                    plugins_count++;
                     plugin.listSubscriptions(function (subscriptions) {
                         _.each(subscriptions, function (subscription) {
                             callback({
@@ -24,9 +26,13 @@ var Plugins = {
                         });
                     }, function(count) {
                         // Done with the subscriptions from this plugin. Since we're done with that plugin, we can use that info 
+                        subscriptions_count += count;
+                        done_with_plugin();
                     });
                 }
-                done_with_plugins();
+                else {
+                    done_with_plugin();
+                }
             });
         });
     }
