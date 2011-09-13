@@ -59,7 +59,7 @@
                     params: {}
                 }, function () {
                     // Nothing to do.
-                })
+                });
 
                 chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
                     if (request.signature == "notify" && request.params) {
