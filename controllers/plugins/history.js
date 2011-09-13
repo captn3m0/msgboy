@@ -20,9 +20,11 @@ Msgboy.plugins.history = function () {
     this.hijack = function (follow, unfollow) {
         // Hum. Nothing to do as we can't use the chrome.* apis from content scripts
     };
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         var seen = [];
         var pending = 0;
+        var total_feeds = 0;
+        
         chrome.history.search({
             'text': '',
             // Return every history item....
@@ -33,19 +35,33 @@ Msgboy.plugins.history = function () {
             _.each(historyItems, function (item) {
                 if (item.visitCount > this.visits_to_be_popular) {
                     this.visits_regularly(item.url, function (result) {
-                        Msgboy.helper.feediscovery.get(item.url, function (links) {
-                            var feeds = [];
-                            _.each(links, function (link) {
-                                if (seen.indexOf(link.href) === -1) {
-                                    feeds.push({title: link.title, url: link.href});
-                                    seen.push(link.href);
+                        if(result) {
+                            pending++;
+                            Msgboy.helper.feediscovery.get(item.url, function (links) {
+                                var feeds = [];
+                                _.each(links, function (link) {
+                                    total_feeds++;
+                                    if (seen.indexOf(link.href) === -1) {
+                                        feeds.push({title: link.title, url: link.href});
+                                        seen.push(link.href);
+                                    }
+                                });
+                                pending--;
+                                if (feeds.length > 0) {
+                                    callback(feeds);
+                                }
+                                if (pending === 0) {
+                                    done(total_feeds);
                                 }
                             });
-                            if (feeds.length > 0) {
-                                callback(feeds);
-                            }
-                        });
+                        }
+                        else {
+                            // Not visited regularly.
+                        }
                     });
+                }
+                else {
+                    // Not visited often enough
                 }
             }.bind(this));
         }.bind(this));
@@ -64,7 +80,10 @@ Msgboy.plugins.history = function () {
             }
             // Check the regularity and if it is regular + within a certain timeframe, then, we validate.
             if (Msgboy.helper.maths.array.normalized_deviation(diffs) < this.deviation && (times.slice(-1)[0] -  times[0] > this.elapsed)) {
-                callback();
+                callback(true);
+            }
+            else {
+                callback(false);
             }
         }.bind(this));
     };

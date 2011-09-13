@@ -21,9 +21,9 @@
     <script src="../../controllers/msgboy.js" type="text/javascript"></script> 
     <script src="../../controllers/utils.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins.js" type="text/javascript"></script> 
-    <script src="../../controllers/plugins/bookmarks.js" type="text/javascript"></script> 
+    <script src="../../controllers/plugins/statusnet.js" type="text/javascript"></script> 
     
-    <title>Browser Bookmarks QUnit test</title>
+    <title>Browsing History QUnit test</title>
 </head>
 <body>
     <h1 id="qunit-header">Archive QUnit test</h1>
@@ -33,13 +33,15 @@
     <ol id="qunit-tests"></ol>
     <div id="log" style=""></div>
     
-    <script> 
-        var plugin = Plugins.all[0];
-        plugin.listSubscriptions(function (subscriptions) {
+    <script>
+        var history_plugin = Plugins.all[0];
+        history_plugin.listSubscriptions(function (subscriptions) {
             console.log(subscriptions);
         }, function(count) {
-            console.log(count)
-        });  
+            console.log(count);
+        });
+        
     </script>
+    
 </body>
 </html>

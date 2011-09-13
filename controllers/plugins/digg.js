@@ -46,8 +46,9 @@ Msgboy.plugins.digg = function () {
         });
     };
 
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         callback([]); // We're not able to list all subscriptions
+        done(0);
     };
 
     this.isUsing = function (callback) {

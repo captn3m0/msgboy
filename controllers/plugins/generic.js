@@ -15,8 +15,9 @@ Msgboy.plugins.generic = function () {
         return true;
     };
 
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         callback([]);
+        done(0);
     };
 
     this.hijack = function (follow, unfollow) {

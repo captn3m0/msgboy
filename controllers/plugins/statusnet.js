@@ -18,8 +18,9 @@ Msgboy.plugins.statusnet = function () {
         return (window.location.host.match(/status\.net/));
     };
 
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         callback([]); // We're not able to list all subscriptions
+        done(0);
     };
 
     this.hijack = function (follow, unfollow) {

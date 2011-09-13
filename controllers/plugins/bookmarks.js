@@ -21,14 +21,20 @@ Msgboy.plugins.bookmarks = function () {
         // Hum. What?
     };
 
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         var seen = [];
+        var total_feeds = 0;
         chrome.bookmarks.getRecent(1000,
             function (bookmarks) {
+                var done_once = _.after(bookmarks.length, function() {
+                    // We have processed all the bookmarks
+                    done(total_feeds);
+                });
                 _.each(bookmarks, function (bookmark) {
                     Msgboy.helper.feediscovery.get(bookmark.url, function (links) {
                         var feeds = [];
                         _.each(links, function (link) {
+                            total_feeds++;
                             if (seen.indexOf(link.href) === -1) {
                                 feeds.push({title: link.title, url: link.href});
                                 seen.push(link.href);
@@ -37,6 +43,7 @@ Msgboy.plugins.bookmarks = function () {
                         if (feeds.length > 0) {
                             callback(feeds);
                         }
+                        done_once();
                     });
                 });
             }.bind(this)
