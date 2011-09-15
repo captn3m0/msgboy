@@ -26,11 +26,11 @@ Msgboy.plugins.bookmarks = function () {
         var total_feeds = 0;
         chrome.bookmarks.getRecent(1000,
             function (bookmarks) {
-                var done_once = _.after(bookmarks.length, function() {
+                var done_once = _.after(bookmarks.length, function () {
                     // We have processed all the bookmarks
                     done(total_feeds);
                 });
-                if(bookmarks.length === 0) {
+                if (bookmarks.length === 0) {
                     done(total_feeds);
                 }
                 _.each(bookmarks, function (bookmark) {
@@ -52,7 +52,7 @@ Msgboy.plugins.bookmarks = function () {
             }.bind(this)
         );
     };
-    
+
     this.subscribeInBackground = function (callback) {
         chrome.bookmarks.onCreated.addListener(function (id, bookmark) {
             Msgboy.helper.feediscovery.get(bookmark.url, function (links) {

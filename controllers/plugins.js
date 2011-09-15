@@ -6,12 +6,12 @@ var Plugins = {
     },
     import_subscriptions: function (callback, errback) {
         var subscriptions_count = 0;
-        
-        var done_with_plugin = _.after(Plugins.all.length, function() {
+
+        var done_with_plugin = _.after(Plugins.all.length, function () {
             // Called when we have processed all plugins.
             console.log("Done with all plugins and subscribed to " + subscriptions_count);
         });
-        
+
         _.each(Plugins.all, function (plugin) {
             plugin.listSubscriptions(function (subscriptions) {
                 _.each(subscriptions, function (subscription) {
@@ -20,8 +20,7 @@ var Plugins = {
                         title: subscription.title
                     });
                 });
-            }, function(count) {
-                // Done with the subscriptions from this plugin. Since we're done with that plugin, we can use that info 
+            }, function (count) {
                 console.log("Done with " + plugin.name + " and subscribed to " + count);
                 subscriptions_count += count;
                 done_with_plugin();

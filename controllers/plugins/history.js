@@ -24,7 +24,7 @@ Msgboy.plugins.history = function () {
         var seen = [];
         var pending = 0;
         var total_feeds = 0;
-        
+
         chrome.history.search({
             'text': '',
             // Return every history item....
@@ -32,19 +32,17 @@ Msgboy.plugins.history = function () {
             // that was accessed less than one month ago.
             'maxResults': 10000
         }, function (historyItems) {
-            if(historyItems.length === 0) {
+            if (historyItems.length === 0) {
                 done(0);
             }
-            
-            var done_once = _.after(historyItems.length, function() {
-                // We have processed all the bookmarks
+            var done_once = _.after(historyItems.length, function () {
                 done(total_feeds);
             });
-            
+
             _.each(historyItems, function (item) {
                 if (item.visitCount > this.visits_to_be_popular) {
                     this.visits_regularly(item.url, function (result) {
-                        if(result) {
+                        if (result) {
                             pending++;
                             Msgboy.helper.feediscovery.get(item.url, function (links) {
                                 var feeds = [];

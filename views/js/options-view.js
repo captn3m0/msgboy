@@ -28,8 +28,8 @@ var OptionsView = Backbone.View.extend({
         attributes.options[event.target.id] = 1 - $(event.target).val() / 100;
         this.model.save(attributes);
     },
-    
-    reset_susbcriptions: function(event) {
+
+    reset_susbcriptions: function (event) {
         chrome.extension.sendRequest({
             signature: "reset_susbcriptions",
             params: {}

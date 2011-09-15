@@ -46,7 +46,7 @@ Msgboy.plugins.tumblr = function () {
                 this.listSubscriptionsPage(page + 1, subscriptions, callback, done);
             } else {
                 callback(subscriptions);
-                done(subscriptions.length)
+                done(subscriptions.length);
             }
         }.bind(this));
     };
