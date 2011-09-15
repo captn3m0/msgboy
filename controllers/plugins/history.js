@@ -32,6 +32,9 @@ Msgboy.plugins.history = function () {
             // that was accessed less than one month ago.
             'maxResults': 10000
         }, function (historyItems) {
+            if(historyItems.length === 0) {
+                done(0);
+            }
             _.each(historyItems, function (item) {
                 if (item.visitCount > this.visits_to_be_popular) {
                     this.visits_regularly(item.url, function (result) {
