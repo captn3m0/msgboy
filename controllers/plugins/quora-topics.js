@@ -43,19 +43,6 @@ Msgboy.plugins.quora_topics = function () {
         callback([]); // We're not able to list all subscriptions
         done(0);
     };
-
-    this.isUsing = function (callback) {
-        var that = this;
-        req = $.get("http://www.quora.com/inbox", function (data) {
-            menu = $(data).find(".signup");
-            if (menu.length === 0) {
-                callback(true);
-            }
-            else {
-                callback(false);
-            }
-        });
-    };
 };
 
 Plugins.register(new Msgboy.plugins.quora_topics());

@@ -32,18 +32,6 @@ Msgboy.plugins.tumblr = function () {
         this.listSubscriptionsPage(1, [], callback, done);
     };
 
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://www.tumblr.com/", function (data) {
-            menu = $(data).find("#logout_button");
-            if (menu.length === 0) {
-                callback(false);
-            } else {
-                callback(true);
-            }
-        });
-    };
-
     this.listSubscriptionsPage = function (page, subscriptions, callback, done) {
         $.get("http://www.tumblr.com/following/page/" + page, function (data) {
             content = $(data);

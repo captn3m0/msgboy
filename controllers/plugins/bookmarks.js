@@ -52,9 +52,7 @@ Msgboy.plugins.bookmarks = function () {
             }.bind(this)
         );
     };
-    this.isUsing = function (callback) {
-        callback(true); // By default we will show.
-    };
+    
     this.subscribeInBackground = function (callback) {
         chrome.bookmarks.onCreated.addListener(function (id, bookmark) {
             Msgboy.helper.feediscovery.get(bookmark.url, function (links) {

@@ -47,18 +47,6 @@ Msgboy.plugins.google_reader = function () {
             done(subscriptions.length);
         });
     };
-
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://www.google.com/reader/view/", function (data) {
-            if ($(data).find(".loginBox").length === 0) {
-                callback(true);
-            }
-            else {
-                callback(false);
-            }
-        });
-    };
 };
 
 Plugins.register(new Msgboy.plugins.google_reader());

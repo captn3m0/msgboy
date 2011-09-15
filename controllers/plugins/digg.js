@@ -50,18 +50,6 @@ Msgboy.plugins.digg = function () {
         callback([]); // We're not able to list all subscriptions
         done(0);
     };
-
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://digg.com/", function (data) {
-            if ($(data).find(".current-user").length === 0) {
-                callback(false);
-            }
-            else {
-                callback(true);
-            }
-        });
-    };
 };
 
 Plugins.register(new Msgboy.plugins.digg());

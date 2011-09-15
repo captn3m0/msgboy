@@ -27,18 +27,6 @@ Msgboy.plugins.blogger = function () {
         });
     };
 
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://www.blogger.com/home", function (data) {
-            menu = $(data).find("#global-info");
-            if (menu.length === 0) {
-                callback(false);
-            } else {
-                callback(true);
-            }
-        });
-    };
-
     this.listSubscriptions = function (callback, done) {
         var subscriptions = [];
         $.get("http://www.blogger.com/manage-blogs-following.g", function (data) {

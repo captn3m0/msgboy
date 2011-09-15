@@ -33,19 +33,6 @@ Msgboy.plugins.typepad = function () {
         callback([]); // We're not able to list all subscriptions
         done(0);
     };
-
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://www.typepad.com/dashboard", function (data) {
-            menu = $(data).find(".logged-in-msg");
-            if (menu.length === 0) {
-                callback(false);
-            }
-            else {
-                callback(true);
-            }
-        });
-    };
 };
 
 Plugins.register(new Msgboy.plugins.typepad());

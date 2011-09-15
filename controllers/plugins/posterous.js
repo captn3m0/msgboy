@@ -75,18 +75,6 @@ Msgboy.plugins.posterous = function () {
         });
     };
 
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://www.posterous.com/", function (data) {
-            menu = $(data).find("#topnav");
-            if (menu.length === 0) {
-                callback(false);
-            } else {
-                callback(true);
-            }
-        });
-    };
-
     this.listSubscriptions = function (callback, done) {
         this.listSubscriptionsPage(1, [], callback, done);
     };

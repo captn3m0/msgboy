@@ -69,9 +69,6 @@ Msgboy.plugins.history = function () {
             }.bind(this));
         }.bind(this));
     };
-    this.isUsing = function (callback) {
-        callback(true); // By default we will show.
-    };
     this.visits_regularly = function (url, callback) {
         chrome.history.getVisits({url: url}, function (visits) {
             times = $.map(visits, function (visit) {

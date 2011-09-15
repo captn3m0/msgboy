@@ -5,35 +5,25 @@ var Plugins = {
         this.all.push(plugin);
     },
     import_subscriptions: function (callback, errback) {
-        var plugins_count = 0;
         var subscriptions_count = 0;
         
         var done_with_plugin = _.after(Plugins.all.length, function() {
             // Called when we have processed all plugins.
-            console.log("Done with all plugins (" + plugins_count + " out of " + Plugins.all.length + ", and subscribed to " + subscriptions_count + ")");
+            console.log("Done with all plugins and subscribed to " + subscriptions_count + ")");
         });
         
         _.each(Plugins.all, function (plugin) {
-            plugin.isUsing(function (using) {
-                if (using) {
-                    plugins_count++;
-                    plugin.listSubscriptions(function (subscriptions) {
-                        _.each(subscriptions, function (subscription) {
-                            callback({
-                                url: subscription.url,
-                                title: subscription.title
-                            });
-                        });
-                    }, function(count) {
-                        // Done with the subscriptions from this plugin. Since we're done with that plugin, we can use that info 
-                        subscriptions_count += count;
-                        done_with_plugin();
+            plugin.listSubscriptions(function (subscriptions) {
+                _.each(subscriptions, function (subscription) {
+                    callback({
+                        url: subscription.url,
+                        title: subscription.title
                     });
-                }
-                else {
-                    console.log("Not using " + plugin.name)
-                    done_with_plugin();
-                }
+                });
+            }, function(count) {
+                // Done with the subscriptions from this plugin. Since we're done with that plugin, we can use that info 
+                subscriptions_count += count;
+                done_with_plugin();
             });
         });
     }
@@ -56,11 +46,6 @@ var Plugin = function () {
     this.hijack = function (follow, unfollow) {
         // This method will add a callback that hijack a website subscription (or follow, or equivalent) so that msgboy also mirrors this subscription.
         // So actually, we should ask the user if it's fine to subscribe to the feed, and if so, well, that's good, then we will subscribe.
-    };
-
-    this.isUsing = function (callback) {
-        // This method calls back with true if the user is a logged-in user of the service for this plugin. It callsback with false otherwise.
-        // callback(true)
     };
 
     this.subscribeInBackground = function (callback) {

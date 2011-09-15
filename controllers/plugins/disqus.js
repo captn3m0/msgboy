@@ -33,10 +33,6 @@ Msgboy.plugins.disqus = function () {
         done(0);
     };
 
-    this.isUsing = function (callback) {
-        callback(false); // By default we won't show
-    };
-
 };
 
 Plugins.register(new Msgboy.plugins.disqus());

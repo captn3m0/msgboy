@@ -32,10 +32,6 @@ Msgboy.plugins.generic = function () {
             return false;
         });
     };
-
-    this.isUsing = function (callback) {
-        callback(true);
-    };
 };
 
 Plugins.register(new Msgboy.plugins.generic());
