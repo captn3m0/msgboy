@@ -35,6 +35,12 @@ Msgboy.plugins.history = function () {
             if(historyItems.length === 0) {
                 done(0);
             }
+            
+            var done_once = _.after(historyItems.length, function() {
+                // We have processed all the bookmarks
+                done(total_feeds);
+            });
+            
             _.each(historyItems, function (item) {
                 if (item.visitCount > this.visits_to_be_popular) {
                     this.visits_regularly(item.url, function (result) {
@@ -50,20 +56,20 @@ Msgboy.plugins.history = function () {
                                     }
                                 });
                                 pending--;
+                                done_once();
                                 if (feeds.length > 0) {
                                     callback(feeds);
-                                }
-                                if (pending === 0) {
-                                    done(total_feeds);
                                 }
                             });
                         }
                         else {
                             // Not visited regularly.
+                            done_once();
                         }
                     });
                 }
                 else {
+                    done_once();
                     // Not visited often enough
                 }
             }.bind(this));

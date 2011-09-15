@@ -9,7 +9,7 @@ var Plugins = {
         
         var done_with_plugin = _.after(Plugins.all.length, function() {
             // Called when we have processed all plugins.
-            console.log("Done with all plugins and subscribed to " + subscriptions_count + ")");
+            console.log("Done with all plugins and subscribed to " + subscriptions_count);
         });
         
         _.each(Plugins.all, function (plugin) {
@@ -22,6 +22,7 @@ var Plugins = {
                 });
             }, function(count) {
                 // Done with the subscriptions from this plugin. Since we're done with that plugin, we can use that info 
+                console.log("Done with " + plugin.name + " and subscribed to " + count);
                 subscriptions_count += count;
                 done_with_plugin();
             });
