@@ -30,6 +30,9 @@ Msgboy.plugins.bookmarks = function () {
                     // We have processed all the bookmarks
                     done(total_feeds);
                 });
+                if(bookmarks.length === 0) {
+                    done(total_feeds);
+                }
                 _.each(bookmarks, function (bookmark) {
                     Msgboy.helper.feediscovery.get(bookmark.url, function (links) {
                         var feeds = [];

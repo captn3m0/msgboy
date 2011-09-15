@@ -31,6 +31,7 @@ var Plugins = {
                     });
                 }
                 else {
+                    console.log("Not using " + plugin.name)
                     done_with_plugin();
                 }
             });
