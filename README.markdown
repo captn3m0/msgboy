@@ -51,7 +51,7 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 
 ### TODO
 
-* Add per-site unread list (as alerts)
+* Add per-site unread list (as top screen bars)
 * <del>Add snooze</del>
 * Add support for unsubscription in plugins.
 * Add support for ActivityStreams
@@ -72,9 +72,15 @@ You may also create a full blown msgboy plugin, but we may not integrate it in t
 * <del>Set git tags when bumping</del>
 * <del>Throttle down importing of sources, to avoid slowness at setup. Since everything happens in the background. It's ok to take more time</del>.
 * <del>Show messages when there was no subscription performed at all...</del>
-* Show more help in the msgboy dashboard in the form of boxes. These should indicate what needs to be done to subscribe to more content (bookmarking stuff!).
-* Add some feeds in blacklists (like wikipedia's feeds).
-* Check safari bookmarks
+* <del>Show more help in the msgboy dashboard in the form of boxes. These should indicate what needs to be done to subscribe to more content (bookmarking stuff!).</del>
+* <del>Add some feeds in blacklists (like wikipedia's feeds).</del>
+* Check safari bookmarks so that they're not taken into account...
+* Improve dashboards by deleting content at the top when scrolling down. It does also mean that we need to load more when scrolling up. Thanks [Dodo](https://github.com/dodo) for the idea.
+* Check Memory usage and fix it. Don't ask, it's _always_ too high.
+* Add domain-based filtering for relevance.
+* Remove the different colors for notifications. That's hard to interpret.
+* Show screenshot for large boxes if there is no image at all.
+
 
 ## Publishers
 
