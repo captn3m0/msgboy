@@ -39,22 +39,25 @@ var ArchiveView = Backbone.View.extend({
         var view = new MessageView({
             model: message
         });
-        view.bind("change", function () {
-            $('#container').isotope('reLayout');
-        });
-        view.bind("rendered", function () {
-            this.complete_page();
-            $('#container').isotope('appended', $(view.el), function () {
-                $(view.el).show();
+        if($("#"+message.id).length === 0) {
+            console.log(message.attributes.created_at);
+            view.bind("change", function () {
+                $('#container').isotope('reLayout');
+            });
+            view.bind("rendered", function () {
+                this.complete_page();
+                $('#container').isotope('appended', $(view.el), function () {
+                    $(view.el).show();
+                }.bind(this));
             }.bind(this));
-        }.bind(this));
-        $(view.el).hide();
-        $("#container").append(view.el); // Adds the view in the document.
-        view.bind("delete-from-feed", function (url) {
-            this.delete_from_feed(url);
-            $('#container').isotope('reLayout');
-        }.bind(this));
-        view.render(); // builds the HTML
+            $(view.el).hide();
+            $("#container").append(view.el); // Adds the view in the document.
+            view.bind("delete-from-feed", function (url) {
+                this.delete_from_feed(url);
+                $('#container').isotope('reLayout');
+            }.bind(this));
+            view.render(); // builds the HTML
+        }
     },
     delete_from_feed: function (feed) {
         _.each(this.collection.models, function (model) {
