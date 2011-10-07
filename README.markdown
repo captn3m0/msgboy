@@ -1,3 +1,6 @@
+
+WARNING:  the current version of Chrome (14) broke a lot of technologies used by msgboy. We're working on fixing them.
+
 # Msgboy
 
 The msgboy is a *browser application* that pushes content from the web to the users. It observes the user's browsing habits (but respects their privacy!), and subscribes to the sites they seem to care about, using [Superfeedr](http://superfeedr.com). When these sites update, the content is sent to the user and a notification is shown to the user. 
