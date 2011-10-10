@@ -1,5 +1,4 @@
-
-WARNING:  the current version of Chrome (14) broke a lot of technologies used by msgboy. We're working on fixing them.
+**WARNING:  the current version of Chrome (14) broke a lot of technologies used by msgboy. We're working on fixing them. If you really want to play with msgboy, we suggest you try it out with [Chrome Canary](http://tools.google.com/dlpage/chromesxs). It does work like a charm in this future!**
 
 # Msgboy
 
