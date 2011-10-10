@@ -40,7 +40,7 @@ var ArchiveView = Backbone.View.extend({
         var view = new MessageView({
             model: message
         });
-        if($("#"+message.id).length === 0) {
+        if ($("#" + message.id).length === 0) {
             view.bind("change", function () {
                 $('#container').isotope('reLayout');
             });
