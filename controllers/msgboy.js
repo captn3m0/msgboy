@@ -41,6 +41,8 @@ Msgboy.run =  function () {
             Msgboy.infos = extension_infos;
             Msgboy.trigger("loaded");
         });
+        // TODO We should use Msgboy.com to register this. Much better as it will show the msgboy.com instead of the ugly extension id.
+        $('head').append($('<intent>', {action: 'http://webintents.org/subscribe', type: 'application/atom+xml', href: 'http://msgboy.com/webintents/subscribe/' + chrome.i18n.getMessage("@@extension_id") }));
     });
 };
 
