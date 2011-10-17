@@ -75,23 +75,11 @@ Msgboy.plugins.posterous = function () {
         });
     };
 
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://www.posterous.com/", function (data) {
-            menu = $(data).find("#topnav");
-            if (menu.length === 0) {
-                callback(false);
-            } else {
-                callback(true);
-            }
-        });
+    this.listSubscriptions = function (callback, done) {
+        this.listSubscriptionsPage(1, [], callback, done);
     };
 
-    this.listSubscriptions = function (callback) {
-        this.listSubscriptionsPage(1, [], callback);
-    };
-
-    this.listSubscriptionsPage = function (page, subscriptions, callback) {
+    this.listSubscriptionsPage = function (page, subscriptions, callback, done) {
         var that = this;
         $.get("http://posterous.com/users/me/subscriptions?page=" + page, function (data) {
             content = $(data);
@@ -102,12 +90,13 @@ Msgboy.plugins.posterous = function () {
                     title: $(link).attr("title")
                 });
             });
-            if (links.empty > 0) {
-                listSubscriptionsPage(page + 1, subscriptions, callback);
+            if (links.length > 0) {
+                this.listSubscriptionsPage(page + 1, subscriptions, callback, done);
             } else {
                 callback(subscriptions);
+                done(subscriptions.length);
             }
-        });
+        }.bind(this));
     };
 };
 

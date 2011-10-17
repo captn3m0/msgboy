@@ -87,7 +87,6 @@
                     el: "#archive",
                     collection: archive,
                 });
-                archiveView.render();
 
                 chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
                     if (request.signature == "notify" && request.params) {

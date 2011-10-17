@@ -126,6 +126,11 @@ body.splash {
     display: block;
     font-weight: bold;
     margin-bottom: 10px;
+} 
+
+#option {
+    margin-bottom: 30px;
+    margin-top: 10px;
 }
 
 #relevance {

@@ -41,6 +41,8 @@ Msgboy.run =  function () {
             Msgboy.infos = extension_infos;
             Msgboy.trigger("loaded");
         });
+        // TODO We should use Msgboy.com to register this. Much better as it will show the msgboy.com instead of the ugly extension id.
+        $('head').append($('<intent>', {action: 'http://webintents.org/subscribe', type: 'application/atom+xml', href: 'http://msgboy.com/webintents/subscribe/' + chrome.i18n.getMessage("@@extension_id") }));
     });
 };
 
@@ -81,7 +83,7 @@ Msgboy.on_connect = function (status) {
 
 // Reconnects the Msgboy
 Msgboy.auto_reconnect = function () {
-    Msgboy.reconnectDelay = Math.max(Msgboy.reconnectDelay + 1, 10); // We max at one attempt every minute.
+    Msgboy.reconnectDelay = Math.min(Msgboy.reconnectDelay + 1, 10); // We max at one attempt every minute.
     if (!Msgboy.reconnectionTimeout) {
         Msgboy.reconnectionTimeout = setTimeout(function () {
             Msgboy.reconnectionTimeout = null;

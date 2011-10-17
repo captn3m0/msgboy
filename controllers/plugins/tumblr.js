@@ -28,23 +28,11 @@ Msgboy.plugins.tumblr = function () {
     };
 
 
-    this.listSubscriptions = function (callback) {
-        this.listSubscriptionsPage(1, [], callback);
+    this.listSubscriptions = function (callback, done) {
+        this.listSubscriptionsPage(1, [], callback, done);
     };
 
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://www.tumblr.com/", function (data) {
-            menu = $(data).find("#logout_button");
-            if (menu.length === 0) {
-                callback(false);
-            } else {
-                callback(true);
-            }
-        });
-    };
-
-    this.listSubscriptionsPage = function (page, subscriptions, callback) {
+    this.listSubscriptionsPage = function (page, subscriptions, callback, done) {
         $.get("http://www.tumblr.com/following/page/" + page, function (data) {
             content = $(data);
             links = content.find(".follower .name a");
@@ -55,9 +43,10 @@ Msgboy.plugins.tumblr = function () {
                 });
             });
             if (links.length > 0) {
-                this.listSubscriptionsPage(page + 1, subscriptions, callback);
+                this.listSubscriptionsPage(page + 1, subscriptions, callback, done);
             } else {
                 callback(subscriptions);
+                done(subscriptions.length);
             }
         }.bind(this));
     };

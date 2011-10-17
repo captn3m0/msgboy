@@ -66,4 +66,15 @@ $(document).bind('reload', function (element, object) {
     Msgboy.inbox.fetch();
 });
 
+// When reloading the inbox is needed (after a change in settings eg)
+$(document).bind('reset_susbcriptions', function (element, object) {
+    Msgboy.log("Request : reset_susbcriptions ");
+    Plugins.import_subscriptions(function (subs) {
+        Msgboy.subscribe(subs.url, function () {
+            // Cool. Not much to do.
+        });
+    });
+});
+
+
 

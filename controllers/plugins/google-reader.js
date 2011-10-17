@@ -32,34 +32,19 @@ Msgboy.plugins.google_reader = function () {
         $("#quick-add-form").submit(submitted);
     };
 
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         links = [];
         request = new XMLHttpRequest();
-        request.open("GET", "http://www.google.com/reader/subscriptions/export", true);
-        request.onreadystatechange = function () {
+        $.get("http://www.google.com/reader/subscriptions/export", function (data) {
             var subscriptions = [];
-            if (request.readyState === 4) {
-                urls = $(request.responseXML).find("outline").each(function () {
-                    subscriptions.push({
-                        url:  $(this).attr("xmlUrl"),
-                        title: $(this).attr("title")
-                    });
+            urls = $(data).find("outline").each(function () {
+                subscriptions.push({
+                    url:  $(this).attr("xmlUrl"),
+                    title: $(this).attr("title")
                 });
-            }
+            });
             callback(subscriptions);
-        };
-        request.send();
-    };
-
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://www.google.com/reader/view/", function (data) {
-            if ($(data).find(".loginBox").length === 0) {
-                callback(true);
-            }
-            else {
-                callback(false);
-            }
+            done(subscriptions.length);
         });
     };
 };

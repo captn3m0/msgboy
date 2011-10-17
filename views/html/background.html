@@ -24,6 +24,8 @@
 	<script src="../../lib/strophe.superfeedr.js" type="text/javascript" ></script>
 	<script src="../../lib/brain-0.3.5.min.js" type="text/javascript" ></script>
 	<script src="../../lib/stemmer.js" type="text/javascript" ></script>
+	<script src="../../lib/webintents.min.js" type="text/javascript"></script>
+    
 
     <!-- Controller includes -->
     <script src="../../controllers/msgboy.js" type="text/javascript"></script> 
@@ -55,9 +57,12 @@
     <script src="../../controllers/plugins/typepad.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/quora-people.js" type="text/javascript"></script> 
     <script src="../../controllers/plugins/quora-topics.js" type="text/javascript"></script> 
+
     
 </head>
 <body>
+    
+    
     <div id="log"></div>
     <script language='javascript'>
     // Google Analytics
@@ -78,9 +83,11 @@
         Msgboy.inbox = new Inbox();
 
         Msgboy.logEnabled = true;
+
         Msgboy.connection = new Strophe.Connection({
-            protocol: new Strophe.Websocket('ws://ws1.msgboy.com:5280')
+            protocol: new Strophe.Websocket('ws://msgboy.com:5280')
         });
+        
         Msgboy.connection.max_stanzas_per_second = 1; // We limit to 1 outgoing stanzas per second.
 
         Msgboy.connection.rawInput = function (data) {
@@ -117,7 +124,7 @@
         Msgboy.inbox.bind("new", function () {
             // Let's open the splash screen
             chrome.tabs.create({
-                url: chrome.extension.getURL('/views/html/help.html'),
+                url: chrome.extension.getURL('/views/html/dashboard.html'),
                 selected: true
             });
             

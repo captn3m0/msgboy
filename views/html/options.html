@@ -49,12 +49,19 @@
     <div id="info">
         <h1>Options</h1>
         <div id="options">
-            <label for="relevance">Notifications: </label><br />
-            <input type="range" min="0" max="100" value="50" step="5" id="relevance" name="relevance" />
-            <div class="scale"><div class="mini">none</div> <div class="maxi">all</div></div>
-            <br /><br />
-            <small>Train the msgboy to see more accurate messages.<br/><a href="help.html">See how here</a></small>
-            
+            <div id="option">
+                <label for="relevance">Notifications: </label>
+                <input type="range" min="0" max="100" value="50" step="5" id="relevance" name="relevance" />
+                <div class="scale"><div class="mini">none</div> <div class="maxi">all</div></div>
+                <br /><br />
+                <small>Train the msgboy to see more accurate messages. <a href="help.html">See how here</a></small>
+            </div>
+            <div id="option">
+                <label for="reset_susbcriptions">Reset Subscriptions: </label>
+                <input type="button" id="reset_susbcriptions" value="Reset" name="reset_susbcriptions" />
+                <br />
+                <small>Use with caution, as it means you'll have to train the msgboy again.</small>
+            </div>
         </div>
     </div>
     

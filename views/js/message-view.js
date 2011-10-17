@@ -73,7 +73,6 @@ var MessageView = Backbone.View.extend({
             $('.controls').fadeOut('slow');
             $(this).removeClass('shimmer');
         });
-
     },
     
     

@@ -29,21 +29,9 @@ Msgboy.plugins.typepad = function () {
         });
     };
 
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         callback([]); // We're not able to list all subscriptions
-    };
-
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://www.typepad.com/dashboard", function (data) {
-            menu = $(data).find(".logged-in-msg");
-            if (menu.length === 0) {
-                callback(false);
-            }
-            else {
-                callback(true);
-            }
-        });
+        done(0);
     };
 };
 

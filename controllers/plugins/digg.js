@@ -46,20 +46,9 @@ Msgboy.plugins.digg = function () {
         });
     };
 
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         callback([]); // We're not able to list all subscriptions
-    };
-
-    this.isUsing = function (callback) {
-        var that = this;
-        $.get("http://digg.com/", function (data) {
-            if ($(data).find(".current-user").length === 0) {
-                callback(false);
-            }
-            else {
-                callback(true);
-            }
-        });
+        done(0);
     };
 };
 

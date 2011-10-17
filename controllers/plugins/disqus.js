@@ -28,12 +28,9 @@ Msgboy.plugins.disqus = function () {
         });
     };
 
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         callback([]); // We're not able to list all subscriptions
-    };
-
-    this.isUsing = function (callback) {
-        callback(false); // By default we won't show
+        done(0);
     };
 
 };

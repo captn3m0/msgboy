@@ -1,6 +1,6 @@
 var ArchiveView = Backbone.View.extend({
-    now: new Date().getTime(),
-    days: 1,
+    upper_bound: new Date().getTime(),
+    lower_bound: 0,
     loaded: 20,
     to_load: 20,
     latest: null,
@@ -31,7 +31,7 @@ var ArchiveView = Backbone.View.extend({
         if (this.loaded === this.to_load) {
             this.loaded = 0;
             this.collection.next(this.to_load, {
-                created_at: [this.now, this.now - this.days * (1000 * 60 * 60 * 24)]
+                created_at: [this.upper_bound, this.lower_bound]
             });
         }
     },
@@ -42,6 +42,7 @@ var ArchiveView = Backbone.View.extend({
         if (this.lastRendered && this.lastRendered.get('alternate') === message.get('alternate')) {
             this.lastRendered.messages.add(message);
         } else {
+            this.upper_bound = message.attributes.created_at;
             this.loaded++;
             var view = new MessageView({
                 model: message

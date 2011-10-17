@@ -4,19 +4,26 @@ var Plugins = {
     register: function (plugin) {
         this.all.push(plugin);
     },
-    import_subscriptions: function (callback) {
+    import_subscriptions: function (callback, errback) {
+        var subscriptions_count = 0;
+
+        var done_with_plugin = _.after(Plugins.all.length, function () {
+            // Called when we have processed all plugins.
+            console.log("Done with all plugins and subscribed to " + subscriptions_count);
+        });
+
         _.each(Plugins.all, function (plugin) {
-            plugin.isUsing(function (using) {
-                if (using) {
-                    plugin.listSubscriptions(function (subscriptions) {
-                        _.each(subscriptions, function (subscription) {
-                            callback({
-                                url: subscription.url,
-                                title: subscription.title
-                            });
-                        });
+            plugin.listSubscriptions(function (subscriptions) {
+                _.each(subscriptions, function (subscription) {
+                    callback({
+                        url: subscription.url,
+                        title: subscription.title
                     });
-                }
+                });
+            }, function (count) {
+                console.log("Done with " + plugin.name + " and subscribed to " + count);
+                subscriptions_count += count;
+                done_with_plugin();
             });
         });
     }
@@ -29,20 +36,16 @@ var Plugin = function () {
         // This method needs to returns true if the plugin needs to be applied on this page.
     };
 
-    this.listSubscriptions = function (callback) {
+    this.listSubscriptions = function (callback, done) {
         // This methods will callback with all the subscriptions in this service. It can call the callback several times with more feeds.
         // Feeds have the following form {url: _, title: _}.
         callback([]);
+        done(0);
     };
 
     this.hijack = function (follow, unfollow) {
         // This method will add a callback that hijack a website subscription (or follow, or equivalent) so that msgboy also mirrors this subscription.
         // So actually, we should ask the user if it's fine to subscribe to the feed, and if so, well, that's good, then we will subscribe.
-    };
-
-    this.isUsing = function (callback) {
-        // This method calls back with true if the user is a logged-in user of the service for this plugin. It callsback with false otherwise.
-        // callback(true)
     };
 
     this.subscribeInBackground = function (callback) {

@@ -37,6 +37,8 @@
         var history_plugin = Plugins.all[0];
         history_plugin.listSubscriptions(function (subscriptions) {
             console.log(subscriptions);
+        }, function(count) {
+            console.log(count);
         });
         
     </script>
