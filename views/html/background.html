@@ -122,12 +122,6 @@
 
         // When the inbox is new.
         Msgboy.inbox.bind("new", function () {
-            // Let's open the splash screen
-            chrome.tabs.create({
-                url: chrome.extension.getURL('/views/html/dashboard.html'),
-                selected: true
-            });
-            
             // Add a couple boxes for the example!
             for(var i in welcomeMessages) {
                 var msg = new Message(welcomeMessages[i]);

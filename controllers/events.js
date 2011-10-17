@@ -1,3 +1,10 @@
+$(document).bind('register', function (element, object) {
+    Msgboy.log("Request : register " + object.request.params.username);
+    Msgboy.inbox.setup(object.request.params.username, object.request.params.token, function() {
+        // Nothing to do.
+    });
+});
+
 $(document).bind('subscribe', function (element, object) {
     Msgboy.log("Request : subscribe " + object.request.params.url);
     Msgboy.subscribe(object.request.params.url, function (result) {

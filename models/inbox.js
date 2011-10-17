@@ -13,54 +13,24 @@ var Inbox = Backbone.Model.extend({
     // Create credentials and saves them.
     // We may want to not run that again when we already have credentails.
     create_credentials: function (callback) {
-        var base = "http://msgboy.com";
-
-        var params = {
-            'user[username]': (new Date()).getTime().toString() + Math.floor((Math.random() * Math.pow(10, 3))).toString(),
-            'user[password]': Math.floor((Math.random() * Math.pow(10, 16))).toString()
-        };
-        params['user[password_confirmation]'] = params['user[password]'];
-
-        $.ajax({
-            type: 'POST',
-            url: base + "/users.json",
-            data: params,
-            success: function (data) {
-                var success = true;
-                if (!data.user) {
-                    success = false;
-                }
-                else {
-                    _.each(data.user.errors, function (error, field) {
-                        success = false;
-                    });
-                }
-
-                if (success) {
-                    this.save({
-                        epoch: new Date().getTime(),
-                        jid: data.user.username,
-                        password: params["user[password]"]
-                    }, {
-                        success: function () {
-                            Msgboy.log("Inbox created for " + data.user.username);
-                            callback();
-                        },
-                        error: function () {
-                            Msgboy.log("Failed to create inbox for " + data.user.username);
-                        }
-                    });
-                } else {
-                    setTimeout(function () {
-                        console.log("We couldn't create credentials : " + JSON.stringify(data));
-                        this.create_credentials(callback); // We retry. That may be dangerrous though.
-                    }.bind(this), 10000);
-                }
+        window.open("http://msgboy.com/session/new?ext=" + chrome.i18n.getMessage("@@extension_id"));
+    },
+    
+    setup: function(username, token, callback) {
+        this.save({
+            epoch: new Date().getTime(),
+            jid: username,
+            password: token
+        }, {
+            success: function () {
+                Msgboy.log("Inbox created for " + username);
+                callback();
+                this.trigger("ready", this);
+                this.trigger("new", this);
             }.bind(this),
-            error: function (e) {
-                window.alert("it looks like the msgboy cannot connect to the internet, so we couldn't finish the setup. It will try again soon.");
-            },
-            dataType: 'json'
+            error: function () {
+                Msgboy.log("Failed to create inbox for " + username);
+            }.bind(this)
         });
     },
 
@@ -72,20 +42,14 @@ var Inbox = Backbone.Model.extend({
                     Msgboy.log("Loaded inbox for " + this.attributes.jid);
                     this.trigger("ready", this);
                 } else {
-                    Msgboy.log("Creating new inbox");
-                    this.create_credentials(function () {
-                        this.trigger("ready", this);
-                        this.trigger("new", this);
-                    }.bind(this));
+                    Msgboy.log("Refreshing new inbox ");
+                    this.create_credentials();
                 }
             }.bind(this),
-            error: function () {
+            error: function (e,o) {
                 // Looks like there is no such inbox.
                 Msgboy.log("Creating new inbox");
-                this.create_credentials(function () {
-                    this.trigger("ready", this);
-                    this.trigger("new", this);
-                }.bind(this));
+                this.create_credentials();
             }.bind(this)
         });
     },
