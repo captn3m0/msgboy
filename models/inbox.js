@@ -15,8 +15,8 @@ var Inbox = Backbone.Model.extend({
     create_credentials: function (callback) {
         window.open("http://msgboy.com/session/new?ext=" + chrome.i18n.getMessage("@@extension_id"));
     },
-    
-    setup: function(username, token, callback) {
+
+    setup: function (username, token, callback) {
         this.save({
             epoch: new Date().getTime(),
             jid: username,
@@ -46,7 +46,7 @@ var Inbox = Backbone.Model.extend({
                     this.create_credentials();
                 }
             }.bind(this),
-            error: function (e,o) {
+            error: function () {
                 // Looks like there is no such inbox.
                 Msgboy.log("Creating new inbox");
                 this.create_credentials();
